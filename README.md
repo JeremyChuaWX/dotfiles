@@ -2,6 +2,7 @@
 
 ## Dependencies
 
+- zsh
 - homebrew
 
 ## Brew packages
