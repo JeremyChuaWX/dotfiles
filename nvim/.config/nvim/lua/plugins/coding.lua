@@ -1,20 +1,18 @@
 return {
   -- snippets
   {
+    "rafamadriz/friendly-snippets",
+    config = function()
+      require("luasnip.loaders.from_vscode").lazy_load()
+    end,
+  },
+  {
     "L3MON4D3/LuaSnip",
-    dependencies = {
-      {
-        "rafamadriz/friendly-snippets",
-        config = function()
-          require("luasnip.loaders.from_vscode").lazy_load()
-        end,
-      },
-    },
     config = function()
       local types = require("luasnip.util.types")
       local luasnip = require("luasnip")
 
-      luasnip.config.setup({
+      luasnip.config.set_config({
         ext_opts = {
           [types.choiceNode] = {
             active = {
@@ -33,7 +31,7 @@ return {
 
       set({ "i", "s" }, "<C-u>", function()
         if luasnip.choice_active() then
-          require("luasnip.extras.select_choice")()
+          luasnip.change_choice(1)
         end
       end)
 
@@ -54,7 +52,6 @@ return {
   -- auto-complete
   {
     "hrsh7th/nvim-cmp",
-    event = "InsertEnter",
     dependencies = {
       "onsails/lspkind.nvim",
       "hrsh7th/cmp-buffer",
@@ -155,7 +152,6 @@ return {
 
   -- comments
   "JoosepAlviste/nvim-ts-context-commentstring",
-
   {
     "numToStr/Comment.nvim",
     config = function()

@@ -34,12 +34,13 @@ return {
   },
 
   -- fuzzy finder
+  "DanielVolchek/tailiscope.nvim",
   {
     "nvim-telescope/telescope.nvim",
     dependencies = {
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-      "DanielVolchek/tailiscope.nvim",
     },
+    cmd = "Telescope",
     keys = {
       { "tt", ":Telescope<CR>", desc = "telescope main menu" },
       {
@@ -161,7 +162,6 @@ return {
   -- leaping through files
   {
     "ggandor/leap.nvim",
-    event = "VeryLazy",
     config = function()
       require("leap").add_default_mappings()
     end,
@@ -170,7 +170,6 @@ return {
   -- git signs
   {
     "lewis6991/gitsigns.nvim",
-    event = "BufReadPre",
     opts = {
       signs = {
         add = { hl = "GitSignsAdd", text = "│", numhl = "GitSignsAddNr", linehl = "GitSignsAddLn" },
@@ -222,37 +221,30 @@ return {
   -- references
   {
     "RRethy/vim-illuminate",
-    event = "BufReadPost",
-    keys = {
-      {
-        "'",
-        function()
-          require("illuminate").goto_next_reference()
-        end,
+    config = function()
+      vim.keymap.set("n", "'", function()
+        require("illuminate").goto_next_reference()
+      end, {
         desc = "next reference",
-      },
-      {
-        '"',
-        function()
-          require("illuminate").goto_prev_reference()
-        end,
+      })
+      vim.keymap.set("n", '"', function()
+        require("illuminate").goto_prev_reference()
+      end, {
         desc = "prev reference",
-      },
-    },
+      })
+    end,
   },
 
   -- buffer delete
   {
     "famiu/bufdelete.nvim",
-    keys = {
-      {
-        "<leader>d",
-        function()
-          require("bufdelete").bufdelete(0, true)
-        end,
+    config = function()
+      vim.keymap.set("n", "<leader>d", function()
+        require("bufdelete").bufdelete(0, true)
+      end, {
         desc = "delete buffer",
-      },
-    },
+      })
+    end,
   },
 
   -- smaller view

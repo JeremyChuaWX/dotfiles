@@ -1,6 +1,7 @@
 return {
   {
     "rebelot/kanagawa.nvim",
+    lazy = true,
     config = function()
       local default_colors = require("kanagawa.colors").setup()
       local bg = default_colors.sumiInk0
