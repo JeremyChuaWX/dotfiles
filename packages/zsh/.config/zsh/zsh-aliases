@@ -1,0 +1,60 @@
+if [[ $OSTYPE = "darwin"* ]] then
+  # brew
+  alias brewu="brew update && brew upgrade"
+  alias brewc="brew cleanup && brew autoremove"
+
+  # replace ls with gls
+  alias ls="gls"
+fi
+
+# fuzzy
+alias f='fuzzy_open'
+alias F='fuzzy_cd'
+
+# directories
+alias ll="ls -AlF --color=auto --group-directories-first"
+alias ..="cd .."
+alias tree="tree --dirsfirst"
+
+alias 2040="cd ~/Documents/School/labs/"
+
+# file manipulation
+alias rm="rm -v"
+alias mv="mv -v"
+alias cp="cp -v"
+
+# colourise grep output (good for log files)
+alias grep="grep --color=auto"
+alias egrep="egrep --color=auto"
+alias fgrep="fgrep --color=auto"
+
+# shortcuts
+alias dstow="cd $HOME/.dotstow/"
+alias nconf="cd $HOME/.dotstow/nvim/.config/nvim/"
+alias dev="cd $HOME/dev"
+alias ppath="echo $PATH | tr '\:' '\n' | fzf"
+
+# tmux
+alias tn="tmux new-session -s"
+alias ta="fuzzy_tmux_attach"
+alias tk="fuzzy_tmux_kill"
+alias tl="tmux ls"
+
+# git
+alias gc="git commit -m"
+alias ga="git add"
+alias gall="git add --all"
+alias gs="git status -sbu"
+alias gp="git push"
+alias gu="git pull --rebase"
+alias gl="git log --graph --oneline --decorate --all"
+alias gb="git branch "
+alias gB="git checkout -b "
+alias gC="git checkout "
+alias gd="git diff"
+
+# ffmpeg
+alias examscreen="ffmpeg -f avfoundation -r 1 -probesize 40M -threads 1 -i "1:none" -vcodec libx264 -b:v 128k -s hd720 /Users/jeremy/Desktop/recording.mp4"
+
+# software version managers
+alias fnme="eval '$(fnm env)'"

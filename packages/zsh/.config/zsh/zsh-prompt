@@ -1,0 +1,45 @@
+#----------#
+#-autoload-#
+#----------#
+
+# vcs_info
+autoload -Uz vcs_info
+
+# colours
+autoload -Uz colors && colors
+export CLICOLOR=1
+export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
+
+#-----#
+#-git-#
+#-----#
+
+# enable git
+zstyle ":vcs_info:*" enable git
+
+# setup hook that runs before every prompt
+precmd() { vcs_info }
+
+# format git prompt
+# zstyle ':vcs_info:git*' formats " %b "
+zstyle ':vcs_info:git*' formats "%F{008}(%b)%f "
+
+#--------#
+#-design-#
+#--------#
+
+setopt PROMPT_SUBST
+
+PROMPT=""
+
+function zle-line-init zle-keymap-select {
+VIM_MODE="${${KEYMAP/vicmd/NRM}/(main|viins)/INS}"
+
+PROMPT="
+${vcs_info_msg_0_}%5~
+${VIM_MODE} %F{003}~>%f "
+zle reset-prompt
+}
+
+zle -N zle-line-init
+zle -N zle-keymap-select

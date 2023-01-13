@@ -1,0 +1,9 @@
+[core]
+  editor = vim
+[user]
+  name = Jeremy Chua
+  email = chua.jeremy.wx@gmail.com
+[color]
+  ui = auto
+[init]
+  defaultBranch = main
