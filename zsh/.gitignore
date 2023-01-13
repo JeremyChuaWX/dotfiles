@@ -2,3 +2,4 @@
 **.zsh_history
 **/zsh/plugins
 **/.zsh_sessions
+**/.zcompcache
