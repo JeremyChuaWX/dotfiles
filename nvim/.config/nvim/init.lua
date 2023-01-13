@@ -20,6 +20,9 @@ require("lazy").setup({
   spec = {
     { import = "plugins" },
   },
+  change_detection = {
+    enabled = false,
+  },
   performance = {
     rtp = {
       disabled_plugins = {
