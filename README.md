@@ -1,5 +1,9 @@
 # Dotfiles
 
+## Dependencies
+
+- homebrew
+
 ## Brew packages
 
 - coreutils
