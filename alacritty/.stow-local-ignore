@@ -13,6 +13,3 @@ _darcs
 ^/COPYING
 
 \.DS_Store
-# \.zsh_history
-\.swp
-\.BAK$
