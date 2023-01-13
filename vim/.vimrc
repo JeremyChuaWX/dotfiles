@@ -93,7 +93,6 @@ let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
 " Colourscheme
 set background=dark
-colorscheme gruvbox
 
 " Change cursor on insert
 " let &t_SI.="\e[6 q"

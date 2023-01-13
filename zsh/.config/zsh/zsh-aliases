@@ -29,8 +29,8 @@ alias egrep="egrep --color=auto"
 alias fgrep="fgrep --color=auto"
 
 # shortcuts
-alias dstow="cd $HOME/.dotstow/"
-alias nconf="cd $HOME/.dotstow/nvim/.config/nvim/"
+alias dotf="cd $HOME/.dotfiles/"
+alias nconf="cd $HOME/.dotfiles/nvim/.config/nvim/"
 alias dev="cd $HOME/dev"
 alias ppath="echo $PATH | tr '\:' '\n' | fzf"
 

@@ -1,0 +1,18 @@
+RCS
+.+,v
+
+\.svn
+_darcs
+\.hg
+
+\.git
+\.gitignore
+
+^/README.*
+^/LICENSE.*
+^/COPYING
+
+\.DS_Store
+# \.zsh_history
+\.swp
+\.BAK$
