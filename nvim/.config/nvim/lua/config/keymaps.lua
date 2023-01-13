@@ -7,6 +7,9 @@ term_mode         = "t",
 command_mode      = "c",
 ]]
 
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
 local set = vim.keymap.set
 
 set("", "<Space>", "<Nop>")

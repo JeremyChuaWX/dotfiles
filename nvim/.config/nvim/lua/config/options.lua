@@ -4,7 +4,6 @@ local opt = vim.opt
 -- general --
 -------------
 opt.compatible = false
--- opt.clipboard = "unnamedplus"
 opt.ttyfast = true
 opt.lazyredraw = true
 opt.updatetime = 50
