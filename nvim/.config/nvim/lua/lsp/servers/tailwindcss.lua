@@ -13,7 +13,7 @@ return {
     end
   end,
 
-  filetypes = { "javascriptreact", "typescriptreact" },
+  filetypes = { "javascriptreact", "typescriptreact", "html" },
 
   root_dir = require("lspconfig").util.root_pattern("tailwind.config.js", "tailwind.config.cjs", "tailwind.config.ts"),
 

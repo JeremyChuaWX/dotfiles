@@ -56,7 +56,7 @@ M.get_server_opts = function(server_name)
     on_attach = M.on_attach,
     capabilities = M.capabilities,
   }
-  local server_opts = require("lsp.settings")[server_name] or {}
+  local server_opts = require("lsp.servers")[server_name] or {}
 
   return vim.tbl_deep_extend("keep", server_opts, opts)
 end
