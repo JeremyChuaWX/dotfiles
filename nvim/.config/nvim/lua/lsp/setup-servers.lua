@@ -27,8 +27,6 @@ local ENSURE_INSTALLED_LSP = {
   "prismals",
   "rust_analyzer",
   "gopls",
-  -- "solidity-ls",
-  -- "pylsp",
 }
 
 local ENSURE_INSTALLED_TOOLS = {
@@ -39,10 +37,7 @@ local ENSURE_INSTALLED_TOOLS = {
   "beautysh",
   "rustfmt",
   "gofumpt",
-  -- "eslint_d",
-  -- "clang-format",
-  -- "black",
-  -- "flake8",
+  "rustywind",
 }
 
 mason.setup()
