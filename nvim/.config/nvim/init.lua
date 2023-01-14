@@ -16,12 +16,10 @@ require("config.options")
 require("config.keymaps")
 require("config.autocommands")
 
-require("lazy").setup({
-  spec = {
-    { import = "plugins" },
-  },
+require("lazy").setup("plugins", {
   change_detection = {
-    enabled = false,
+    enabled = true,
+    notify = false,
   },
   performance = {
     rtp = {

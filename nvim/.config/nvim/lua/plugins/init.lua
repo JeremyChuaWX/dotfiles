@@ -1,4 +1,8 @@
+-- plugins with no config
+
 return {
+  "nvim-lua/popup.nvim",
+  "nvim-lua/plenary.nvim",
   "neovim/nvim-lspconfig",
   "williamboman/mason.nvim",
   "williamboman/mason-lspconfig.nvim",
@@ -12,4 +16,16 @@ return {
   "jose-elias-alvarez/typescript.nvim",
   "b0o/schemastore.nvim",
   "folke/neodev.nvim",
+  "tzachar/fuzzy.nvim",
+  "onsails/lspkind.nvim",
+  "tzachar/cmp-fuzzy-buffer",
+  "hrsh7th/cmp-path",
+  "hrsh7th/cmp-cmdline",
+  "saadparwaiz1/cmp_luasnip",
+  "hrsh7th/cmp-nvim-lsp",
+  "rafamadriz/friendly-snippets",
+  "JoosepAlviste/nvim-ts-context-commentstring",
+  "DanielVolchek/tailiscope.nvim",
+  { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+  "windwp/nvim-ts-autotag",
 }
