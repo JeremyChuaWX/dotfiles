@@ -51,7 +51,7 @@ return {
         desc = "telescope find files",
       },
       {
-        "tp",
+        "tF",
         function()
           require("telescope.builtin").git_files()
         end,
