@@ -4,7 +4,7 @@ env:
 window:
   startup_mode: Maximized
   dynamic_title: true
-  opacity: 0.99
+  opacity: 0.999
 
 mouse:
   hide_when_typing: false
