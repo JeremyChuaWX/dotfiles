@@ -21,6 +21,7 @@ M.config = function()
 
   require("kanagawa").setup({
     globalStatus = true,
+    transparent = true,
     overrides = overrides,
   })
 end

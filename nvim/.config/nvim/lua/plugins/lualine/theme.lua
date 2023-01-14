@@ -1,5 +1,13 @@
 local get_color = function(highlight_group, component)
-  return string.format("%X", vim.api.nvim_get_hl_by_name(highlight_group, true)[component])
+  local color_ok, color = pcall(function(c)
+    return string.format("%X", vim.api.nvim_get_hl_by_name(highlight_group, true)[c])
+  end, component)
+
+  if not color_ok then
+    return nil
+  end
+
+  return color
 end
 
 local colors = {
