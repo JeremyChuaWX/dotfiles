@@ -29,24 +29,6 @@ function zsh_add_completion() {
   if [ "$2" = true ] && compinit "${completion_file:1}"
 }
 
-function fuzzy_cd() {
-  if [[ $# -eq 0 ]] then
-    STR=$(fd -H --type directory | fzf)
-  else
-    STR=$(fd -H --type directory | fzf --query $1)
-  fi
-  [[ -d $STR ]] && cd $STR
-}
-
-function fuzzy_open() {
-  if [[ $# -eq 0 ]] then
-    STR=$(fd -H --type file | fzf)
-  else
-    STR=$(fd -H --type file | fzf --query $1)
-  fi
-  [[ -f $STR ]] && nvim $STR
-}
-
 function mkcd() {
   mkdir -p "$1" && cd "$1"
 }
