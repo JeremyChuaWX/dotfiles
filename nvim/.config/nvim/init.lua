@@ -37,12 +37,6 @@ require("lazy").setup("plugins", {
   },
 })
 
-local colorscheme = "kanagawa"
-
-local cs_ok, _ = pcall(vim.cmd.colorscheme, colorscheme)
-if not cs_ok then
-  vim.notify("colorscheme " .. colorscheme .. " not found!")
-  return
-end
-
+require("config.colorscheme").set_cs("kanagawa")
+require("config.tabline").setup()
 require("lsp")
