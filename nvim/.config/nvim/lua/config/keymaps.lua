@@ -20,6 +20,13 @@ set("n", "<C-j>", "<C-w>j")
 set("n", "<C-k>", "<C-w>k")
 set("n", "<C-l>", "<C-w>l")
 
+-- tab management
+set("n", "t<leader>", ":tabnew<CR>")
+set("n", "tp", ":tabprevious<CR>")
+set("n", "tn", ":tabnext<CR>")
+set("n", "tc", ":tabclose<CR>")
+set("n", "tC", ":tabonly<CR>")
+
 -- faster scrolling
 set("n", "<C-e>", "3<C-e>")
 set("n", "<C-y>", "3<C-y>")
