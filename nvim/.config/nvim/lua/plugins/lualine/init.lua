@@ -11,6 +11,7 @@ local M = {
       components.space,
       components.diagnostics,
       components.space,
+      components.divider,
       components.filename,
     }
 

@@ -13,6 +13,13 @@ return {
     padding = 0,
   },
 
+  divider = {
+    function()
+      return "%="
+    end,
+    padding = 0,
+  },
+
   diagnostics = {
     "diagnostics",
     padding = 0,
