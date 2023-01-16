@@ -1,9 +1,6 @@
 local M = {
   "kyazdani42/nvim-web-devicons",
+  config = true,
 }
-
-M.config = function()
-  require("nvim-web-devicons").setup()
-end
 
 return M
