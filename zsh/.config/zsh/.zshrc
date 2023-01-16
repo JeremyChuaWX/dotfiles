@@ -1,13 +1,4 @@
 #---------#
-#-imports-#
-#---------#
-
-source "$ZDOTDIR/zsh-functions"
-zsh_add_file "zsh-exports"
-zsh_add_file "zsh-aliases"
-zsh_add_file "zsh-prompt"
-
-#---------#
 #-options-#
 #---------#
 
@@ -34,21 +25,6 @@ export KEYTIMEOUT=1
 
 bindkey "^?" backward-delete-char
 
-#-------------#
-#-completions-#
-#-------------#
-
-autoload -Uz compinit; compinit
-zstyle ':completion:*' menu select
-zstyle ":completion:*" matcher-list "" "m:{a-zA-Z}={A-Za-z}"
-zmodload zsh/complist
-_comp_options+=(globdots) # Include hidden files.
-
-autoload -U up-line-or-beginning-search
-autoload -U down-line-or-beginning-search
-zle -N up-line-or-beginning-search
-zle -N down-line-or-beginning-searchs
-
 #---------#
 #-colours-#
 #---------#
@@ -58,20 +34,20 @@ export CLICOLOR=1
 export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 
 #---------#
+#-imports-#
+#---------#
+
+source "$ZDOTDIR/zsh-functions"
+zsh_add_file "zsh-exports"
+zsh_add_file "zsh-aliases"
+zsh_add_file "zsh-prompt"
+zsh_add_file "zsh-completion"
+zsh_add_file "zsh-surround"
+
+#---------#
 #-plugins-#
 #---------#
 
 zsh_add_plugin "zsh-users/zsh-autosuggestions"
 zsh_add_plugin "zsh-users/zsh-syntax-highlighting"
 zsh_add_plugin "hlissner/zsh-autopair"
-
-#----------#
-#-keybinds-#
-#----------#
-
-# menu selection
-bindkey -M menuselect "${terminfo[kcbt]}" reverse-menu-complete # s-tab to go backwards in compselect
-bindkey -M menuselect 'l' vi-forward-char
-bindkey -M menuselect 'j' vi-down-line-or-history
-bindkey -M menuselect 'h' vi-backward-char
-bindkey -M menuselect 'k' vi-up-line-or-history

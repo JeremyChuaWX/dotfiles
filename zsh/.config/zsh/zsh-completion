@@ -1,0 +1,24 @@
+autoload -Uz compinit; compinit
+autoload -Uz up-line-or-beginning-search
+autoload -Uz down-line-or-beginning-search
+zmodload zsh/complist
+
+_comp_options+=(globdots) # Include hidden files.
+
+zstyle ":completion:*" menu select
+zstyle ":completion:*" matcher-list "" "m:{a-zA-Z}={A-Za-z}" "r:|[._-]=* r:|=*" "l:|=* r:|=*"
+zstyle ":completion:*" group-name ""
+zstyle ":completion:*:*:*:*:descriptions" format "%F{green}-- %d --%f"
+zstyle ":completion:*:messages" format " %F{purple} -- %d --%f"
+zstyle ":completion:*:warnings" format " %F{red}-- no matches found --%f"
+zstyle ":completion:*:default" list-colors ${(s.:.)LS_COLORS}
+
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-searchs
+
+bindkey -M menuselect "${terminfo[kcbt]}" reverse-menu-complete # s-tab to go backwards in compselect
+bindkey -M menuselect "h" vi-backward-char
+bindkey -M menuselect "k" vi-up-line-or-history
+bindkey -M menuselect "j" vi-down-line-or-history
+bindkey -M menuselect "l" vi-forward-char
+bindkey -M menuselect "^f" vi-insert
