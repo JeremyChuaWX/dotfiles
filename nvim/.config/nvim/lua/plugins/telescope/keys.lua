@@ -29,18 +29,11 @@ return {
     desc = "telescope help tags",
   },
   {
-    "tB",
+    "tb",
     function()
       require("telescope.builtin").current_buffer_fuzzy_find()
     end,
     desc = "telescope fuzzy find current buffer",
-  },
-  {
-    "tb",
-    function()
-      require("telescope.builtin").buffers(require("telescope.themes").get_dropdown({ previewer = false }))
-    end,
-    desc = "telescope buffers",
   },
   {
     "td",

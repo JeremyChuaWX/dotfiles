@@ -27,6 +27,9 @@ set("n", "tn", ":tabnext<CR>")
 set("n", "tc", ":tabclose<CR>")
 set("n", "tC", ":tabonly<CR>")
 
+-- buffer management
+set("n", "<leader>d", ":bdelete<CR>")
+
 -- faster scrolling
 set("n", "<C-e>", "3<C-e>")
 set("n", "<C-y>", "3<C-y>")
