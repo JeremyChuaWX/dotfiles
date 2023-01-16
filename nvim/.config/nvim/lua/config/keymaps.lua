@@ -22,8 +22,8 @@ set("n", "<C-l>", "<C-w>l")
 
 -- tab management
 set("n", "t<leader>", ":tabnew<CR>")
-set("n", "H", ":tabprevious<CR>")
-set("n", "L", ":tabnext<CR>")
+set("n", "tp", ":tabprevious<CR>")
+set("n", "tn", ":tabnext<CR>")
 set("n", "tc", ":tabclose<CR>")
 set("n", "tC", ":tabonly<CR>")
 
