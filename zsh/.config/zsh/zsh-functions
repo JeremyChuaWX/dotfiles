@@ -33,12 +33,20 @@ function mkcd() {
   mkdir -p "$1" && cd "$1"
 }
 
-function fuzzy_tmux_attach() {
-  STR=$(tmux list-sessions -F \#S | fzf)
-  [[ $STR ]] && tmux attach -t $STR
+function fuzzy_tmux_kill() {
+  if [ $1 ]; then
+    tmux kill-session -t $1
+    return
+  fi
+  STR=$(tmux list-sessions -F \#S 2>/dev/null | fzf --exit-0)
+  [[ $STR ]] && tmux kill-session -t $STR
 }
 
-function fuzzy_tmux_kill() {
-  STR=$(tmux list-sessions -F \#S | fzf)
-  [[ $STR ]] && tmux kill-session -t $STR
+function fuzzy_tmux_session() {
+  [[ -n "$TMUX" ]] && change="switch-client" || change="attach-session"
+  if [ $1 ]; then
+    tmux $change -t "$1" 2>/dev/null || (tmux new-session -d -s $1 && tmux $change -t "$1")
+    return
+  fi
+  session=$(tmux list-sessions -F \#S 2>/dev/null | fzf --select-1 --exit-0) && tmux $change -t "$session" || echo "No sessions found"
 }

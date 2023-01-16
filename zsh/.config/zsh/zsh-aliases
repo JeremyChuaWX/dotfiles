@@ -35,8 +35,7 @@ alias dev="cd $HOME/dev"
 alias ppath="echo $PATH | tr '\:' '\n' | fzf"
 
 # tmux
-alias tn="tmux new-session -s"
-alias ta="fuzzy_tmux_attach"
+alias t="fuzzy_tmux_session"
 alias tk="fuzzy_tmux_kill"
 alias tl="tmux ls"
 
