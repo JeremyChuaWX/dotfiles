@@ -21,7 +21,7 @@ unsetopt BEEP
 #----------#
 
 bindkey -v
-export KEYTIMEOUT=1
+export KEYTIMEOUT=10
 
 bindkey "^?" backward-delete-char
 
