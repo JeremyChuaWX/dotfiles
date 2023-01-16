@@ -7,11 +7,14 @@ brew install gh
 echo "Logging in with github"
 gh auth login
 
-echo "Installing Brew Bundle"
+echo "Installing brew bundle"
 brew bundle --file="./brewfile"
+
+echo "Installing npm packages"
+zsh npmfile
 
 echo "Stowing configs"
 stow -vR */
 
 echo "Applying OSX settings"
-bash osx_settings
+zsh osx_settings
