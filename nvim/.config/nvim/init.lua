@@ -37,6 +37,6 @@ require("lazy").setup("plugins", {
   },
 })
 
-require("config.colorscheme").set_cs("kanagawa")
+require("config.colorscheme").set_cs("melange")
 require("config.tabline").setup()
 require("lsp")
