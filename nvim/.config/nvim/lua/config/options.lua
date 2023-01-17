@@ -53,7 +53,6 @@ opt.showcmd = true
 opt.showmode = false
 opt.cmdheight = 1
 opt.laststatus = 3
-opt.showtabline = 2
 opt.visualbell = true
 opt.signcolumn = "yes"
 opt.shortmess:append("c")

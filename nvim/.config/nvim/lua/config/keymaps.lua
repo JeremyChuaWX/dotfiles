@@ -20,15 +20,10 @@ set("n", "<C-j>", "<C-w>j")
 set("n", "<C-k>", "<C-w>k")
 set("n", "<C-l>", "<C-w>l")
 
--- tab management
-set("n", "t<leader>", ":tabnew<CR>")
-set("n", "tp", ":tabprevious<CR>")
-set("n", "tn", ":tabnext<CR>")
-set("n", "tc", ":tabclose<CR>")
-set("n", "tC", ":tabonly<CR>")
-
 -- buffer management
-set("n", "<leader>d", ":bdelete<CR>")
+set("n", "<leader>w", ":bdelete<CR>")
+set("n", "H", ":bprevious<CR>")
+set("n", "L", ":bnext<CR>")
 
 -- faster scrolling
 set("n", "<C-e>", "3<C-e>")
