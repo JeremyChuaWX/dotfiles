@@ -31,9 +31,9 @@ return {
   {
     "tb",
     function()
-      require("telescope.builtin").current_buffer_fuzzy_find()
+      require("telescope.builtin").buffers()
     end,
-    desc = "telescope fuzzy find current buffer",
+    desc = "telescope buffers",
   },
   {
     "td",
