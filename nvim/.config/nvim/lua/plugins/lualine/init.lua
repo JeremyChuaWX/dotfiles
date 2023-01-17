@@ -2,8 +2,9 @@ local M = {
   "nvim-lualine/lualine.nvim",
   event = "VeryLazy",
   opts = function()
-    local components = require("plugins.lualine.components")
+    require("plugins.lualine.theme").setup()
     local theme = require("plugins.lualine.theme").theme
+    local components = require("plugins.lualine.components")
 
     local status_left = {
       components.space,
