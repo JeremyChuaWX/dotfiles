@@ -29,11 +29,9 @@ local M = {
     return {
       options = {
         globalstatus = true,
-        icons_enabled = true,
         theme = theme,
         component_separators = "",
         section_separators = "",
-        always_divide_middle = true,
       },
 
       sections = {
