@@ -35,7 +35,6 @@ null_ls.setup({
       },
     }),
 
-    -- diagnostics.eslint_d,
     diagnostics.actionlint,
     diagnostics.markdownlint,
   },
