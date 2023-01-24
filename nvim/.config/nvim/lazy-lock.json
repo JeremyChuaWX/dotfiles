@@ -25,6 +25,7 @@
   "melange-nvim": { "branch": "master", "commit": "68c00e62b1a37c474897f376368ef913da0bb1be" },
   "neodev.nvim": { "branch": "main", "commit": "7ea6d32432bfacf25256d1f7bc8d5f0d52107906" },
   "no-neck-pain.nvim": { "branch": "main", "commit": "40369b2d38271e320d3584860c89b87299bf60ae" },
+  "nordic.nvim": { "branch": "main", "commit": "55761ecf96c5ca551eb0bdcc4c095675bcedf3cb" },
   "null-ls.nvim": { "branch": "main", "commit": "18497120fa0db0a3b9e53870ac8f342be4bffb57" },
   "nvim-autopairs": { "branch": "master", "commit": "31042a5823b55c4bfb30efcbba2fc1b5b53f90dc" },
   "nvim-cmp": { "branch": "main", "commit": "11a95792a5be0f5a40bab5fc5b670e5b1399a939" },
