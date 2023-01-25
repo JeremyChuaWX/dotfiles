@@ -14,7 +14,7 @@ M.config = function()
         menu = {
           nvim_lsp = "[LSP]",
           luasnip = "[snip]",
-          fuzzy_buffer = "[fzf]",
+          fuzzy_buffer = "[buf]",
           path = "[path]",
         },
       }),
