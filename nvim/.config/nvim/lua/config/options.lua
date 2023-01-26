@@ -66,7 +66,6 @@ opt.fillchars:append({
   vertright = "┣",
   verthoriz = "╋",
 })
-opt.winbar = "%f %m"
 
 ------------
 -- editor --
