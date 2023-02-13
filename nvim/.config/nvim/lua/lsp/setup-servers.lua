@@ -19,7 +19,7 @@ if not mason_tool_installer_ok then
 end
 
 local ENSURE_INSTALLED_LSP = {
-  "sumneko_lua",
+  "lua_ls",
   "tsserver",
   "jsonls",
   "jdtls",
@@ -38,6 +38,7 @@ local ENSURE_INSTALLED_TOOLS = {
   "rustfmt",
   "gofumpt",
   "rustywind",
+  "google-java-format",
 }
 
 mason.setup()
