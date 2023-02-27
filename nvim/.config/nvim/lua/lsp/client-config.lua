@@ -1,13 +1,10 @@
 local M = {}
 
-local formatting_options = vim.lsp.util.make_formatting_params({})
-
 local function format_buf(bufnr)
   local ft = vim.bo[bufnr].filetype
   local have_nls = #require("null-ls.sources").get_available(ft, "NULL_LS_FORMATTING") > 0
 
   vim.lsp.buf.format({
-    formatting_options = formatting_options,
     bufnr = bufnr,
     filter = function(client)
       if have_nls then
