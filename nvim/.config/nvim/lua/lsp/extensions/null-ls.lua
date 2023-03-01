@@ -11,7 +11,7 @@ null_ls.setup({
   debug = false,
   diagnostics_format = "[#{c}] #{m} (#{s})",
   update_in_insert = true,
-  on_attach = require("lsp.client-config").on_attach,
+  on_attach = require("lsp.server-config").on_attach,
   sources = {
     actions.gitsigns,
 

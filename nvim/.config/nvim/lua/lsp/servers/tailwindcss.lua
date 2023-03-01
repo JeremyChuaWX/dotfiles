@@ -1,6 +1,6 @@
 return {
   on_attach = function(client, bufnr)
-    require("lsp.client-config").on_attach(client, bufnr)
+    require("lsp.server-config").on_attach(client, bufnr)
 
     local document_color_ok, document_color = pcall(require, "document-color")
     if document_color_ok then

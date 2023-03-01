@@ -24,7 +24,12 @@ local function lsp_keymaps(bufnr)
 
   if vim.fn.exists(":Telescope") then
     set("n", "gr", "<cmd>Telescope lsp_references<CR>")
-    set("n", "gd", "<cmd>Telescope lsp_definitions<CR>")
+
+    set("n", "gd", function()
+      require("telescope.builtin").lsp_definitions({
+        jump_type = "never",
+      })
+    end)
   else
     set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
     set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")

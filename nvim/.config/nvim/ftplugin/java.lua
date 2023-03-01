@@ -72,14 +72,14 @@ local config = {
     workspace_dir,
   },
   on_attach = function(client, bufnr)
-    require("lsp.client-config").on_attach(client, bufnr)
+    require("lsp.server-config").on_attach(client, bufnr)
     if DAP then
       require("jdtls").setup_dap({ hotcodereplace = "auto" })
       require("jdtls.dap").setup_dap_main_class_configs()
     end
     require("jdtls.setup").add_commands()
   end,
-  capabilities = require("lsp.client-config").capabilities,
+  capabilities = require("lsp.server-config").capabilities,
   root_dir = root_dir,
 
   -- See https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request

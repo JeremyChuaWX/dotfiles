@@ -51,7 +51,7 @@ mason_tool_installer.setup({
   ensure_installed = ENSURE_INSTALLED_TOOLS,
 })
 
-local get_server_opts = require("lsp.client-config").get_server_opts
+local get_server_opts = require("lsp.server-config").get_server_opts
 
 local function default_setup_function(server_name)
   local opts = get_server_opts(server_name)
