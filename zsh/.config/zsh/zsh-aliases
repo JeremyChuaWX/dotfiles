@@ -8,8 +8,7 @@ if [[ $OSTYPE = "darwin"* ]] then
 fi
 
 # fuzzy
-alias f='fd --type f --hidden --exclude .git --print0 | fzf --read0 --print0 --exit-0 | xargs -r -0 nvim'
-alias F='fd --type d --hidden --exclude .git --print0 | fzf --read0 --print0 --exit-0 | xargs -r -0 cd'
+alias f="fuzzy_cd"
 
 # directories
 alias ll="ls -AlF --color=auto --group-directories-first"

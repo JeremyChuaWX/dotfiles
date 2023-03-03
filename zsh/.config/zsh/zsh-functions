@@ -33,6 +33,15 @@ function mkcd() {
   mkdir -p "$1" && cd "$1"
 }
 
+function fuzzy_cd() {
+  dir=$(fd --type d --hidden --exclude .git --print0 | fzf --read0 --print0 --exit-0)
+
+  if [ $dir ]; then
+    cd "$dir"
+    return
+  fi
+}
+
 function fuzzy_tmux_kill() {
   if [ $1 ]; then
     tmux kill-session -t $1
