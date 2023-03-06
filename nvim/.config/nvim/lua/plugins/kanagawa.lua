@@ -21,6 +21,7 @@ M.config = function()
   end
 
   require("kanagawa").setup({
+    compile = true,
     globalStatus = true,
     overrides = getOverrides,
   })
