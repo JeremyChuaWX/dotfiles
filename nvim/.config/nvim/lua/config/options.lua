@@ -30,7 +30,7 @@ opt.wildmode = { "list:longest", "list:full" }
 -- tab completion --
 --------------------
 
-opt.completeopt = { "menu", "menuone", "noselect" }
+-- opt.completeopt = { "menu", "menuone", "noselect" }
 opt.pumheight = 10
 
 ---------------------
