@@ -3,27 +3,37 @@ local M = {
 }
 
 M.config = function()
-  local getOverrides = function(colors)
-    local bg = colors.palette.sumiInk0
-    local prompt_bg = colors.palette.sumiInk2
-    local prompt_title_fg = colors.palette.sumiInk2
-    local prompt_title_bg = colors.palette.autumnYellow
-
+  local overrides = function(colors)
+    local theme = colors.theme
     return {
-      TelescopeBorder = { bg = bg, fg = bg },
-      TelescopeNormal = { bg = bg },
-      TelescopePromptTitle = { bg = prompt_title_bg, fg = prompt_title_fg },
-      TelescopePromptBorder = { bg = prompt_bg, fg = prompt_bg },
-      TelescopePromptNormal = { bg = prompt_bg },
-      TelescopePreviewTitle = { bg = bg, fg = bg },
-      TelescopeResultsTitle = { bg = bg, fg = bg },
+      TelescopeTitle = { fg = theme.ui.special, bold = true },
+      TelescopePromptNormal = { bg = theme.ui.bg_p1 },
+      TelescopePromptBorder = { fg = theme.ui.bg_p1, bg = theme.ui.bg_p1 },
+      TelescopeResultsNormal = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m1 },
+      TelescopeResultsBorder = { fg = theme.ui.bg_m1, bg = theme.ui.bg_m1 },
+      TelescopePreviewNormal = { bg = theme.ui.bg_dim },
+      TelescopePreviewBorder = { bg = theme.ui.bg_dim, fg = theme.ui.bg_dim },
+
+      Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 },
+      PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
+      PmenuSbar = { bg = theme.ui.bg_m1 },
+      PmenuThumb = { bg = theme.ui.bg_p2 },
     }
   end
 
   require("kanagawa").setup({
     compile = true,
     globalStatus = true,
-    overrides = getOverrides,
+    overrides = overrides,
+    colors = {
+      theme = {
+        all = {
+          ui = {
+            bg_gutter = "none",
+          },
+        },
+      },
+    },
   })
 end
 
