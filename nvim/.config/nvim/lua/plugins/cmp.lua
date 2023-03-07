@@ -31,7 +31,7 @@ M.config = function()
       ["<C-e>"] = cmp.mapping.abort(),
       ["<CR>"] = cmp.mapping.confirm({
         select = true,
-        behavior = "replace",
+        behavior = cmp.ConfirmBehavior.Replace,
       }),
     }),
     sources = cmp.config.sources({
