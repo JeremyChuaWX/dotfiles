@@ -1,5 +1,4 @@
 require("lsp.extensions.null-ls")
 require("lsp.extensions.lsp-signature")
 require("lsp.extensions.fidget")
-require("lsp.extensions.documentcolor")
 require("lsp.extensions.neodev")

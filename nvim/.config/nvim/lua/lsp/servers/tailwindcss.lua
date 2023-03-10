@@ -2,11 +2,6 @@ return {
   on_attach = function(client, bufnr)
     require("lsp.server-config").on_attach(client, bufnr)
 
-    local document_color_ok, document_color = pcall(require, "document-color")
-    if document_color_ok then
-      document_color.buf_attach(bufnr)
-    end
-
     local telescope_ok, telescope = pcall(require, "telescope")
     if telescope_ok then
       telescope.load_extension("tailiscope")

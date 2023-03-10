@@ -3,6 +3,8 @@ local M = {
   opts = {
     user_default_options = {
       names = false,
+      css_fn = true,
+      tailwind = "lsp",
     },
   },
 }
