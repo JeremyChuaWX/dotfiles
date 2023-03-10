@@ -35,8 +35,8 @@ M.config = function()
       }),
     }),
     sources = cmp.config.sources({
-      { name = "luasnip" },
       { name = "nvim_lsp" },
+      { name = "luasnip" },
       { name = "fuzzy_buffer", keyword_length = 5 },
       { name = "path" },
     }),
