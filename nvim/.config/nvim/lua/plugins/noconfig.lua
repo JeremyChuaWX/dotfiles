@@ -28,7 +28,4 @@ return {
   "DanielVolchek/tailiscope.nvim",
   { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
   "windwp/nvim-ts-autotag",
-  "savq/melange-nvim",
-  "JoosepAlviste/palenightfall.nvim",
-  "AlexvZyl/nordic.nvim",
 }

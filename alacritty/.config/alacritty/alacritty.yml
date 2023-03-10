@@ -7,7 +7,7 @@ window:
   opacity: 0.999
 
 mouse:
-  hide_when_typing: false
+  hide_when_typing: true
 
 font:
   normal:
