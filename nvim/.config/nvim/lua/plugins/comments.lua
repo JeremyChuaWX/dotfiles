@@ -1,5 +1,6 @@
 local M = {
   "numToStr/Comment.nvim",
+  event = "InsertEnter",
 }
 
 M.config = function()

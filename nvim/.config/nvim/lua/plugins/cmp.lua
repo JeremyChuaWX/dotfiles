@@ -1,5 +1,6 @@
 local M = {
   "hrsh7th/nvim-cmp",
+  event = "InsertEnter",
 }
 
 M.config = function()

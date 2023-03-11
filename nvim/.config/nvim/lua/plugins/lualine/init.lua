@@ -1,6 +1,5 @@
 local M = {
   "nvim-lualine/lualine.nvim",
-  -- event = "VeryLazy",
   opts = function()
     require("plugins.lualine.theme").setup()
     local theme = require("plugins.lualine.theme").theme

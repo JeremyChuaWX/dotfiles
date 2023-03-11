@@ -1,5 +1,6 @@
 local M = {
   "ggandor/leap.nvim",
+  event = "InsertEnter",
 }
 
 M.config = function()
