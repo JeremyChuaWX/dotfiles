@@ -1,7 +1,3 @@
-#---------#
-#-options-#
-#---------#
-
 # history
 setopt INC_APPEND_HISTORY
 setopt HIST_IGNORE_DUPS
@@ -16,27 +12,18 @@ zle_highlight=('paste:none')
 # beeping is annoying
 unsetopt BEEP
 
-#----------#
-#-vim-mode-#
-#----------#
-
+# vim-mode
 bindkey -v
 export KEYTIMEOUT=10
 
 bindkey "^?" backward-delete-char
 
-#---------#
-#-colours-#
-#---------#
-
+# colours
 autoload -Uz colors && colors
 export CLICOLOR=1
 export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 
-#---------#
-#-imports-#
-#---------#
-
+# imports
 source "$ZDOTDIR/zsh-functions"
 zsh_add_file "zsh-exports"
 zsh_add_file "zsh-aliases"
@@ -44,10 +31,7 @@ zsh_add_file "zsh-prompt"
 zsh_add_file "zsh-completion"
 zsh_add_file "zsh-surround"
 
-#---------#
-#-plugins-#
-#---------#
-
+# plugins
 zsh_add_plugin "zsh-users/zsh-autosuggestions"
 zsh_add_plugin "zsh-users/zsh-syntax-highlighting"
 zsh_add_plugin "hlissner/zsh-autopair"
