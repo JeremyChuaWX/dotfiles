@@ -2,6 +2,10 @@ local M = {
   "nvim-telescope/telescope.nvim",
   cmd = "Telescope",
   keys = require("plugins.telescope.keys"),
+  dependencies = {
+    "DanielVolchek/tailiscope.nvim",
+    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+  },
 }
 
 M.config = function()

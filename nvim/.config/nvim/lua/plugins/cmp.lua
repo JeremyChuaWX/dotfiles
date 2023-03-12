@@ -2,6 +2,7 @@ local M = {
   "hrsh7th/nvim-cmp",
   event = { "InsertEnter", "CmdlineEnter" },
   dependencies = {
+    "tzachar/fuzzy.nvim",
     "tzachar/cmp-fuzzy-buffer",
     "hrsh7th/cmp-path",
     "hrsh7th/cmp-cmdline",
