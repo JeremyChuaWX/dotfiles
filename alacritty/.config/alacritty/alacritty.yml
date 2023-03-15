@@ -5,6 +5,7 @@ window:
   startup_mode: Maximized
   dynamic_title: true
   opacity: 0.999
+  option_as_alt: Both
 
 mouse:
   hide_when_typing: true
