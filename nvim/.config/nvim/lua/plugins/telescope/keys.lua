@@ -15,6 +15,13 @@ return {
     desc = "telescope find in git files",
   },
   {
+    "te",
+    function()
+      require("telescope").extensions.file_browser.file_browser()
+    end,
+    desc = "telescope file browser",
+  },
+  {
     "tg",
     function()
       require("telescope.builtin").live_grep()

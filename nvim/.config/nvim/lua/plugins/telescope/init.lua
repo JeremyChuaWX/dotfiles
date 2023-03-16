@@ -5,6 +5,7 @@ local M = {
   dependencies = {
     "DanielVolchek/tailiscope.nvim",
     { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    "nvim-telescope/telescope-file-browser.nvim",
   },
 }
 
@@ -65,14 +66,20 @@ M.config = function()
         override_file_sorter = true, -- override the file sorter
         case_mode = "smart_case", -- or "ignore_case" or "respect_case", default is "smart_case"
       },
+
       tailiscope = {
         register = '"',
         default = "classes",
+      },
+
+      file_browser = {
+        hijack_netrw = true,
       },
     },
   })
 
   telescope.load_extension("fzf")
+  telescope.load_extension("file_browser")
 end
 
 return M
