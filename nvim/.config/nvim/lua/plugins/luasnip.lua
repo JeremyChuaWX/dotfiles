@@ -10,7 +10,7 @@ M.config = function()
   local types = require("luasnip.util.types")
   local luasnip = require("luasnip")
 
-  luasnip.config.set_config({
+  luasnip.setup({
     ext_opts = {
       [types.choiceNode] = {
         active = {
