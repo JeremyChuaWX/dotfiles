@@ -75,6 +75,7 @@ M.config = function()
       file_browser = {
         hijack_netrw = true,
         grouped = true,
+        display_stat = false,
       },
     },
   })
