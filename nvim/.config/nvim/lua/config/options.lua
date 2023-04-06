@@ -5,7 +5,7 @@ local opt = vim.opt
 -------------
 opt.compatible = false
 opt.ttyfast = true
-opt.lazyredraw = true
+opt.lazyredraw = false
 opt.updatetime = 50
 opt.timeoutlen = 500
 opt.mouse = "a"
