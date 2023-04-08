@@ -3,53 +3,10 @@ if not lspconfig_ok then
   return
 end
 
-local mason_ok, mason = pcall(require, "mason")
-if not mason_ok then
-  return
-end
-
 local mason_lspconifg_ok, mason_lspconfig = pcall(require, "mason-lspconfig")
 if not mason_lspconifg_ok then
   return
 end
-
-local mason_tool_installer_ok, mason_tool_installer = pcall(require, "mason-tool-installer")
-if not mason_tool_installer_ok then
-  return
-end
-
-local ENSURE_INSTALLED_LSP = {
-  "lua_ls",
-  "tsserver",
-  "jsonls",
-  "jdtls",
-  "tailwindcss",
-  "prismals",
-  "rust_analyzer",
-  "gopls",
-}
-
-local ENSURE_INSTALLED_TOOLS = {
-  "prettierd",
-  "stylua",
-  "actionlint",
-  "markdownlint",
-  "beautysh",
-  "rustfmt",
-  "gofumpt",
-  "rustywind",
-  "google-java-format",
-}
-
-mason.setup()
-
-mason_lspconfig.setup({
-  ensure_installed = ENSURE_INSTALLED_LSP,
-})
-
-mason_tool_installer.setup({
-  ensure_installed = ENSURE_INSTALLED_TOOLS,
-})
 
 local get_server_opts = require("lsp.server-config").get_server_opts
 
