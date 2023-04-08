@@ -4,5 +4,4 @@ if not status_ok then
 end
 
 require("lsp.diagnostics-config").setup()
-require("lsp.extensions")
 require("lsp.setup-servers")
