@@ -31,7 +31,7 @@ M.config = function()
   })
 
   vim.opt.foldmethod = "expr"
-  vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+  vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 end
 
 return M
