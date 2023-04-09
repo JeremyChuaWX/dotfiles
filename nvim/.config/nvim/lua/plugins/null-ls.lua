@@ -15,7 +15,6 @@ M.config = function()
     on_attach = require("lsp.server-config").on_attach,
     sources = {
       actions.gitsigns,
-
       formatting.prettierd,
       formatting.rustywind,
       formatting.google_java_format,
@@ -35,7 +34,6 @@ M.config = function()
           "2",
         },
       }),
-
       diagnostics.actionlint,
       diagnostics.markdownlint,
     },
