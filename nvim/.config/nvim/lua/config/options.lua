@@ -3,9 +3,9 @@ local opt = vim.opt
 -------------
 -- general --
 -------------
+
 opt.compatible = false
 opt.ttyfast = true
-opt.lazyredraw = false
 opt.updatetime = 50
 opt.timeoutlen = 500
 opt.mouse = "a"
@@ -21,6 +21,7 @@ opt.swapfile = false
 --------------------
 -- ":" completion --
 --------------------
+
 opt.wildmenu = true
 opt.wildignore:append({ ".git", ".DS_Store" })
 opt.wildignorecase = true
@@ -30,7 +31,7 @@ opt.wildmode = { "list:longest", "list:full" }
 -- tab completion --
 --------------------
 
--- opt.completeopt = { "menu", "menuone", "noselect" }
+opt.completeopt = { "menu", "menuone", "noselect" }
 opt.pumheight = 10
 
 ---------------------
@@ -91,6 +92,7 @@ opt.guicursor = ""
 -------------
 -- folding --
 -------------
+
 opt.foldlevelstart = 99
 -- opt.foldcolumn = "1"
 -- vim.opt.fillchars:append("foldopen:,foldclose:,foldsep: ")
@@ -98,12 +100,14 @@ opt.foldlevelstart = 99
 ---------------------
 -- buffer and tabs --
 ---------------------
+
 opt.hidden = true
 opt.autoread = true
 
 -----------------
 -- indentation --
 -----------------
+
 opt.expandtab = true
 opt.smarttab = true
 opt.tabstop = 2
@@ -115,12 +119,14 @@ opt.smartindent = true
 ----------------
 -- appearance --
 ----------------
+
 opt.background = "dark"
 opt.termguicolors = true
 
 ------------
 -- search --
 ------------
+
 opt.ignorecase = true
 opt.smartcase = true
 opt.hlsearch = true
