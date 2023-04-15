@@ -1,9 +1,6 @@
 local M = {
   settings = {
     Lua = {
-      completion = {
-        callSnippet = "Replace",
-      },
       workspace = {
         checkThirdParty = false,
       },
