@@ -6,5 +6,4 @@ return {
   "simrat39/rust-tools.nvim",
   "jose-elias-alvarez/typescript.nvim",
   "b0o/schemastore.nvim",
-  "stevearc/dressing.nvim",
 }
