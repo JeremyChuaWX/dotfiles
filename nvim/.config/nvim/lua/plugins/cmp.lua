@@ -46,9 +46,14 @@ M.config = function()
       }),
     }),
     sources = cmp.config.sources({
-      { name = "nvim_lsp" },
+      {
+        name = "nvim_lsp",
+        entry_filter = function(entry)
+          return entry:get_kind() ~= cmp.lsp.CompletionItemKind.Text
+        end,
+      },
       { name = "luasnip" },
-      { name = "fuzzy_buffer", keyword_length = 5 },
+      { name = "fuzzy_buffer", keyword_length = 10 },
       { name = "path" },
     }),
   })
