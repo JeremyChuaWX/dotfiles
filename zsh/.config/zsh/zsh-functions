@@ -59,3 +59,11 @@ function fuzzy_tmux_session() {
   fi
   session=$(tmux list-sessions -F \#S 2>/dev/null | fzf --select-1 --exit-0) && tmux $change -t "$session" || echo "No sessions found"
 }
+
+function git_commit() {
+  if [ $1 ]; then
+    git commit -m $1
+    return
+  fi
+  git commit
+}
