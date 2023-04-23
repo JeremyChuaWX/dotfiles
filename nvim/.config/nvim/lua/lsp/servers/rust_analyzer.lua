@@ -3,7 +3,7 @@ return {
     ["rust-analyzer"] = {
       check = {
         command = "clippy",
-        extraArgs = { "--workspace", "--", "-W", "clippy::all" },
+        extraArgs = { "--", "-W", "clippy::all" },
       },
     },
   },
