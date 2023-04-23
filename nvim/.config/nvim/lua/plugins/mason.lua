@@ -10,11 +10,9 @@ local mason_lspconfig = {
       "lua_ls",
       "tsserver",
       "jsonls",
-      "jdtls",
       "tailwindcss",
       "prismals",
       "rust_analyzer",
-      "gopls",
     },
   },
 }
@@ -29,9 +27,7 @@ local mason_tools = {
       "markdownlint",
       "beautysh",
       "rustfmt",
-      "gofumpt",
       "rustywind",
-      "google-java-format",
     },
   },
 }
