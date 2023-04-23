@@ -11,6 +11,9 @@ mouse:
   hide_when_typing: true
 
 font:
+  family: jetbrainsmono nerd font
+  normal:
+    style: medium
   size: 16.0
 
 colors:
