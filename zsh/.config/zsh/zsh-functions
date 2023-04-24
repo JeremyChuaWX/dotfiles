@@ -37,6 +37,7 @@ function fuzzy_open() {
   dir=$(fd --hidden --exclude .git --print0 | fzf --read0 --print0 --exit-0)
 
   if [ -d $dir ]; then
+    dir=$(echo $dir | sed 's/.$//')
     cd "$dir"
   else
     $EDITOR $dir
@@ -59,6 +60,11 @@ function fuzzy_tmux_session() {
     return
   fi
   session=$(tmux list-sessions -F \#S 2>/dev/null | fzf --select-1 --exit-0) && tmux $change -t "$session" || echo "No sessions found"
+}
+
+function tmux_new_session() {
+  name=$(pwd | rev | cut -d '/' -f1 | rev)
+  tmux new-session -s $name
 }
 
 function git_commit() {
