@@ -35,15 +35,16 @@ M.config = function()
         luasnip.lsp_expand(args.body)
       end,
     },
+    confirm = {
+      select = true,
+      behavior = cmp.ConfirmBehavior.Replace,
+    },
     mapping = cmp.mapping.preset.insert({
       ["<C-b>"] = cmp.mapping.scroll_docs(-1),
       ["<C-f>"] = cmp.mapping.scroll_docs(1),
       ["<C-Space>"] = cmp.mapping.complete(),
       ["<C-e>"] = cmp.mapping.abort(),
-      ["<CR>"] = cmp.mapping.confirm({
-        select = true,
-        behavior = cmp.ConfirmBehavior.Replace,
-      }),
+      ["<CR>"] = cmp.mapping.confirm(),
     }),
     sources = cmp.config.sources({
       {
