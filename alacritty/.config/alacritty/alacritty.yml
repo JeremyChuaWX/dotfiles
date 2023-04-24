@@ -13,7 +13,7 @@ mouse:
 font:
   normal:
     family: JetBrainsMono Nerd Font Mono
-    style: Regular
+    style: Medium
 
   bold:
     family: JetBrainsMono Nerd Font Mono
