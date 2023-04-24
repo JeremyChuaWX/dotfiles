@@ -8,7 +8,7 @@ if [[ $OSTYPE = "darwin"* ]] then
 fi
 
 # fuzzy
-alias f="fuzzy_cd"
+alias f="fuzzy_open"
 
 # directories
 alias ll="ls -AlF --color=auto --group-directories-first"
