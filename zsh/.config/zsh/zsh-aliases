@@ -11,7 +11,7 @@ fi
 alias f="fuzzy_open"
 
 # directories
-alias ll="ls -AlF --color=auto --group-directories-first"
+alias ll="ls -AlF --color=auto --group-directories-first --human-readable"
 alias ..="cd .."
 alias tree="tree --dirsfirst"
 
