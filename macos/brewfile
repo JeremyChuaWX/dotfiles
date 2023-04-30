@@ -12,6 +12,7 @@ tap "microsoft/git"
 
 brew "coreutils"
 brew "fd"
+brew "gh"
 brew "lf"
 brew "ffmpeg"
 brew "fzf"
