@@ -3,5 +3,7 @@ dnf install lf -y
 
 sudo dnf install \
 gh fd-find fzf ffmpeg git neovim ripgrep stow tmux alacritty g++ \
-go cargo rust \
+go \
 -y --setopt=strict=0
+
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
