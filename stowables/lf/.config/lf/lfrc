@@ -22,5 +22,9 @@ cmd mkfile ${{
   touch prompt
 }}
 
+map m
+map d
+map f
+
 map md mkdir
 map mf mkfile
