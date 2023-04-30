@@ -1,4 +1,7 @@
 dnf copr enable pennbauman/ports -y
 dnf install lf -y
 
-sudo dnf install gh fd-find fzf ffmpeg git go neovim ripgrep stow tmux alacritty -y --setopt=strict=0
+sudo dnf install \
+gh fd-find fzf ffmpeg git neovim ripgrep stow tmux alacritty g++ \
+go cargo rust \
+-y --setopt=strict=0
