@@ -1,15 +1,15 @@
 [core]
-  editor = vim
+editor = nvim
 [user]
-  name = Jeremy Chua
-  email = chua.jeremy.wx@gmail.com
+name = Jeremy Chua
+email = chua.jeremy.wx@gmail.com
 [color]
-  ui = auto
+ui = auto
 [init]
-  defaultBranch = main
+defaultBranch = main
 [credential "https://github.com"]
-  helper =
-	helper = !gh auth git-credential
+helper =
+helper = !gh auth git-credential
 [credential "https://gist.github.com"]
-  helper =
-	helper = !gh auth git-credential
+helper =
+helper = !gh auth git-credential
