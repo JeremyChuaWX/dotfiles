@@ -17,7 +17,6 @@ M.config = function()
       actions.gitsigns,
       formatting.prettierd,
       formatting.rustywind,
-      formatting.google_java_format,
       formatting.rustfmt,
       formatting.gofumpt,
       formatting.stylua.with({
