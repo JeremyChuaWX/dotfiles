@@ -7,7 +7,7 @@ local M = {
       border = "solid",
       relative = "win",
       win_options = {
-        winblend = 100,
+        winblend = 0,
       },
     },
   },
