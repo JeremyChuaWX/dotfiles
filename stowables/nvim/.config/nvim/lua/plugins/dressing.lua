@@ -6,6 +6,9 @@ local M = {
       insert_only = false,
       border = "solid",
       relative = "win",
+      win_options = {
+        winblend = 100,
+      },
     },
   },
 }
