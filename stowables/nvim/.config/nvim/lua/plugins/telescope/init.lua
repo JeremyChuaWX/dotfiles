@@ -5,7 +5,6 @@ local M = {
   dependencies = {
     "DanielVolchek/tailiscope.nvim",
     { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-    "nvim-telescope/telescope-file-browser.nvim",
   },
 }
 
@@ -71,17 +70,10 @@ M.config = function()
         register = '"',
         default = "classes",
       },
-
-      file_browser = {
-        hijack_netrw = true,
-        grouped = true,
-        display_stat = false,
-      },
     },
   })
 
   telescope.load_extension("fzf")
-  telescope.load_extension("file_browser")
 end
 
 return M
