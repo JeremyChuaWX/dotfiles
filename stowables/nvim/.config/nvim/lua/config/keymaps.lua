@@ -21,8 +21,8 @@ set("n", "<C-k>", "<C-w>k")
 set("n", "<C-l>", "<C-w>l")
 
 -- buffer management
-set("n", "<s-tab>", ":bprevious<CR>")
-set("n", "<tab>", ":bnext<CR>")
+set("n", "H", ":bprevious<CR>")
+set("n", "L", ":bnext<CR>")
 
 -- faster scrolling
 set("n", "<C-e>", "3<C-e>")
