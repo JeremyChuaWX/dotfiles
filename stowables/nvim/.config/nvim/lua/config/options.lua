@@ -59,14 +59,14 @@ opt.visualbell = true
 opt.signcolumn = "yes"
 opt.shortmess:append("c")
 opt.fillchars:append({
-  eob = " ",
-  horiz = "━",
-  horizup = "┻",
-  horizdown = "┳",
-  vert = "┃",
-  vertleft = "┨",
-  vertright = "┣",
-  verthoriz = "╋",
+    eob = " ",
+    horiz = "━",
+    horizup = "┻",
+    horizdown = "┳",
+    vert = "┃",
+    vertleft = "┨",
+    vertright = "┣",
+    verthoriz = "╋",
 })
 
 ------------
@@ -93,8 +93,10 @@ opt.guicursor = ""
 -- folding --
 -------------
 
-opt.foldlevelstart = 99
+-- opt.foldlevelstart = 99
 -- opt.foldcolumn = "1"
+-- opt.foldmethod = "expr"
+-- opt.foldexpr = "nvim_treesitter#foldexpr()"
 -- vim.opt.fillchars:append("foldopen:,foldclose:,foldsep: ")
 
 ---------------------
