@@ -37,9 +37,6 @@ set({ "n", "x" }, "gY", '"*Y')
 set({ "n", "x" }, "gp", '"*p')
 set({ "n", "x" }, "gP", '"*P')
 
--- easy toggle fold
-set("n", "Z", "za")
-
 -- stay in indent mode
 set("v", "<", "<gv")
 set("v", ">", ">gv")
