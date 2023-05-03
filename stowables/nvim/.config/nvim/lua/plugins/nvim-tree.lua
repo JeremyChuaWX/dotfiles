@@ -4,9 +4,6 @@ local M = {
         { "<leader>e", "<cmd>NvimTreeToggle<CR>", desc = "nvim-tree" },
     },
     opts = {
-        view = {
-            width = 50,
-        },
         renderer = {
             add_trailing = true,
             icons = {
