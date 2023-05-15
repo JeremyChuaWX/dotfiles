@@ -1,10 +1,10 @@
 if [[ $OSTYPE = "darwin"* ]] then
-  # brew
-  alias brewu="brew update && brew upgrade"
-  alias brewc="brew cleanup && brew autoremove"
+    # brew
+    alias brewu="brew update && brew upgrade"
+    alias brewc="brew cleanup && brew autoremove"
 
-  # replace ls with gls
-  alias ls="gls"
+    # replace ls with gls
+    alias ls="gls"
 fi
 
 # fuzzy
@@ -61,4 +61,6 @@ alias examscreen="ffmpeg -f avfoundation -r 1 -probesize 40M -threads 1 -i "1:no
 alias fnme="eval '$(fnm env)'"
 
 # fedora remove old kernels
-alias cleankernels="sudo dnf remove $(dnf repoquery --installonly --latest-limit=-2 -q)"
+if [[ $OSTYPE = "linux"* ]] then
+    alias cleankernels="sudo dnf remove $(dnf repoquery --installonly --latest-limit=-2 -q)"
+fi
