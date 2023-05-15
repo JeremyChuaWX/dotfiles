@@ -56,7 +56,7 @@ opt.cmdheight = 1
 opt.laststatus = 3
 opt.showtabline = 0
 opt.visualbell = true
-opt.signcolumn = "yes"
+opt.signcolumn = "yes:2"
 opt.shortmess:append("c")
 opt.fillchars:append({
     eob = " ",
