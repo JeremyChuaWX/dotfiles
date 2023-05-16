@@ -1,10 +1,10 @@
 return {
-  settings = {
-    ["rust-analyzer"] = {
-      check = {
-        command = "clippy",
-        extraArgs = { "--", "-W", "clippy::all" },
-      },
+    settings = {
+        ["rust-analyzer"] = {
+            check = {
+                command = "clippy",
+                extraArgs = { "--", "-W", "clippy::all" },
+            },
+        },
     },
-  },
 }
