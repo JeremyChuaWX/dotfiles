@@ -1,7 +1,7 @@
 local M = {
-  "kylechui/nvim-surround",
-  event = "InsertEnter",
-  config = true,
+    "kylechui/nvim-surround",
+    event = "InsertEnter",
+    config = true,
 }
 
 return M
