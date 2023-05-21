@@ -1,9 +1,13 @@
 local M = {
     "shortcuts/no-neck-pain.nvim",
-    keys = {
-        { "<leader>np", "<cmd>NoNeckPain<CR>", desc = { "Toggle no neck pain" } },
-    },
     opts = {
+        autocmds = {
+            enableOnVimEnter = true,
+        },
+        mappings = {
+            enable = true,
+            scratchPad = false,
+        },
         buffers = {
             bo = {
                 modifiable = false,
