@@ -4,10 +4,6 @@ local M = {
         autocmds = {
             enableOnVimEnter = true,
         },
-        mappings = {
-            enable = true,
-            scratchPad = false,
-        },
         buffers = {
             bo = {
                 modifiable = false,
