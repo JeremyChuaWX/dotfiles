@@ -20,7 +20,7 @@ M.config = function()
 
     cmp.setup({
         confirmation = {
-            default_behavior = cmp.ConfirmBehavior.Replace,
+            default_behavior = "replace",
         },
         formatting = {
             format = lspkind.cmp_format({
