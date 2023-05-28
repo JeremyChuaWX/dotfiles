@@ -19,6 +19,9 @@ M.config = function()
     local lspkind = require("lspkind")
 
     cmp.setup({
+        confirmation = {
+            default_behavior = cmp.ConfirmBehavior.Replace,
+        },
         formatting = {
             format = lspkind.cmp_format({
                 mode = "symbol_text",
@@ -30,21 +33,21 @@ M.config = function()
                 },
             }),
         },
-        snippet = {
-            expand = function(args)
-                luasnip.lsp_expand(args.body)
-            end,
-        },
         mapping = cmp.mapping.preset.insert({
             ["<C-b>"] = cmp.mapping.scroll_docs(-1),
             ["<C-f>"] = cmp.mapping.scroll_docs(1),
             ["<C-y>"] = cmp.mapping.complete(),
             ["<C-e>"] = cmp.mapping.abort(),
-            ["<CR>"] = cmp.mapping.confirm({
-                select = true,
-                behavior = cmp.ConfirmBehavior.Replace,
-            }),
+            ["<CR>"] = cmp.mapping.confirm({ select = true }),
         }),
+        performance = {
+            max_view_entries = 50,
+        },
+        snippet = {
+            expand = function(args)
+                luasnip.lsp_expand(args.body)
+            end,
+        },
         sources = cmp.config.sources({
             {
                 name = "nvim_lsp",
