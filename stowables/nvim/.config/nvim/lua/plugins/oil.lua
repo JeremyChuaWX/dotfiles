@@ -9,7 +9,11 @@ local M = {
             desc = "oil: open parent directory",
         },
     },
-    config = true,
+    opts = {
+        view_options = {
+            show_hidden = true,
+        },
+    },
 }
 
 return M
