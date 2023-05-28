@@ -4,6 +4,7 @@ local M = {
         { "<leader>np", "<cmd>NoNeckPain<CR>", desc = "toggle noneckpain" },
     },
     opts = {
+        width = 120,
         buffers = {
             bo = {
                 modifiable = false,
