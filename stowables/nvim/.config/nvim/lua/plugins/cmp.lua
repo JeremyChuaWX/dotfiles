@@ -1,6 +1,5 @@
 local M = {
     "hrsh7th/nvim-cmp",
-    commit = "a022504",
     event = { "InsertEnter", "CmdlineEnter" },
     dependencies = {
         "tzachar/fuzzy.nvim",
