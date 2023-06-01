@@ -49,10 +49,11 @@ alias gp="git push"
 alias gpr="git remote prune origin"
 alias gu="gpr && git pull"
 alias gl="git log --graph --oneline --decorate --all"
-alias gb="git branch "
+alias gb="git branch -va"
 alias gbc="git checkout -b "
 alias gbd="git branch -D "
 alias gd="git diff -w"
+alias gf="git fetch --all"
 
 # ffmpeg
 alias examscreen="ffmpeg -f avfoundation -r 1 -probesize 40M -threads 1 -i "1:none" -vcodec libx264 -b:v 128k -s hd720 /Users/jeremy/Desktop/recording.mp4"
