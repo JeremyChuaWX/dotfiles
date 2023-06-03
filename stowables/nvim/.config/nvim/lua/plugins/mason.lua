@@ -11,7 +11,6 @@ local mason_lspconfig = {
             "tsserver",
             "jsonls",
             "tailwindcss",
-            "prismals",
             "rust_analyzer",
         },
     },
