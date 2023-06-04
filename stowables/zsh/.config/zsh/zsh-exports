@@ -1,8 +1,8 @@
 # paths
 if [[ "$OSTYPE" == "darwin"* ]] then
-  eval "$(/opt/homebrew/bin/brew shellenv)" # homebrew
-  export PATH="/opt/homebrew/anaconda3/bin:$PATH" # anaconda
-  export FPATH="$FPATH:/opt/homebrew/share/zsh/site-functions" # homebrew zsh completions
+    eval "$(/opt/homebrew/bin/brew shellenv)" # homebrew
+    export PATH="/opt/homebrew/anaconda3/bin:$PATH" # anaconda
+    export FPATH="$FPATH:/opt/homebrew/share/zsh/site-functions" # homebrew zsh completions
 fi
 
 export PATH="$HOME/.cargo/bin:$PATH" # rust
@@ -21,4 +21,4 @@ export HISTFILE=$ZDOTDIR/.zsh_history
 export EDITOR=nvim
 
 # fzf default options
-export FZF_DEFAULT_OPTS="--reverse --height 40% --border=none --scroll-off=5 --info=hidden --cycle --bind=tab:toggle,btab:toggle"
+export FZF_DEFAULT_OPTS="--reverse --height 40% --border=none --scroll-off=5 --info=hidden --cycle --bind=tab:toggle,btab:toggle,ctrl-e:preview-page-down,ctrl-y:preview-page-up --preview='bat --style numbers,changes --color=always {} | head -500' --preview-window=right:70%"
