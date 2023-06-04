@@ -31,8 +31,8 @@ M.config = function()
                     ["<esc>"] = "close",
                     ["<Tab>"] = "move_selection_next",
                     ["<S-Tab>"] = "move_selection_previous",
-                    ["<C-e>"] = "preview_scrolling_down",
-                    ["<C-y>"] = "preview_scrolling_up",
+                    ["<C-f>"] = "preview_scrolling_down",
+                    ["<C-b>"] = "preview_scrolling_up",
                 },
                 n = {
                     ["<esc>"] = "close",

@@ -21,4 +21,12 @@ export HISTFILE=$ZDOTDIR/.zsh_history
 export EDITOR=nvim
 
 # fzf default options
-export FZF_DEFAULT_OPTS="--reverse --height 40% --border=none --scroll-off=5 --info=hidden --cycle --bind=tab:toggle,btab:toggle,ctrl-e:preview-page-down,ctrl-y:preview-page-up --preview='bat --style numbers,changes --color=always {} | head -500' --preview-window=right:70%"
+export FZF_DEFAULT_OPTS="
+--reverse
+--height 40%
+--border=none
+--scroll-off=5
+--info=hidden
+--cycle
+--bind=tab:toggle,btab:toggle,ctrl-f:preview-page-down,ctrl-b:preview-page-up
+--preview='bat --style numbers,changes --color=always {} | head -500' --preview-window=right:70%:wrap"
