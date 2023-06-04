@@ -1,80 +1,80 @@
 function zsh_add_file() {
-  [ -f "$ZDOTDIR/$1" ] && source "$ZDOTDIR/$1"
+    [ -f "$ZDOTDIR/$1" ] && source "$ZDOTDIR/$1"
 }
 
 function zsh_add_plugin() {
-  PLUGIN_NAME=$(echo $1 | cut -d "/" -f 2)
-  if [ -d "$ZDOTDIR/plugins/$PLUGIN_NAME" ]; then
-    # For plugins
-    zsh_add_file "plugins/$PLUGIN_NAME/$PLUGIN_NAME.plugin.zsh" || \
-      zsh_add_file "plugins/$PLUGIN_NAME/$PLUGIN_NAME.zsh"
-  else
-    git clone "https://github.com/$1.git" "$ZDOTDIR/plugins/$PLUGIN_NAME"
-  fi
+    PLUGIN_NAME=$(echo $1 | cut -d "/" -f 2)
+    if [ -d "$ZDOTDIR/plugins/$PLUGIN_NAME" ]; then
+        # For plugins
+        zsh_add_file "plugins/$PLUGIN_NAME/$PLUGIN_NAME.plugin.zsh" || \
+            zsh_add_file "plugins/$PLUGIN_NAME/$PLUGIN_NAME.zsh"
+    else
+        git clone "https://github.com/$1.git" "$ZDOTDIR/plugins/$PLUGIN_NAME"
+    fi
 }
 
 function zsh_add_completion() {
-  PLUGIN_NAME=$(echo $1 | cut -d "/" -f 2)
-  if [ -d "$ZDOTDIR/plugins/$PLUGIN_NAME" ]; then
-    # For completions
-    completion_file_path=$(ls $ZDOTDIR/plugins/$PLUGIN_NAME/_*)
-    fpath+="$(dirname "${completion_file_path}")"
-    zsh_add_file "plugins/$PLUGIN_NAME/$PLUGIN_NAME.plugin.zsh"
-  else
-    git clone "https://github.com/$1.git" "$ZDOTDIR/plugins/$PLUGIN_NAME"
-    fpath+=$(ls $ZDOTDIR/plugins/$PLUGIN_NAME/_*)
-    [ -f $ZDOTDIR/.zccompdump ] && $ZDOTDIR/zccompdump
-  fi
-  completion_file="$(basename "${completion_file_path}")"
-  if [ "$2" = true ] && compinit "${completion_file:1}"
+    PLUGIN_NAME=$(echo $1 | cut -d "/" -f 2)
+    if [ -d "$ZDOTDIR/plugins/$PLUGIN_NAME" ]; then
+        # For completions
+        completion_file_path=$(ls $ZDOTDIR/plugins/$PLUGIN_NAME/_*)
+        fpath+="$(dirname "${completion_file_path}")"
+        zsh_add_file "plugins/$PLUGIN_NAME/$PLUGIN_NAME.plugin.zsh"
+    else
+        git clone "https://github.com/$1.git" "$ZDOTDIR/plugins/$PLUGIN_NAME"
+        fpath+=$(ls $ZDOTDIR/plugins/$PLUGIN_NAME/_*)
+        [ -f $ZDOTDIR/.zccompdump ] && $ZDOTDIR/zccompdump
+    fi
+    completion_file="$(basename "${completion_file_path}")"
+    if [ "$2" = true ] && compinit "${completion_file:1}"
 }
 
 function mkcd() {
-  mkdir -p "$1" && cd "$1"
+    mkdir -p "$1" && cd "$1"
 }
 
 function fuzzy_open() {
-  if [ $1 ]; then
-    dir=$(fd --hidden --exclude .git --print0 | fzf --read0 --print0 --exit-0 --query $1)
-  else
-    dir=$(fd --hidden --exclude .git --print0 | fzf --read0 --print0 --exit-0)
-  fi
+    if [ $1 ]; then
+        dir=$(fd --hidden --exclude .git --print0 | fzf --read0 --print0 --exit-0 --query $1)
+    else
+        dir=$(fd --hidden --exclude .git --print0 | fzf --read0 --print0 --exit-0)
+    fi
 
-  if [ -d $dir ]; then
-    dir=$(echo $dir | sed 's/.$//')
-    cd "$dir"
-  else
-    $EDITOR $dir
-  fi
+    if [ -d $dir ]; then
+        dir=$(echo $dir | sed 's/.$//')
+        cd "$dir"
+    else
+        $EDITOR $dir
+    fi
 }
 
 function fuzzy_tmux_kill() {
-  if [ $1 ]; then
-    tmux kill-session -t $1
-    return
-  fi
-  STR=$(tmux list-sessions -F \#S 2>/dev/null | fzf --exit-0)
-  [[ $STR ]] && tmux kill-session -t $STR
+    if [ $1 ]; then
+        tmux kill-session -t $1
+        return
+    fi
+    STR=$(tmux list-sessions -F \#S 2>/dev/null | fzf --exit-0)
+    [[ $STR ]] && tmux kill-session -t $STR
 }
 
 function fuzzy_tmux_session() {
-  [[ -n "$TMUX" ]] && change="switch-client" || change="attach-session"
-  if [ $1 ]; then
-    tmux $change -t "$1" 2>/dev/null || (tmux new-session -d -s $1 && tmux $change -t "$1")
-    return
-  fi
-  session=$(tmux list-sessions -F \#S 2>/dev/null | fzf --select-1 --exit-0) && tmux $change -t "$session" || echo "No sessions found"
+    [[ -n "$TMUX" ]] && change="switch-client" || change="attach-session"
+    if [ $1 ]; then
+        tmux $change -t "$1" 2>/dev/null || (tmux new-session -d -s $1 && tmux $change -t "$1")
+        return
+    fi
+    session=$(tmux list-sessions -F \#S 2>/dev/null | fzf --select-1 --exit-0) && tmux $change -t "$session" || echo "No sessions found"
 }
 
 function tmux_new_session() {
-  name=$(pwd | rev | cut -d '/' -f1 | rev)
-  tmux new-session -s $name || tmux attach-session -t $name
+    name=$(pwd | rev | cut -d '/' -f1 | rev)
+    tmux new-session -s $name || tmux attach-session -t $name
 }
 
 function git_commit() {
-  if [ $1 ]; then
-    git commit -m $1
-    return
-  fi
-  git commit -v
+    if [ $1 ]; then
+        git commit -m $1
+        return
+    fi
+    git commit -v
 }
