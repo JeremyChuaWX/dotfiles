@@ -15,8 +15,6 @@ alias ll="ls -AlF --color=auto --group-directories-first --human-readable"
 alias ..="cd .."
 alias tree="tree --dirsfirst"
 
-alias 2040="cd ~/Documents/School/labs/"
-
 # file manipulation
 alias rm="rm -v"
 alias mv="mv -v"
