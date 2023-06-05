@@ -20,6 +20,8 @@ mason_lspconfig.setup_handlers({
 
     ["jdtls"] = function() end,
 
+    ["denols"] = function() end,
+
     ["tsserver"] = function()
         local opts = get_server_opts("tsserver")
 

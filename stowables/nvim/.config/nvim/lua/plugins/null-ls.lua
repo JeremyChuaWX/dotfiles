@@ -15,10 +15,12 @@ M.config = function()
         on_attach = require("lsp.server-config").on_attach,
         sources = {
             actions.gitsigns,
-            formatting.prettierd,
             formatting.rustywind,
             formatting.rustfmt,
             formatting.gofumpt,
+            formatting.deno_fmt.with({
+                extra_args = { "--indent-width", "4" },
+            }),
             formatting.stylua.with({
                 extra_args = {
                     "--indent-type",
@@ -28,10 +30,7 @@ M.config = function()
                 },
             }),
             formatting.beautysh.with({
-                extra_args = {
-                    "--indent-size",
-                    "4",
-                },
+                extra_args = { "--indent-size", "4" },
             }),
             diagnostics.actionlint,
             diagnostics.markdownlint,

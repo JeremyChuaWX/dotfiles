@@ -12,6 +12,7 @@ local mason_lspconfig = {
             "jsonls",
             "tailwindcss",
             "rust_analyzer",
+            "denols",
         },
     },
 }
@@ -20,7 +21,6 @@ local mason_tools = {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     opts = {
         ensure_installed = {
-            "prettierd",
             "stylua",
             "actionlint",
             "markdownlint",
