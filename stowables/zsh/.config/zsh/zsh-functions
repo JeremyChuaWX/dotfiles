@@ -78,3 +78,11 @@ function git_commit() {
     fi
     git commit -v
 }
+
+function fuzzy_git_checkout() {
+    if [ $1 ]; then
+        git branch --all | grep -v '^[*+]' | awk '{print $1}' | sed 's/remotes\///g' | fzf --print0 --exit-0 --preview='git log --graph --oneline --decorate --all --color=always' --query $1 | xargs -0 git checkout
+        return
+    fi
+    git branch --all | grep -v '^[*+]' | awk '{print $1}' | sed 's/remotes\///g' | fzf --print0 --exit-0 --preview='git log --graph --oneline --decorate --all --color=always' | xargs -0 git checkout
+}

@@ -39,7 +39,7 @@ alias tl="tmux ls"
 
 # git
 alias gc="git_commit"
-alias gco="git branch --all | grep -v '^[*+]' | awk '{print \$1}' | sed 's/remotes\///g' | fzf --print0 --exit-0 --preview='git log --graph --oneline --decorate --all --color=always' | xargs -0 git checkout"
+alias gco="fuzzy_git_checkout"
 alias ga="git ls-files -m -o --exclude-standard | fzf -m --print0 --exit-0 --preview='git diff -w --color=always {}' | xargs -0 git add"
 alias gall="git add --all"
 alias gs="git status -sbu"
