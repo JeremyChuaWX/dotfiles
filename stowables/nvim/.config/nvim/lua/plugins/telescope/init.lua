@@ -28,16 +28,24 @@ M.config = function()
 
             mappings = {
                 i = {
-                    ["<esc>"] = "close",
-                    ["<Tab>"] = "move_selection_next",
-                    ["<S-Tab>"] = "move_selection_previous",
+                    ["<C-c>"] = "close",
+                    ["<Tab>"] = "toggle_selection",
+                    ["<C-j>"] = "move_selection_next",
+                    ["<C-k>"] = "move_selection_previous",
                     ["<C-f>"] = "preview_scrolling_down",
                     ["<C-b>"] = "preview_scrolling_up",
+                    ["<C-e>"] = "results_scrolling_down",
+                    ["<C-y>"] = "results_scrolling_up",
                 },
                 n = {
-                    ["<esc>"] = "close",
-                    ["<Tab>"] = "move_selection_next",
-                    ["<S-Tab>"] = "move_selection_previous",
+                    ["<C-c>"] = "close",
+                    ["<Tab>"] = "toggle_selection",
+                    ["<C-j>"] = "move_selection_next",
+                    ["<C-k>"] = "move_selection_previous",
+                    ["<C-f>"] = "preview_scrolling_down",
+                    ["<C-b>"] = "preview_scrolling_up",
+                    ["<C-e>"] = "results_scrolling_down",
+                    ["<C-y>"] = "results_scrolling_up",
                 },
             },
 
