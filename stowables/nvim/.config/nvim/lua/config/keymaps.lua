@@ -43,3 +43,7 @@ set("v", ">", ">gv")
 
 -- no highlight
 set("n", "<space><space>", ":noh<CR>")
+
+-- quickfix list
+set("n", "<space>co", "<cmd>copen<CR>")
+set("n", "<space>cc", "<cmd>cclose<CR>")
