@@ -88,6 +88,7 @@ opt.cursorline = true
 opt.scrolloff = 10
 opt.sidescrolloff = 10
 opt.guicursor = ""
+opt.colorcolumn = "80"
 
 -------------
 -- folding --
