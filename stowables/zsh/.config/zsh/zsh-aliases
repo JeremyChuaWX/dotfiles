@@ -63,3 +63,7 @@ alias fnme="eval '$(fnm env)'"
 if [[ $OSTYPE = "linux"* ]] then
     alias cleankernels="sudo dnf remove $(dnf repoquery --installonly --latest-limit=-2 -q)"
 fi
+
+# docker commands
+alias dup="docker compose up --build"
+alias ddo="docker compose down --remove-orphans --volumes"
