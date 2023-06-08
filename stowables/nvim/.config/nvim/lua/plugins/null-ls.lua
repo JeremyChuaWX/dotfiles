@@ -15,9 +15,6 @@ M.config = function()
         on_attach = require("lsp.server-config").on_attach,
         sources = {
             actions.gitsigns,
-            actions.eslint.with({
-                prefer_local = "node_modules/.bin",
-            }),
 
             formatting.rustywind,
             formatting.rustfmt,
@@ -39,12 +36,6 @@ M.config = function()
 
             diagnostics.actionlint,
             diagnostics.markdownlint,
-            diagnostics.eslint.with({
-                prefer_local = "node_modules/.bin",
-                filter = function(diagnostic)
-                    return diagnostic.code ~= "prettier/prettier"
-                end,
-            }),
         },
     })
 end
