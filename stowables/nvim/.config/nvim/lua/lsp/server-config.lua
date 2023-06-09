@@ -23,7 +23,9 @@ local function lsp_keymaps(bufnr)
     end
 
     if vim.fn.exists(":Telescope") then
-        set("n", "gr", "<cmd>Telescope lsp_references<CR>")
+        set("n", "gr", function()
+            require("telescope.builtin").lsp_references()
+        end)
 
         set("n", "gd", function()
             require("telescope.builtin").lsp_definitions({
@@ -31,16 +33,16 @@ local function lsp_keymaps(bufnr)
             })
         end)
     else
-        set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
-        set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
+        set("n", "gr", vim.lsp.buf.references)
+        set("n", "gd", vim.lsp.buf.definition)
     end
 
-    set("n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>")
-    set("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>")
-    set("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>")
-    set("n", "ga", "<cmd>lua vim.lsp.buf.code_action()<CR>")
-    set("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
-    set("n", "gR", "<cmd>lua vim.lsp.buf.rename()<CR>")
+    set("n", "gl", vim.diagnostic.open_float)
+    set("n", "]d", vim.diagnostic.goto_next)
+    set("n", "[d", vim.diagnostic.goto_prev)
+    set("n", "ga", vim.lsp.buf.code_action)
+    set("n", "K", vim.lsp.buf.hover)
+    set("n", "gR", vim.lsp.buf.rename)
 
     set("n", "gf", function()
         format_buf(bufnr)
@@ -49,6 +51,10 @@ end
 
 M.on_attach = function(client, bufnr)
     lsp_keymaps(bufnr)
+
+    vim.api.nvim_create_user_command("Format", function()
+        vim.lsp.buf.format({ bufnr = bufnr })
+    end, {})
 end
 
 M.capabilities = require("cmp_nvim_lsp").default_capabilities()
