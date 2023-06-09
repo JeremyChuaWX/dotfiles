@@ -3,7 +3,7 @@ return {
     {
         "tf",
         function()
-            require("telescope.builtin").find_files()
+            require("telescope.builtin").find_files({ hidden = true })
         end,
         desc = "telescope find files",
     },
