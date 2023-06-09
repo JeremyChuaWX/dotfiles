@@ -40,7 +40,7 @@ alias tl="tmux ls"
 # git
 alias gc="git_commit"
 alias gco="fuzzy_git_checkout"
-alias ga="git ls-files -m -o --exclude-standard | fzf -m --print0 --exit-0 --preview='git diff -w --color=always {}' | xargs -r0 git add"
+alias ga="fuzzy_git_add"
 alias gall="git add --all"
 alias gs="git status -sbu"
 alias gp="git push"
@@ -50,7 +50,7 @@ alias gl="git log --graph --oneline --decorate --all"
 alias gb="git branch -va"
 alias gbc="git checkout -b "
 alias gbd="git branch -D "
-alias gd="git ls-files -m -o --exclude-standard | fzf -m --print0 --exit-0 --preview='git diff -w --color=always {}' | xargs -r0 git diff -w --color=always"
+alias gd="fuzzy_git_diff"
 alias gf="git fetch --all"
 
 # ffmpeg
