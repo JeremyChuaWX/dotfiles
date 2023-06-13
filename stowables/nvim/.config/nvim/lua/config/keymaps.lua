@@ -47,3 +47,11 @@ set("n", "<space><space>", ":noh<CR>")
 -- quickfix list
 set("n", "<space>co", "<cmd>copen<CR>")
 set("n", "<space>cc", "<cmd>cclose<CR>")
+
+-- move lines
+set("n", "<A-j>", ":m .+1<CR>==")
+set("n", "<A-k>", ":m .-2<CR>==")
+set("i", "<A-j>", "<ESC>:m .+1<CR>==gi")
+set("i", "<A-k>", "<ESC>:m .-2<CR>==gi")
+set("v", "<A-j>", ":m '>.+1<CR>gv==gv")
+set("v", "<A-k>", ":m '<.-2<CR>gv==gv")

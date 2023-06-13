@@ -44,11 +44,11 @@ local M = {
             end, { desc = "gitsigns prev hunk", expr = true })
 
             -- Actions
-            map("n", "gip", gs.preview_hunk, { desc = "gitsigns preview hunk" })
-            map("n", "gis", gs.stage_hunk, { desc = "gitsigns stage hunk" })
-            map("n", "giS", gs.stage_buffer, { desc = "gitsigns stage buffer" })
-            map("n", "gir", gs.reset_hunk, { desc = "gitsigns reset hunk" })
-            map("n", "giR", gs.reset_buffer, { desc = "gitsigns reset buffer" })
+            map("n", "gsp", gs.preview_hunk, { desc = "gitsigns preview hunk" })
+            map("n", "gss", gs.stage_hunk, { desc = "gitsigns stage hunk" })
+            map("n", "gsS", gs.stage_buffer, { desc = "gitsigns stage buffer" })
+            map("n", "gsr", gs.reset_hunk, { desc = "gitsigns reset hunk" })
+            map("n", "gsR", gs.reset_buffer, { desc = "gitsigns reset buffer" })
         end,
     },
 }
