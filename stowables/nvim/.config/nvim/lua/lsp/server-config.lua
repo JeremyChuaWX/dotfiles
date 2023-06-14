@@ -8,8 +8,10 @@ local function format_buf(bufnr)
         bufnr = bufnr,
         filter = function(client)
             if have_nls then
+                print("null-ls formatted")
                 return client.name == "null-ls"
             end
+            print("lsp formatted")
             return client.name ~= "null-ls"
         end,
     })
