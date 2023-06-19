@@ -98,20 +98,20 @@ function fuzzy_git_checkout() {
 }
 
 function fuzzy_git_add() {
-    if [ $@ ]; then
-        git add $@
-        return
-    fi
+    # if [ $@ ]; then
+    #     git add $@
+    #     return
+    # fi
     git ls-files -m -o --exclude-standard |
     fzf -m --print0 --exit-0 --preview='git diff -w --color=always {}' |
     xargs -r0 git add
 }
 
 function fuzzy_git_diff() {
-    if [ $@ ]; then
-        git diff -w --color=always $@
-        return
-    fi
+    # if [ $@ ]; then
+    #     git diff -w --color=always $@
+    #     return
+    # fi
     git ls-files -m -o --exclude-standard |
     fzf -m --print0 --exit-0 --preview='git diff -w --color=always {}' |
     xargs -r0 git diff -w --color=always
