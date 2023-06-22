@@ -25,11 +25,9 @@ mason_lspconfig.setup_handlers({
     ["tsserver"] = function()
         local opts = get_server_opts("tsserver")
 
-        local typescript_ok, typescript = pcall(require, "typescript")
-        if typescript_ok then
-            typescript.setup({
-                server = opts,
-            })
+        local ts_tools_ok, ts_tools = pcall(require, "typescript-tools")
+        if ts_tools_ok then
+            ts_tools.setup(opts)
         end
     end,
 
