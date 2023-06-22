@@ -55,6 +55,7 @@ M.on_attach = function(client, bufnr)
     lsp_keymaps(bufnr)
 
     vim.api.nvim_create_user_command("Format", function()
+        print("lsp formatted")
         vim.lsp.buf.format({ bufnr = bufnr })
     end, {})
 end
