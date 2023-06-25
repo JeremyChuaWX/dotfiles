@@ -13,6 +13,7 @@ local mason_lspconfig = {
             "tailwindcss",
             "rust_analyzer",
             "denols",
+            "gopls",
         },
     },
 }
@@ -27,6 +28,7 @@ local mason_tools = {
             "beautysh",
             "rustfmt",
             "rustywind",
+            "gofumpt",
         },
     },
 }
