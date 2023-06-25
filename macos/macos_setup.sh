@@ -3,6 +3,9 @@
 echo "Installing homebrew"
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
+echo "Add homebrew to path"
+export PATH=/opt/homebrew/bin:$PATH
+
 echo "Installing brew bundle"
 brew bundle --file="./brewfile"
 
