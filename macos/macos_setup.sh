@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 
 echo "Installing homebrew"
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -13,7 +13,7 @@ echo "Logging in with github"
 gh auth login
 
 echo "Installing npm packages"
-zsh npmfile
+./npmfile
 
 echo "Stowing configs"
 cd $HOME/.dotfiles/stowables
@@ -22,3 +22,8 @@ cd $HOME/.dotfiles/macos
 
 echo "Applying OSX settings"
 zsh osx_settings
+
+echo "Install tmux terminfo"
+cd $HOME
+curl -LO https://invisible-island.net/datafiles/current/terminfo.src.gz && gunzip terminfo.src.gz
+/usr/bin/tic -xe tmux-256color terminfo.src
