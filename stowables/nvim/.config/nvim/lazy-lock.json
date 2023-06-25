@@ -30,7 +30,7 @@
   "nvim-jdtls": { "branch": "master", "commit": "c6a3c47a0c57c6c0c9b5fb92d3770bb59e92d9c6" },
   "nvim-lspconfig": { "branch": "master", "commit": "b6b34b9acf84949f0ac1c00747765e62b81fb38d" },
   "nvim-surround": { "branch": "main", "commit": "10b20ca7d9da1ac8df8339e140ffef94f9ab3b18" },
-  "nvim-treesitter": { "branch": "master", "commit": "13c72dddb761e799800494ad682eea128359769a" },
+  "nvim-treesitter": { "branch": "master", "commit": "20a6c66b769d09491247d760967bb4ef2fcf3e0d" },
   "nvim-ts-autotag": { "branch": "main", "commit": "6be1192965df35f94b8ea6d323354f7dc7a557e4" },
   "nvim-ts-context-commentstring": { "branch": "main", "commit": "7f625207f225eea97ef7a6abe7611e556c396d2f" },
   "nvim-web-devicons": { "branch": "master", "commit": "9ab9b0b894b2388a9dbcdee5f00ce72e25d85bf9" },
