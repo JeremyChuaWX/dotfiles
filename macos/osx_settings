@@ -140,8 +140,11 @@ defaults write com.apple.finder _FXSortFoldersFirst -bool true
 # Only pinned in dock
 defaults write com.apple.dock static-only -bool true
 
+# Trackpad scaling
+defaults write -g com.apple.trackpad.scaling -float 1.5
+
 # Restart affected apps
 for app in "cfprefsd" "Dock" "Finder" "Mail" "SystemUIServer"; do
-  echo "Restarting ${app}..."
-  killall "${app}" > /dev/null 2>&1
+    echo "Restarting ${app}..."
+    killall "${app}" > /dev/null 2>&1
 done
