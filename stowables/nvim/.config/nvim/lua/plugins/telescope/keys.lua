@@ -1,42 +1,46 @@
 return {
-    { "tt", ":Telescope<CR>", desc = "telescope main menu" },
     {
-        "tf",
+        "<leader>tt",
+        ":Telescope<CR>",
+        desc = "telescope main menu",
+    },
+    {
+        "<leader>tf",
         function()
             require("telescope.builtin").find_files({ hidden = true })
         end,
         desc = "telescope find files",
     },
     {
-        "tF",
+        "<leader>tF",
         function()
             require("telescope.builtin").git_files()
         end,
         desc = "telescope find in git files",
     },
     {
-        "tg",
+        "<leader>tg",
         function()
             require("telescope.builtin").live_grep()
         end,
         desc = "telescope live grep",
     },
     {
-        "th",
+        "<leader>th",
         function()
             require("telescope.builtin").help_tags()
         end,
         desc = "telescope help tags",
     },
     {
-        "tb",
+        "<leader>tb",
         function()
             require("telescope.builtin").buffers()
         end,
         desc = "telescope buffers",
     },
     {
-        "td",
+        "<leader>td",
         function()
             require("telescope.builtin").diagnostics()
         end,
