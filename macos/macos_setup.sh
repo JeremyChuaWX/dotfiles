@@ -1,5 +1,8 @@
 #!/bin/sh
 
+echo "Applying OSX settings"
+zsh osx_settings
+
 echo "Installing homebrew"
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
@@ -15,13 +18,12 @@ gh auth login
 echo "Installing npm packages"
 ./npmfile
 
+echo "Install JetBrains Font"
+cp $HOME/.dotfiles/stowables/fonts/* $HOME/Library/Fonts
+
 echo "Stowing configs"
 cd $HOME/.dotfiles/stowables
 stow -vR */ -t ~
-cd $HOME/.dotfiles/macos
-
-echo "Applying OSX settings"
-zsh osx_settings
 
 echo "Install tmux terminfo"
 cd $HOME
