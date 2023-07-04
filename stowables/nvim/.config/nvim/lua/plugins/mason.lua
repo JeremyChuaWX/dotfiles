@@ -26,7 +26,6 @@ local mason_tools = {
             "actionlint",
             "markdownlint",
             "beautysh",
-            "rustfmt",
             "rustywind",
             "gofumpt",
         },
