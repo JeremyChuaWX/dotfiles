@@ -19,8 +19,11 @@ M.config = function()
             formatting.rustywind,
             formatting.rustfmt,
             formatting.gofumpt,
-            formatting.deno_fmt.with({
-                extra_args = { "--indent-width", "4" },
+            formatting.prettier.with({
+                extra_args = {
+                    "--tab-width",
+                    "4",
+                },
             }),
             formatting.stylua.with({
                 extra_args = {
