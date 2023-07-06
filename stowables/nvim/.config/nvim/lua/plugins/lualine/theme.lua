@@ -3,7 +3,7 @@ local M = {
     theme = nil,
 }
 
-M.get_color = function(highlight_group, component)
+local get_color = function(highlight_group, component)
     local color = vim.api.nvim_get_hl(0, { name = highlight_group })[component] or nil
 
     if color then
@@ -15,9 +15,9 @@ end
 
 M.setup = function()
     local colors = {
-        bg = M.get_color("Normal", "bg"),
-        bg_light = M.get_color("CursorLine", "bg"),
-        fg = M.get_color("Normal", "fg"),
+        bg = get_color("Normal", "bg"),
+        bg_light = get_color("CursorLine", "bg"),
+        fg = get_color("Normal", "fg"),
         green = "#009900",
         orange = "#ff9900",
         red = "#e63900",
