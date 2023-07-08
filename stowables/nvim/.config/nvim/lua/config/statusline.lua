@@ -3,7 +3,7 @@ local function git_branch()
     if string.len(branch) > 0 then
         return branch
     else
-        return ":"
+        return ""
     end
 end
 
