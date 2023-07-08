@@ -22,10 +22,17 @@ export EDITOR=nvim
 # fzf default options
 export FZF_DEFAULT_OPTS="
 --reverse
---height 70%
+--height=70%
 --border=none
 --scroll-off=5
 --info=hidden
 --cycle
---bind=tab:toggle,btab:toggle,ctrl-f:preview-page-down,ctrl-b:preview-page-up
---preview='bat --style numbers,changes --color=always {} | head -500' --preview-window=right:70%:wrap"
+--bind='ctrl-e:preview-down'
+--bind='ctrl-y:preview-up'
+--bind='ctrl-f:preview-page-down'
+--bind='ctrl-b:preview-page-up'
+--bind='ctrl-p:change-preview-window(top,90%,wrap|40%,nowrap)'
+--bind='ctrl-a:toggle-all'
+--preview='bat --style numbers,changes --color=always {} | head -500'
+--preview-window='40%'
+"
