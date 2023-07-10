@@ -112,7 +112,7 @@ function fuzzy_git_diff() {
         git diff $*
     else
         git ls-files -m -o --exclude-standard |
-        fzf -m --print0 --exit-0 --preview='git diff -w --color=always {}' |
+        fzf -m --print0 --exit-0 --preview='git diff -w --color=always {}' --bind='ctrl-o:become($EDITOR {} < /dev/tty > /dev/tty)' |
         xargs -r0 git diff -w --color=always
     fi
 }
