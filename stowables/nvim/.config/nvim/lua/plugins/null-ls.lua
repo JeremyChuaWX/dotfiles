@@ -20,6 +20,7 @@ M.config = function()
             formatting.rustfmt,
             formatting.gofumpt,
             formatting.prettier.with({
+                prefer_local = "node_modules/.bin",
                 extra_args = {
                     "--tab-width",
                     "4",
