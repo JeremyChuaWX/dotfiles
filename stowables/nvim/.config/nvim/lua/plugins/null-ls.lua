@@ -21,10 +21,8 @@ M.config = function()
             formatting.gofumpt,
             formatting.prettier.with({
                 prefer_local = "node_modules/.bin",
-                extra_args = {
-                    "--tab-width",
-                    "4",
-                },
+                extra_filetypes = { "toml", "svelte" },
+                extra_args = { "--tab-width", "4" },
             }),
             formatting.stylua.with({
                 extra_args = {
