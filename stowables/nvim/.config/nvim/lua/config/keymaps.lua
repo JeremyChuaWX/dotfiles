@@ -55,3 +55,13 @@ set("i", "<A-j>", "<ESC>:m .+1<CR>gi")
 set("i", "<A-k>", "<ESC>:m .-2<CR>gi")
 set("v", "<A-j>", ":m '>+1<CR>gv")
 set("v", "<A-k>", ":m '<-2<CR>gv")
+
+-- shift to middle on down and up
+set("n", "<C-d>", "<C-d>zz")
+set("n", "<C-u>", "<C-u>zz")
+set("n", "<C-b>", "<C-b>zz")
+set("n", "<C-f>", "<C-f>zz")
+
+-- shift to middle on next search entry
+set("n", "n", "nzz")
+set("n", "N", "Nzz")
