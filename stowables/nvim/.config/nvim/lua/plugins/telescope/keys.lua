@@ -21,6 +21,13 @@ return {
     {
         "<leader>tg",
         function()
+            require("telescope.builtin").git_status()
+        end,
+        desc = "telescope git status",
+    },
+    {
+        "<leader>ts",
+        function()
             require("telescope.builtin").live_grep()
         end,
         desc = "telescope live grep",
