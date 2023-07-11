@@ -38,6 +38,11 @@ mason_lspconfig.setup_handlers({
         if rust_tools_ok then
             rust_tools.setup({
                 server = opts,
+                tools = {
+                    inlay_hints = {
+                        max_len_align = true,
+                    },
+                },
             })
         end
     end,
