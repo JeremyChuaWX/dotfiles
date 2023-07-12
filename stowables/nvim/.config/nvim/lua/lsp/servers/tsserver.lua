@@ -1,8 +1,14 @@
 return {
     settings = {
-        tsserver_file_preferences = {
-            includeInlayParameterNameHints = "all",
-            includeCompletionsForModuleExports = true,
+        javascript = {
+            preferences = {
+                useAliasesForRenames = false,
+            },
+        },
+        typescript = {
+            preferences = {
+                useAliasesForRenames = false,
+            },
         },
     },
 }
