@@ -21,38 +21,38 @@ local M = {
             function()
                 require("harpoon.ui").nav_next()
             end,
-            desc = "harpoon toggle menu",
+            desc = "harpoon next",
         },
         {
             "<leader>hk",
             function()
                 require("harpoon.ui").nav_prev()
             end,
-            desc = "harpoon toggle menu",
+            desc = "harpoon prev",
         },
         {
-            "<leader>h1",
+            "<leader>1",
             function()
                 require("harpoon.ui").nav_file(1)
             end,
             desc = "harpoon navigate file 1",
         },
         {
-            "<leader>h2",
+            "<leader>2",
             function()
                 require("harpoon.ui").nav_file(2)
             end,
             desc = "harpoon navigate file 2",
         },
         {
-            "<leader>h3",
+            "<leader>3",
             function()
                 require("harpoon.ui").nav_file(3)
             end,
             desc = "harpoon navigate file 3",
         },
         {
-            "<leader>h4",
+            "<leader>4",
             function()
                 require("harpoon.ui").nav_file(4)
             end,
