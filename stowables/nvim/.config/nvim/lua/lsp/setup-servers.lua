@@ -23,11 +23,25 @@ mason_lspconfig.setup_handlers({
     ["denols"] = function() end,
 
     ["tsserver"] = function()
-        local opts = get_server_opts("tsserver")
-
         local ts_tools_ok, ts_tools = pcall(require, "typescript-tools")
         if ts_tools_ok then
-            ts_tools.setup(opts)
+            ts_tools.setup({
+                on_attach = require("lsp.server-config").on_attach,
+                capabilities = require("lsp.server-config").capabilities,
+                settings = {
+                    tsserver_file_preferences = {
+                        providePrefixAndSuffixTextForRename = false,
+                        includeInlayParameterNameHints = "all",
+                        includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+                        includeInlayFunctionParameterTypeHints = true,
+                        includeInlayVariableTypeHints = true,
+                        includeInlayVariableTypeHintsWhenTypeMatchesName = true,
+                        includeInlayPropertyDeclarationTypeHints = true,
+                        includeInlayFunctionLikeReturnTypeHints = true,
+                        includeInlayEnumMemberValueHints = true,
+                    },
+                },
+            })
         end
     end,
 

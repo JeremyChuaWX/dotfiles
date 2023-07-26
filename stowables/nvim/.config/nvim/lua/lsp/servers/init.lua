@@ -7,6 +7,5 @@ M.lua_ls = require("lsp.servers.lua_ls")
 M.tailwindcss = require("lsp.servers.tailwindcss")
 M.rust_analyzer = require("lsp.servers.rust_analyzer")
 M.clangd = require("lsp.servers.clangd")
-M.tsserver = require("lsp.servers.tsserver")
 
 return M
