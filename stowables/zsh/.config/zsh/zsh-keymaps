@@ -1,0 +1,2 @@
+zle -N open_dev_project
+bindkey "^p" open_dev_project

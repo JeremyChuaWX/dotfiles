@@ -27,6 +27,7 @@ export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 source "$ZDOTDIR/zsh-functions"
 zsh_add_file "zsh-exports"
 zsh_add_file "zsh-aliases"
+zsh_add_file "zsh-keymaps"
 zsh_add_file "zsh-prompt"
 zsh_add_file "zsh-completion"
 zsh_add_file "zsh-surround"

@@ -71,6 +71,24 @@ function tmux_new_session() {
     tmux new-session -s $name || tmux attach-session -t $name
 }
 
+function open_dev_project() {
+    name=$(fd --base-directory $HOME/dev --type d --exact-depth 1 | fzf --print0 --exit-0 | cut -d '/' -f1)
+    if [[ -z $name ]] then
+        echo "no project selected"
+        return
+    fi
+    dir="$HOME"/dev/"$name"
+    if [[ -n "$TMUX" ]] then
+        tmux switch-client -t "$name" ||
+        tmux new-session -s "$name" -c "$dir" -d && tmux switch-client -t "$name"
+        return
+    else
+        tmux attach-session -t "$name" -c "$dir" ||
+        tmux new-session -s "$name" -c "$dir"
+        return
+    fi
+}
+
 function git_commit() {
     if [ $1 ]; then
         git commit -m $1

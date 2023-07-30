@@ -28,7 +28,6 @@ alias fgrep="fgrep --color=auto"
 # shortcuts
 alias dotf="cd $HOME/.dotfiles/"
 alias nconf="cd $HOME/.dotfiles/stowables/nvim/.config/nvim/"
-alias dev="cd $HOME/dev"
 alias ppath="echo $PATH | tr '\:' '\n' | fzf"
 
 # tmux
@@ -58,11 +57,6 @@ alias examscreen="ffmpeg -f avfoundation -r 1 -probesize 40M -threads 1 -i "1:no
 
 # software version managers
 alias fnme="eval '$(fnm env)'"
-
-# fedora remove old kernels
-if [[ $OSTYPE = "linux"* ]] then
-    alias cleankernels="sudo dnf remove $(dnf repoquery --installonly --latest-limit=-2 -q)"
-fi
 
 # docker commands
 alias dup="docker compose up --build"
