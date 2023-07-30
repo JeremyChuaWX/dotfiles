@@ -31,12 +31,6 @@ set("n", "<C-y>", "3<C-y>")
 -- copy to end
 set("n", "Y", "y$")
 
--- system register stuff
-set({ "n", "x" }, "gy", '"*y')
-set({ "n", "x" }, "gY", '"*Y')
-set({ "n", "x" }, "gp", '"*p')
-set({ "n", "x" }, "gP", '"*P')
-
 -- stay in indent mode
 set("v", "<", "<gv")
 set("v", ">", ">gv")
