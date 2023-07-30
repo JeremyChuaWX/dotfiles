@@ -67,26 +67,26 @@ function fuzzy_tmux_session() {
 }
 
 function tmux_new_session() {
-    name=$(pwd | rev | cut -d '/' -f1 | rev)
+    name=$(pwd | xargs basename | tr . _)
     tmux new-session -s $name || tmux attach-session -t $name
 }
 
 function open_dev_project() {
-    name=$(fd --base-directory $HOME/dev --type d --exact-depth 1 | fzf --print0 --exit-0 | cut -d '/' -f1)
-    if [[ -z $name ]] then
+    dir=$(find $HOME/dev -type d -mindepth 1 -maxdepth 1 | fzf)
+    if [[ -z $dir ]]; then
         echo "no project selected"
         return
     fi
-    dir="$HOME"/dev/"$name"
-    if [[ -n "$TMUX" ]] then
-        tmux switch-client -t "$name" ||
-        tmux new-session -s "$name" -c "$dir" -d && tmux switch-client -t "$name"
-        return
-    else
-        tmux attach-session -t "$name" -c "$dir" ||
+    name=$(basename "$dir" | tr . _)
+    tmux_running=$(pgrep tmux)
+    if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
         tmux new-session -s "$name" -c "$dir"
         return
     fi
+    if ! tmux has-session -t="$name" 2> /dev/null; then
+        tmux new-session -s "$name" -c "$dir" -d
+    fi
+    tmux switch-client -t "$name"
 }
 
 function git_commit() {

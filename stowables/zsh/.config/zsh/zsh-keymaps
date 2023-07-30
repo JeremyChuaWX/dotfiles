@@ -1,2 +1,1 @@
-zle -N open_dev_project
-bindkey "^p" open_dev_project
+bindkey -s "^p" "open_dev_project\n"
