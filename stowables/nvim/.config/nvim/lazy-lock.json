@@ -15,7 +15,7 @@
   "harpoon": { "branch": "master", "commit": "21f4c47c6803d64ddb934a5b314dcb1b8e7365dc" },
   "indent-blankline.nvim": { "branch": "master", "commit": "4541d690816cb99a7fc248f1486aa87f3abce91c" },
   "kanagawa.nvim": { "branch": "master", "commit": "1749cea392acb7d1548a946fcee1e6f1304cd3cb" },
-  "lazy.nvim": { "branch": "main", "commit": "3ad55ae678876516156cca2f361c51f7952a924b" },
+  "lazy.nvim": { "branch": "main", "commit": "dac844ed617dda4f9ec85eb88e9629ad2add5e05" },
   "lspkind.nvim": { "branch": "master", "commit": "57610d5ab560c073c465d6faf0c19f200cb67e6e" },
   "mason-lspconfig.nvim": { "branch": "main", "commit": "e86a4c84ff35240639643ffed56ee1c4d55f538e" },
   "mason-tool-installer.nvim": { "branch": "main", "commit": "031903fefbf59371502092ef9e22cab9161d90ba" },
@@ -30,7 +30,7 @@
   "nvim-jdtls": { "branch": "master", "commit": "96e3978c3fdae3950f6ccda548775e8b8952f74a" },
   "nvim-lspconfig": { "branch": "master", "commit": "b6091272422bb0fbd729f7f5d17a56d37499c54f" },
   "nvim-surround": { "branch": "main", "commit": "10b20ca7d9da1ac8df8339e140ffef94f9ab3b18" },
-  "nvim-treesitter": { "branch": "master", "commit": "ee107fc759647293a84ad42b867f518331364fbe" },
+  "nvim-treesitter": { "branch": "master", "commit": "e8648569d82c7bb46dc511cda9dbec687774461f" },
   "nvim-treesitter-context": { "branch": "master", "commit": "6f8f788738b968f24a108ee599c5be0031f94f06" },
   "nvim-ts-autotag": { "branch": "main", "commit": "6be1192965df35f94b8ea6d323354f7dc7a557e4" },
   "nvim-ts-context-commentstring": { "branch": "main", "commit": "e9062e2dfb9854e6a927370f2d720de354c88524" },
@@ -46,6 +46,5 @@
   "tailiscope.nvim": { "branch": "main", "commit": "d756e166cc1fec4eb06549b218b275c21d652e1e" },
   "telescope-fzf-native.nvim": { "branch": "main", "commit": "9bc8237565ded606e6c366a71c64c0af25cd7a50" },
   "telescope.nvim": { "branch": "master", "commit": "b6fccfb0f7589a87587875206786daccba62acc3" },
-  "typescript-tools.nvim": { "branch": "master", "commit": "319a4362cf5c2d6df17cd6675781fbc79162a211" },
-  "vim-illuminate": { "branch": "master", "commit": "a2907275a6899c570d16e95b9db5fd921c167502" }
+  "typescript-tools.nvim": { "branch": "master", "commit": "319a4362cf5c2d6df17cd6675781fbc79162a211" }
 }
