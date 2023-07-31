@@ -89,6 +89,16 @@ function open_dev_project() {
     tmux switch-client -t "$name"
 }
 
+function fzf_preview() {
+    if [[ -d $1 ]]; then
+        tree --dirsfirst -a -C -L 1 "$1"
+    elif [[ -f $1 ]]; then
+        bat --style numbers,changes --color=always "$1" | head -500
+    else
+        echo "no preview"
+    fi
+}
+
 function git_commit() {
     if [ $1 ]; then
         git commit -m $1

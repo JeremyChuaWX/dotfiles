@@ -10,7 +10,7 @@ fi
 # directories
 alias ll="ls -AlF --color=auto --group-directories-first --human-readable"
 alias ..="cd .."
-alias tree="tree --dirsfirst"
+alias tree="tree --dirsfirst -C"
 
 # file manipulation
 alias rm="rm -v"

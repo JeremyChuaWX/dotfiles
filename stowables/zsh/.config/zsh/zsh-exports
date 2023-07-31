@@ -33,6 +33,6 @@ export FZF_DEFAULT_OPTS="
 --bind='ctrl-b:preview-page-up'
 --bind='ctrl-p:change-preview-window(top,90%,wrap|40%,nowrap)'
 --bind='ctrl-a:toggle-all'
---preview='bat --style numbers,changes --color=always {} | head -500'
+--preview='zsh -e $(functions fzf_preview); fzf_preview {}'
 --preview-window='40%'
 "
