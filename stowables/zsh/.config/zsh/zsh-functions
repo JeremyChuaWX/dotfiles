@@ -86,7 +86,11 @@ function open_dev_project() {
     if ! tmux has-session -t="$name" 2> /dev/null; then
         tmux new-session -s "$name" -c "$dir" -d
     fi
-    tmux switch-client -t "$name"
+    if [[ -z $TMUX ]]; then
+        tmux attach-session -t "$name"
+    else
+        tmux switch-client -t "$name"
+    fi
 }
 
 function fzf_preview() {
