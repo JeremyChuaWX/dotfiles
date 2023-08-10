@@ -75,7 +75,11 @@ function tmux_new_session() {
 }
 
 function open_dev_project() {
-    dir=$(find $HOME/dev -type d -mindepth 1 -maxdepth 1 | fzf)
+    if [[ $1 ]]; then
+        dir="$HOME"/dev/"$1"
+    else
+        dir=$(find $HOME/dev -type d -mindepth 1 -maxdepth 1 | fzf)
+    fi
     if [[ -z $dir ]]; then
         echo "no project selected"
         return
@@ -94,6 +98,16 @@ function open_dev_project() {
     else
         tmux switch-client -t "$name"
     fi
+}
+
+function new_dev_project() {
+    echo "new project name: "
+    read name
+    dir="$HOME"/dev/"$name"
+    git init "$dir"
+    header=${(C)$(echo "$name" | tr "\-\_" " ")}
+    echo "# $header" > "$dir"/README.md
+    open_dev_project "$name"
 }
 
 function fzf_preview() {
