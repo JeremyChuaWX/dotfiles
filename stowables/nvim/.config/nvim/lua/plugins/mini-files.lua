@@ -4,7 +4,9 @@ local M = {
         {
             "-",
             function()
-                require("mini.files").open()
+                if not require("mini.files").close() then
+                    require("mini.files").open()
+                end
             end,
             desc = "mini-files open",
         },
