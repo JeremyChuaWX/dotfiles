@@ -20,3 +20,5 @@
 - mkdir .config/zsh, .fnm
 - run .fnm install script
 - stow global stowables first, then debian stowables
+- install neovim from github
+- login to gh cli
