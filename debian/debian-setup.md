@@ -1,44 +1,22 @@
 # Packages to install
 
-awesome
-bat
-fd-find
-firefox-esr
-fzf
-git
-neovim
-ripgrep
-stow
-xinit
-zsh
+- awesome
+- bat
+- fd-find
+- firefox-esr
+- fzf
+- g++
+- gh
+- git
+- neovim
+- ripgrep
+- stow
+- tmux
+- xinit
+- zsh
 
-# Configs
+# Setup
 
-## .xinitrc
-
-```
-xsetroot -solid black
-
-# bell volume 20%
-xset b 20
-
-# screensaver off
-xset s off
-
-# key repeat rate
-xset r rate 200 30
-
-exec /usr/bin/awesome
-```
-
-## .zprofile
-
-```
-startx
-```
-
-# Notes
-
-## Awesome WM
-
-- after placing `.xinitrc`, use command `startx` to start awesome
+- mkdir .config/zsh, .fnm
+- run .fnm install script
+- stow global stowables first, then debian stowables
