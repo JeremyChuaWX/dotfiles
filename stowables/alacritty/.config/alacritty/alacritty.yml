@@ -7,9 +7,6 @@ window:
   opacity: 0.999
   option_as_alt: Both
 
-mouse:
-  hide_when_typing: true
-
 font:
   normal:
     family: JetBrainsMono Nerd Font Mono
