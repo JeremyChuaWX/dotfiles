@@ -1,4 +1,6 @@
-# Packages to install
+# Debian
+
+## Packages to install
 
 - awesome
 - bat
@@ -12,13 +14,20 @@
 - ripgrep
 - stow
 - tmux
+- tree
 - xinit
 - zsh
 
-# Setup
+## Setup
 
-- mkdir .config/zsh, .fnm
-- run .fnm install script
+- mkdir `.config/zsh`, `.fnm`, `builds`, `dev`
+- run .fnm install script and symlink
+
+  ```bash
+  curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "./.fnm" --skip-shell
+  ln -s ~/.fnm/fnm ~/.local/bin
+  ```
+
 - stow global stowables first, then debian stowables
 - install neovim from github
 - login to gh cli
