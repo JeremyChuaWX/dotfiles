@@ -7,9 +7,9 @@ if [[ $OSTYPE = "darwin"* ]] then
     alias ls="gls"
 fi
 
-if [[ $OSTYPE = "linux" ]] then
+if [[ $OSTYPE = "linux"* ]] then
     alias bat="batcat"
-    alias fd="fd-find"
+    alias fd="fdfind"
 fi
 
 # directories
