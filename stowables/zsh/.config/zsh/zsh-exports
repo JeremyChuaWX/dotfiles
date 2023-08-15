@@ -1,5 +1,5 @@
 # paths
-if [[ "$OSTYPE" == "darwin"* ]] then
+if [[ $OSTYPE == "darwin"* ]] then
     eval "$(/opt/homebrew/bin/brew shellenv)" # homebrew
     export FPATH="$FPATH:/opt/homebrew/share/zsh/site-functions" # homebrew zsh completions
 fi
