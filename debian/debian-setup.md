@@ -10,8 +10,12 @@
 - g++
 - gh
 - git
+- libtree-sitter0
 - make
 - neovim
+- python3-pip
+- python3-pynvim
+- python3-venv
 - ripgrep
 - stow
 - tmux
@@ -29,6 +33,18 @@
   ln -s ~/.fnm/fnm ~/.local/bin
   ```
 
-- stow global stowables first, then debian stowables
+- install global node packages
+
+  ```bash
+  npm -g i neovim typescript
+  ```
+
+- install go from website and run command
+
+  ```bash
+   rm -rf /usr/local/go && tar -C /usr/local -xzf "<go tarball here>"
+  ```
+
 - install neovim from github
+- stow global stowables first, then debian stowables
 - login to gh cli
