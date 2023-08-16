@@ -10,6 +10,7 @@
 - g++
 - gh
 - git
+- make
 - neovim
 - ripgrep
 - stow
