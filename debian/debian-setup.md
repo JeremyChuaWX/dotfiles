@@ -11,6 +11,7 @@
 - gh
 - git
 - libtree-sitter0
+- luarocks
 - make
 - neovim
 - python3-pip
