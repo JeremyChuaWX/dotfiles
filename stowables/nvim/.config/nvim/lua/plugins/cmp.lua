@@ -50,6 +50,7 @@ M.config = function()
                 end,
             },
             { name = "luasnip" },
+        }, {
             { name = "fuzzy_buffer", keyword_length = 10 },
             { name = "path" },
         }),
