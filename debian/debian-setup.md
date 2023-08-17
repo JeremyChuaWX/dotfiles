@@ -13,7 +13,6 @@
 - libtree-sitter0
 - luarocks
 - make
-- neovim
 - python3-pip
 - python3-pynvim
 - python3-venv
@@ -26,7 +25,12 @@
 
 ## Setup
 
-- mkdir `.config/zsh`, `.fnm`, `builds`, `dev`
+- mkdir `.config/zsh`, `.fnm`, `builds`, `dev`, `.local/bin`, `.local/share`
+
+- install packages
+
+- stow global stowables first, then debian stowables
+
 - run .fnm install script and symlink
 
   ```bash
@@ -43,9 +47,18 @@
 - install go from website and run command
 
   ```bash
-   rm -rf /usr/local/go && tar -C /usr/local -xzf "<go tarball here>"
+  tar xzvf "<go tarball here>"
+  ln -s ~/builds/"<go tarball here>"/bin/go ~/.local/bin
+  ln -s ~/builds/"<go tarball here>"/bin/gofmt ~/.local/bin
   ```
 
-- install neovim from github
-- stow global stowables first, then debian stowables
+- download neovim from github, extract and symlink neovim binary to path
+
+  ```bash
+  curl -fsSL https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz
+  # move tarball from downloads to builds folder
+  tar xzvf nvim-linux64.tar.gz
+  ln -s ~/builds/nvim-linux64/bin/nvim ~/.local/bin
+  ```
+
 - login to gh cli
