@@ -13,6 +13,7 @@
 - libtree-sitter0
 - luarocks
 - make
+- pipewire-media-session-
 - python3-pip
 - python3-pynvim
 - python3-venv
@@ -20,6 +21,7 @@
 - stow
 - tmux
 - tree
+- wireplumber
 - xinit
 - zsh
 
@@ -62,3 +64,9 @@
   ```
 
 - login to gh cli
+
+- enable wireplumber in systemd and restart
+
+  ```bash
+  systemctl --user --now enable wireplumber.service
+  ```
