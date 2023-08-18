@@ -70,3 +70,5 @@
   ```bash
   systemctl --user --now enable wireplumber.service
   ```
+
+- add `noatime` to `/etc/fstab`
