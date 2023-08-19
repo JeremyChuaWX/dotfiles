@@ -1,4 +1,4 @@
-!#/bin/sh
+#!/bin/sh
 
 # directories
 dotf="$HOME"/.dotfiles
