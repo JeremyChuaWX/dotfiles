@@ -37,10 +37,11 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- disable cursorline on insert
-vim.api.nvim_create_autocmd(
-    { "InsertLeave", "WinEnter" },
-    { pattern = "*", command = "set cursorline", group = augroup }
-)
+vim.api.nvim_create_autocmd({ "InsertLeave", "WinEnter" }, {
+    pattern = "*",
+    command = "set cursorline",
+    group = augroup,
+})
 
 vim.api.nvim_create_autocmd(
     { "InsertEnter", "WinLeave" },
