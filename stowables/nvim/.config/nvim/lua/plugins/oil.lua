@@ -4,12 +4,15 @@ local M = {
         {
             "-",
             function()
-                require("oil").toggle_float()
+                require("oil").open()
             end,
-            "oil toggle float",
+            "oil open",
         },
     },
     opts = {
+        keymaps = {
+            ["q"] = "actions.close",
+        },
         view_options = {
             show_hidden = true,
         },
