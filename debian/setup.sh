@@ -4,8 +4,8 @@
 dotf="$HOME"/.dotfiles
 
 echo "make directories to prepare for stowing"
-mkdir \
-    "$HOME"/.config \
+mkdir -p \
+    "$HOME"/.config/zsh \
     "$HOME"/.fnm \
     "$HOME"/.local/bin \
     "$HOME"/.local/share \
@@ -30,4 +30,5 @@ stow -vR \
     nvim \
     tmux \
     vim \
+    wallpapers \
     zsh
