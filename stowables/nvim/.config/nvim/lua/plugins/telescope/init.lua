@@ -10,6 +10,9 @@ local M = {
 
 M.config = function()
     local telescope = require("telescope")
+    local action_state = require("telescope.actions.state")
+    local actions = require("telescope.actions")
+    local bufdelete = require("bufdelete")
 
     telescope.setup({
         defaults = {
@@ -63,6 +66,26 @@ M.config = function()
         pickers = {
             find_files = {
                 hidden = true,
+            },
+            buffers = {
+                attach_mappings = function(prompt_bufnr, map)
+                    local del_buf = function()
+                        local curr_picker = action_state.get_current_picker(prompt_bufnr)
+                        local multi_selections = curr_picker:get_multi_selection()
+                        if next(multi_selections) == nil then
+                            local selection = action_state.get_selected_entry()
+                            actions.close(prompt_bufnr)
+                            bufdelete.bufdelete(selection.bufnr, true)
+                        else
+                            actions.close(prompt_bufnr)
+                            for _, selection in ipairs(multi_selections) do
+                                bufdelete.bufdelete(selection.bufnr, true)
+                            end
+                        end
+                    end
+                    map({ "i", "n" }, "<c-x>", del_buf)
+                    return true
+                end,
             },
         },
 

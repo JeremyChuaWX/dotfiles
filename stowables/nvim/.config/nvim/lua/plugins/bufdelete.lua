@@ -2,7 +2,13 @@ local M = {
     "famiu/bufdelete.nvim",
     event = "VeryLazy",
     keys = {
-        { "<C-w>", "<cmd>Bdelete<CR>", desc = "smart bufdelete" },
+        {
+            "<C-w>",
+            function()
+                require("bufdelete").bufdelete(0)
+            end,
+            desc = "smart bufdelete",
+        },
     },
 }
 
