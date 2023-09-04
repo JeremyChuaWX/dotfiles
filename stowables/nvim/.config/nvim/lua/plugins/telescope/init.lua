@@ -66,12 +66,30 @@ M.config = function()
         pickers = {
             find_files = {
                 hidden = true,
+                attach_mappings = function(prompt_bufnr, map)
+                    local open_buf = function(prompt_bufnr)
+                        local picker = action_state.get_current_picker(prompt_bufnr)
+                        local multi = picker:get_multi_selection()
+                        local single = action_state.get_selected_entry()
+                        local cmd = ""
+                        if #multi > 0 then
+                            for _, selection in pairs(multi) do
+                                cmd = cmd .. "edit " .. selection[1] .. " | "
+                            end
+                        end
+                        cmd = cmd .. " edit " .. single[1]
+                        actions.close(prompt_bufnr)
+                        vim.api.nvim_command(cmd)
+                    end
+                    actions.select_default:replace(open_buf)
+                    return true
+                end,
             },
             buffers = {
                 attach_mappings = function(prompt_bufnr, map)
                     local del_buf = function()
-                        local curr_picker = action_state.get_current_picker(prompt_bufnr)
-                        local multi_selections = curr_picker:get_multi_selection()
+                        local picker = action_state.get_current_picker(prompt_bufnr)
+                        local multi_selections = picker:get_multi_selection()
                         if next(multi_selections) == nil then
                             local selection = action_state.get_selected_entry()
                             actions.close(prompt_bufnr)
