@@ -3,7 +3,7 @@ local M = {
     event = "VeryLazy",
     keys = {
         {
-            "<leader>bd",
+            "<leader>b",
             function()
                 require("bufdelete").bufdelete(0)
             end,
