@@ -16,7 +16,7 @@
   "indent-blankline.nvim": { "branch": "master", "commit": "1e79f3dd6e750c5cb4ce99d1755a3e17025c0f47" },
   "kanagawa.nvim": { "branch": "master", "commit": "a4e99f089110c6d00bc33f5497709200e914e763" },
   "lazy.nvim": { "branch": "main", "commit": "6a2c47e6424a3f1e373bfeb714b716f6be13501c" },
-  "lsp_signature.nvim": { "branch": "master", "commit": "de2fd04d9d0bc644d0f8ff177a31ec29a7a6f213" },
+  "lsp_signature.nvim": { "branch": "master", "commit": "8298308c01f26acbed16fb929307974b1bc0b555" },
   "lspkind.nvim": { "branch": "master", "commit": "57610d5ab560c073c465d6faf0c19f200cb67e6e" },
   "mason-lspconfig.nvim": { "branch": "main", "commit": "81e30dd629de24cbb26d08073ee938ab40006695" },
   "mason-tool-installer.nvim": { "branch": "main", "commit": "83dcddb6477f9ba5db98971ef27bd18bdca921b4" },

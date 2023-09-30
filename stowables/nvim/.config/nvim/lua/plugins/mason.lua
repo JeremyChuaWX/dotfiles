@@ -24,7 +24,6 @@ local mason_tools = {
             "prettier",
             "stylua",
             "actionlint",
-            "markdownlint",
             "beautysh",
             "rustywind",
             "gofumpt",

@@ -16,6 +16,8 @@ M.config = function()
         sources = {
             actions.gitsigns,
 
+            diagnostics.actionlint,
+
             formatting.rustywind,
             formatting.rustfmt,
             formatting.gofumpt,
@@ -35,9 +37,6 @@ M.config = function()
             formatting.beautysh.with({
                 extra_args = { "--indent-size", "4" },
             }),
-
-            diagnostics.actionlint,
-            diagnostics.markdownlint,
         },
     })
 end
