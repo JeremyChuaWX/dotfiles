@@ -21,9 +21,11 @@ M.config = function()
             formatting.rustywind,
             formatting.rustfmt,
             formatting.gofumpt,
+            formatting.mdformat,
             formatting.prettier.with({
                 prefer_local = "node_modules/.bin",
                 extra_filetypes = { "toml", "svelte" },
+                disabled_filetypes = { "markdown" },
                 extra_args = { "--tab-width", "4" },
             }),
             formatting.stylua.with({

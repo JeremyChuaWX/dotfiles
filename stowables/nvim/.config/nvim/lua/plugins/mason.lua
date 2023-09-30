@@ -22,6 +22,7 @@ local mason_tools = {
     opts = {
         ensure_installed = {
             "prettier",
+            "mdformat",
             "stylua",
             "actionlint",
             "beautysh",
