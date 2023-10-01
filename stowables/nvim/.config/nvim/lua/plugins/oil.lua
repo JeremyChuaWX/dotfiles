@@ -4,7 +4,7 @@ local M = {
         {
             "-",
             function()
-                require("oil").open()
+                require("oil").open_float()
             end,
             "oil open",
         },
