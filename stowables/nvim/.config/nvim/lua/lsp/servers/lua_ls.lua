@@ -7,6 +7,9 @@ local M = {
             telemetry = {
                 enable = false,
             },
+            diagnostics = {
+                disable = { "missing-fields" },
+            },
         },
     },
 }
