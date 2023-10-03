@@ -4,6 +4,7 @@ local M = {
     dependencies = {
         "windwp/nvim-ts-autotag",
         "JoosepAlviste/nvim-ts-context-commentstring",
+        "nvim-treesitter/nvim-treesitter-textobjects",
     },
 }
 
@@ -24,9 +25,30 @@ M.config = function()
         autotag = {
             enable = true,
         },
-        context_commentstring = {
-            enable = true,
-            enable_autocmd = false,
+        textobjects = {
+            move = {
+                enable = true,
+                set_jumps = true,
+            },
+            swap = {
+                enable = true,
+                swap_next = {
+                    ["<leader>s"] = "@parameter.inner",
+                },
+                swap_previous = {
+                    ["<leader>S"] = "@parameter.inner",
+                },
+            },
+            select = {
+                enable = true,
+                lookahead = true,
+                keymaps = {
+                    ["af"] = "@function.outer",
+                    ["if"] = "@function.inner",
+                    ["ac"] = "@class.outer",
+                    ["ic"] = "@class.inner",
+                },
+            },
         },
     })
 end
