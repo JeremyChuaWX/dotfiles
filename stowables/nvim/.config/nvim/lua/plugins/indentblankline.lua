@@ -5,6 +5,7 @@ local M = {
     opts = {
         indent = {
             char = "┃",
+            tab_char = "┃",
         },
         whitespace = {
             remove_blankline_trail = true,
