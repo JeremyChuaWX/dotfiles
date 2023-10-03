@@ -1,6 +1,9 @@
 local M = {
     "nvim-treesitter/nvim-treesitter-context",
-    config = true,
+    opts = {
+        max_lines = 1,
+        trim_scope = "inner",
+    },
 }
 
 return M
