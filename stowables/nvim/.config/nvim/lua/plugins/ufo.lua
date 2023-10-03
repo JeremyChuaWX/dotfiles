@@ -1,6 +1,5 @@
 local M = {
     "kevinhwang91/nvim-ufo",
-    event = "BufReadPost",
     dependencies = {
         "kevinhwang91/promise-async",
         "luukvbaal/statuscol.nvim",
@@ -8,10 +7,10 @@ local M = {
 }
 
 M.config = function()
-    vim.o.foldcolumn = "1"
-    vim.o.foldlevel = 99
-    vim.o.foldlevelstart = 99
-    vim.o.foldenable = true
+    vim.opt.foldcolumn = "1"
+    vim.opt.foldlevel = 99
+    vim.opt.foldlevelstart = 99
+    vim.opt.foldenable = true
     vim.opt.fillchars:append("fold: ,foldsep: ,foldopen:,foldclose:")
 
     vim.keymap.set("n", "zR", function()
