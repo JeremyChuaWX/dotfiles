@@ -24,20 +24,15 @@ local function lsp_keymaps(bufnr)
         vim.keymap.set(mode, lhs, rhs, final_opts)
     end
 
-    if vim.fn.exists(":Telescope") then
-        set("n", "gr", function()
-            require("telescope.builtin").lsp_references()
-        end)
+    set("n", "gr", function()
+        require("telescope.builtin").lsp_references()
+    end)
 
-        set("n", "gd", function()
-            require("telescope.builtin").lsp_definitions({
-                jump_type = "never",
-            })
-        end)
-    else
-        set("n", "gr", vim.lsp.buf.references)
-        set("n", "gd", vim.lsp.buf.definition)
-    end
+    set("n", "gd", function()
+        require("telescope.builtin").lsp_definitions({
+            jump_type = "never",
+        })
+    end)
 
     set("n", "gl", vim.diagnostic.open_float)
     set("n", "]d", vim.diagnostic.goto_next)
@@ -54,7 +49,7 @@ end
 M.on_attach = function(client, bufnr)
     lsp_keymaps(bufnr)
 
-    vim.api.nvim_create_user_command("LspFormat", function()
+    vim.api.nvim_create_user_command("Format", function()
         print("lsp formatted")
         vim.lsp.buf.format({ bufnr = bufnr })
     end, {})

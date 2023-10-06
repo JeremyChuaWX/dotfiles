@@ -20,8 +20,6 @@ mason_lspconfig.setup_handlers({
 
     ["jdtls"] = function() end,
 
-    ["denols"] = function() end,
-
     ["tsserver"] = function()
         local ts_tools_ok, ts_tools = pcall(require, "typescript-tools")
         if ts_tools_ok then
