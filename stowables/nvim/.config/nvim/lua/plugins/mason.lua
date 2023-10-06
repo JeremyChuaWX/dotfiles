@@ -13,6 +13,7 @@ local mason_lspconfig = {
             "tailwindcss",
             "rust_analyzer",
             "gopls",
+            "pyright",
         },
     },
 }
@@ -28,6 +29,7 @@ local mason_tools = {
             "beautysh",
             "rustywind",
             "gofumpt",
+            "black",
         },
     },
 }

@@ -19,6 +19,7 @@ M.config = function()
             diagnostics.actionlint,
 
             formatting.rustywind,
+            formatting.black,
             formatting.rustfmt,
             formatting.gofumpt,
             formatting.mdformat,
