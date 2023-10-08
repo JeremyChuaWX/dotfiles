@@ -14,7 +14,7 @@ M.config = function()
             },
             { text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa" },
             {
-                sign = { name = { ".*" }, maxwidth = 2, colwidth = 1, wrap = true },
+                sign = { namespace = { "gitsigns" }, colwidth = 1, wrap = true },
                 click = "v:lua.ScSa",
             },
         },
