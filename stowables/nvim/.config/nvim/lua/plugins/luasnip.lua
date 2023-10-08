@@ -9,6 +9,10 @@ local M = {
 M.config = function()
     local types = require("luasnip.util.types")
     local luasnip = require("luasnip")
+    local snippets_folder = vim.fn.stdpath("config") .. "/lua/snippets/"
+
+    require("luasnip.loaders.from_vscode").lazy_load()
+    require("luasnip.loaders.from_lua").lazy_load({ paths = snippets_folder })
 
     luasnip.setup({
         ext_opts = {
@@ -24,8 +28,6 @@ M.config = function()
             },
         },
     })
-
-    require("luasnip.loaders.from_vscode").lazy_load()
 
     local set = vim.keymap.set
 
