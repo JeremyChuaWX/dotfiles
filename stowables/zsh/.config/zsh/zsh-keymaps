@@ -1,3 +1,6 @@
 bindkey -s "^p" "open_dev_project\n"
 bindkey -s "^n" "new_dev_project\n"
 bindkey -s "^f" "fuzzy_open\n"
+
+zle -N fuzzy_reverse_search
+bindkey "^r" fuzzy_reverse_search

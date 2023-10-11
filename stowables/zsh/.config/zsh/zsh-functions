@@ -169,3 +169,21 @@ function fuzzy_git_diff() {
         xargs -r0 git diff -w --color=always
     fi
 }
+
+function fuzzy_reverse_search() {
+    local selected num
+    selected=($(
+            fc -rl 1 |
+            awk '{ cmd=$0; sub(/^[ \t]*[0-9]+\**[ \t]+/, "", cmd); if (!seen[cmd]++) print $0 }' |
+            fzf --no-preview
+    ))
+    local res=$?
+    if [ -n "$selected" ]; then
+        num=$selected[1]
+        if [ -n "$num" ]; then
+            zle vi-fetch-history -n $num
+        fi
+    fi
+    zle reset-prompt
+    return $ret
+}
