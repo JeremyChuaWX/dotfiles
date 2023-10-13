@@ -1,9 +1,5 @@
 local M = {
     "numToStr/Comment.nvim",
-    event = "InsertEnter",
-    dependencies = {
-        "JoosepAlviste/nvim-ts-context-commentstring",
-    },
 }
 
 M.config = function()
