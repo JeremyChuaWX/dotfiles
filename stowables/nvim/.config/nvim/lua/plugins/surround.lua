@@ -1,6 +1,6 @@
 local M = {
     "kylechui/nvim-surround",
-    event = "InsertEnter",
+    lazy = true,
     config = true,
 }
 

@@ -38,14 +38,18 @@ M.config = function()
     end)
 
     set({ "i", "s" }, "<C-k>", function()
-        if luasnip.expand_or_jumpable() then
-            luasnip.expand_or_jump()
-        end
+        luasnip.expand()
     end)
 
     set({ "i", "s" }, "<C-j>", function()
         if luasnip.jumpable(-1) then
             luasnip.jump(-1)
+        end
+    end)
+
+    set({ "i", "s" }, "<C-l>", function()
+        if luasnip.jumpable(1) then
+            luasnip.jump(1)
         end
     end)
 end
