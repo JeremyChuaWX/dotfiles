@@ -1,6 +1,6 @@
 return {
     s(
-        "err",
+        "iferr",
         fmt(
             [[
 if err != nil {{
