@@ -1,6 +1,5 @@
 local M = {
     "stevearc/dressing.nvim",
-    lazy = true,
     opts = {
         input = {
             insert_only = false,
