@@ -1,6 +1,6 @@
 local M = {
     "kylechui/nvim-surround",
-    lazy = true,
+    event = "VeryLazy",
     config = true,
 }
 
