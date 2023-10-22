@@ -39,6 +39,9 @@ M.config = function()
         autopairs = {
             enable = true,
         },
+        autotag = {
+            enable = true,
+        },
         textobjects = {
             move = {
                 enable = true,
