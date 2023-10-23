@@ -1,6 +1,5 @@
 local M = {
     "famiu/bufdelete.nvim",
-    event = "VeryLazy",
     keys = {
         {
             "<leader>w",

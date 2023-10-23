@@ -2,6 +2,8 @@ local M = {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     dependencies = {
+        -- "windwp/nvim-ts-autotag",
+        "JoosepAlviste/nvim-ts-context-commentstring",
         "nvim-treesitter/nvim-treesitter-textobjects",
     },
 }
@@ -39,9 +41,9 @@ M.config = function()
         autopairs = {
             enable = true,
         },
-        autotag = {
-            enable = true,
-        },
+        -- autotag = {
+        --     enable = true,
+        -- },
         textobjects = {
             move = {
                 enable = true,

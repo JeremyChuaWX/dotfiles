@@ -1,7 +1,6 @@
 local M = {
     "windwp/nvim-ts-autotag",
-    event = "InsertEnter",
-    opts = {},
+    config = true,
 }
 
 return M
