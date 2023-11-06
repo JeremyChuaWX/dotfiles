@@ -11,6 +11,7 @@ apt install \
     libtree-sitter0 \
     luarocks \
     make \
+    pamixer \
     pipewire-media-session- \
     python3-pip \
     python3-pynvim \

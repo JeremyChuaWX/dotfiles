@@ -1,9 +1,11 @@
 #!/bin/sh
 
-# directories
-dotf="$HOME"/.dotfiles
+# TODO: check if stow installed, else prompt to install packages
 
-echo "make directories to prepare for stowing"
+# directories
+DOTFILES="$HOME"/.dotfiles
+
+echo "create directories"
 mkdir -p \
     "$HOME"/.config/zsh \
     "$HOME"/.fnm \
@@ -13,16 +15,18 @@ mkdir -p \
     "$HOME"/dev
 
 echo "install fnm and symlink"
-curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "~/.fnm" --skip-shell
-ln -s ~/.fnm/fnm ~/.local/bin
+curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "$HOME/.fnm" --skip-shell
+ln -s $HOME/.fnm/fnm $HOME/.local/bin
 
-echo "download neovim from github, extract and symlink"
-# curl ...
-tar xzvf ~/builds/nvim-linux64/bin/nvim ~/.local/bin
+echo "download neovim tar, extract and symlink"
+wget https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz
+mv nvim-linux64.tar.gz $HOME/builds/
+tar xzvf $HOME/builds/nvim-linux64.tar.gz
+ln -s $HOME/builds/nvim-linux64/bin/nvim $HOME/.local/bin
 
-echo "stowing global stowables"
-cd "$dotf"/stowables
-stow -vR \
+echo "stow global stowables"
+cd $DOTFILES/stowables
+stow -vR -t $HOME \
     alacritty \
     awesome \
     fonts \
@@ -32,3 +36,7 @@ stow -vR \
     vim \
     wallpapers \
     zsh
+
+echo "stow debian stowables"
+cd "$DOTFILES"/debian
+stow -vR -t $HOME stowables

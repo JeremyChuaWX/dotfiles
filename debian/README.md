@@ -58,7 +58,7 @@
 - download neovim from github, extract and symlink neovim binary to path
 
   ```bash
-  curl -fsSL https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz
+  wget https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz
   # move tarball from downloads to builds folder
   tar xzvf nvim-linux64.tar.gz
   ln -s ~/builds/nvim-linux64/bin/nvim ~/.local/bin
