@@ -2,7 +2,7 @@ local M = {
     settings = {
         Lua = {
             workspace = {
-                checkThirdParty = false,
+                checkThirdParty = "Disable",
             },
             telemetry = {
                 enable = false,
