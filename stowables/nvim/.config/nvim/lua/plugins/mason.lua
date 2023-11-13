@@ -29,6 +29,7 @@ local mason_tools = {
             "beautysh",
             "rustywind",
             "gofumpt",
+            "golines",
             "black",
         },
     },

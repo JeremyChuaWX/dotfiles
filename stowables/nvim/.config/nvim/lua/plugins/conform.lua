@@ -4,6 +4,7 @@ local M = {
         {
             "gF",
             function()
+                print("conform formatted")
                 require("conform").format()
             end,
             desc = "conform format",
@@ -15,6 +16,8 @@ local M = {
                 prepend_args = {
                     "--tab-width",
                     "4",
+                    "--config-precedence",
+                    "prefer-file",
                 },
             },
             stylua = {
@@ -25,14 +28,26 @@ local M = {
                     "4",
                 },
             },
+            beautysh = {
+                prepend_args = {
+                    "--indent-size",
+                    "4",
+                },
+            },
         },
         formatters_by_ft = {
             lua = { "stylua" },
-            go = { "gofumpt" },
+            go = { "golines", "gofumpt" },
             javascript = { "rustywind", "prettier" },
+            typescript = { "rustywind", "prettier" },
+            javascriptreact = { "rustywind", "prettier" },
+            typescriptreact = { "rustywind", "prettier" },
             python = { "black" },
             rust = { "rustfmt" },
             markdown = { "mdformat" },
+            bash = { "beautysh" },
+            sh = { "beautysh" },
+            zsh = { "beautysh" },
         },
     },
 }
