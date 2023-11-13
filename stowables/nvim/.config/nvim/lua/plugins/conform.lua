@@ -2,10 +2,11 @@ local M = {
     "stevearc/conform.nvim",
     keys = {
         {
-            "gF",
+            "gf",
             function()
-                print("conform formatted")
-                require("conform").format()
+                require("conform").format({
+                    lsp_fallback = true,
+                })
             end,
             desc = "conform format",
         },

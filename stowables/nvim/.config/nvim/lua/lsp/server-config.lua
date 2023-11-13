@@ -1,22 +1,5 @@
 local M = {}
 
-local function format_buf(bufnr)
-    local ft = vim.bo[bufnr].filetype
-    local have_nls = #require("null-ls.sources").get_available(ft, "NULL_LS_FORMATTING") > 0
-
-    vim.lsp.buf.format({
-        bufnr = bufnr,
-        filter = function(client)
-            if have_nls then
-                print("null-ls formatted")
-                return client.name == "null-ls"
-            end
-            print("lsp formatted")
-            return client.name ~= "null-ls"
-        end,
-    })
-end
-
 local function lsp_keymaps(bufnr)
     local set = function(mode, lhs, rhs, opts)
         local final_opts = opts or {}
@@ -40,10 +23,6 @@ local function lsp_keymaps(bufnr)
     set("n", "ga", vim.lsp.buf.code_action)
     set("n", "K", vim.lsp.buf.hover)
     set("n", "gR", vim.lsp.buf.rename)
-
-    set("n", "gf", function()
-        format_buf(bufnr)
-    end, { desc = "format buffer" })
 end
 
 M.on_attach = function(client, bufnr)

@@ -6,11 +6,6 @@ local M = {
             spinner = "dots_negative",
             done = "✔",
         },
-        sources = {
-            ["null-ls"] = {
-                ignore = true,
-            },
-        },
     },
 }
 
