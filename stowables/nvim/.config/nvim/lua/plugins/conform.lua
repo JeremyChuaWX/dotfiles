@@ -35,10 +35,16 @@ local M = {
                     "4",
                 },
             },
+            golines = {
+                prepend_args = {
+                    "--base-formatter",
+                    "gofumpt",
+                },
+            },
         },
         formatters_by_ft = {
             lua = { "stylua" },
-            go = { "golines", "gofumpt" },
+            go = { "golines" },
             javascript = { "rustywind", "prettier" },
             typescript = { "rustywind", "prettier" },
             javascriptreact = { "rustywind", "prettier" },
