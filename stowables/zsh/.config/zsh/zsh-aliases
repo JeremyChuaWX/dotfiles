@@ -1,7 +1,7 @@
 if [[ $OSTYPE = "darwin"* ]] then
     # brew
     alias brewu="brew update && brew upgrade"
-    alias brewc="brew cleanup && brew autoremove"
+    alias brewc="brew cleanup --prune=all && brew autoremove"
 
     # replace ls with gls
     alias ls="gls"
