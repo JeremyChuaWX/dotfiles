@@ -138,6 +138,9 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- Keyboard map indicator and switcher
 mykeyboardlayout = awful.widget.keyboardlayout()
 
+-- Volume widget
+local volumestatus, volumetimeout = awful.widget.watch('zsh -c "pamixer --get-volume-human"', 15)
+
 -- {{{ Wibar
 -- Create a textclock widget
 mytextclock = wibox.widget.textclock()
@@ -255,6 +258,7 @@ awful.screen.connect_for_each_screen(function(s)
         s.mytasklist, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
+            volumestatus,
             mykeyboardlayout,
             wibox.widget.systray(),
             mytextclock,
@@ -316,9 +320,6 @@ globalkeys = gears.table.join(
     awful.key({ modkey }, "Return", function()
         awful.spawn(terminal)
     end, { description = "open a terminal", group = "launcher" }),
-    awful.key({ modkey }, "b", function()
-        awful.spawn("firefox")
-    end, { description = "open firefox", group = "launcher" }),
     awful.key({ modkey, "Control" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
     awful.key({ modkey, "Shift" }, "q", awesome.quit, { description = "quit awesome", group = "awesome" }),
 
@@ -368,10 +369,29 @@ globalkeys = gears.table.join(
             history_path = awful.util.get_cache_dir() .. "/history_eval",
         })
     end, { description = "lua execute prompt", group = "awesome" }),
+
     -- Menubar
     awful.key({ modkey }, "p", function()
         menubar.show()
-    end, { description = "show the menubar", group = "launcher" })
+    end, { description = "show the menubar", group = "launcher" }),
+
+    -- {{my keybinds
+    -- open firefox
+    awful.key({ modkey }, "b", function()
+        awful.spawn("firefox")
+    end, { description = "open firefox", group = "launcher" }),
+
+    -- volume control
+    awful.key({}, "XF86AudioRaiseVolume", function()
+        awful.util.spawn("pamixer -i 5")
+        volumetimeout:emit_signal("timeout")
+    end, { description = "raise volume", group = "control" }),
+
+    awful.key({}, "XF86AudioLowerVolume", function()
+        awful.util.spawn("pamixer -d 5")
+        volumetimeout:emit_signal("timeout")
+    end, { description = "lower volume", group = "control" })
+    -- }}
 )
 
 clientkeys = gears.table.join(
