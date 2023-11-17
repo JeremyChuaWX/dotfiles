@@ -24,5 +24,6 @@ apt-get install \
     tmux \
     tree \
     wireplumber \
+    x11-utils \
     xinit \
     zsh
