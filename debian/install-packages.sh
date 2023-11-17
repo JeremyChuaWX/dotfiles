@@ -1,6 +1,10 @@
 #!/bin/sh
 
-apt install \
+set -ue
+
+sudo -n true
+
+apt-get install \
     awesome \
     bat \
     fd-find \
@@ -16,7 +20,6 @@ apt install \
     python3-pip \
     python3-pynvim \
     python3-venv \
-    ripgrep \
     stow \
     tmux \
     tree \

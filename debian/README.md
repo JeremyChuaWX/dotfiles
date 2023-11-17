@@ -1,36 +1,10 @@
 # Debian
 
-## Packages to install
-
-- awesome
-- bat
-- fd-find
-- firefox-esr
-- fzf
-- g++
-- gh
-- git
-- libtree-sitter0
-- luarocks
-- make
-- pamixer
-- pipewire-media-session-
-- python3-pip
-- python3-pynvim
-- python3-venv
-- ripgrep
-- stow
-- tmux
-- tree
-- wireplumber
-- xinit
-- zsh
-
 ## Setup
 
 - mkdir `.config/zsh`, `.fnm`, `builds`, `dev`, `.local/bin`, `.local/share`
 
-- install packages
+- run `./install-packages.sh` script
 
 - stow global stowables first, then debian stowables
 
@@ -50,6 +24,8 @@
 - install go from website and run command
 
   ```bash
+  wget https://go.dev/dl/go<version>.linux-amd64.tar.gz
+  # move tarball from downloads to builds folder
   tar xzvf "<go tarball here>"
   ln -s ~/builds/"<go tarball here>"/bin/go ~/.local/bin
   ln -s ~/builds/"<go tarball here>"/bin/gofmt ~/.local/bin
@@ -64,12 +40,21 @@
   ln -s ~/builds/nvim-linux64/bin/nvim ~/.local/bin
   ```
 
+- download ripgrep debian package and install
+
+  ```bash
+  wget https://github.com/BurntSushi/ripgrep/releases/download/<version>/<filename>.deb
+  sudo dpkg -i <filename>.deb
+  ```
+
 - login to gh cli
 
-- enable wireplumber in systemd and restart
+- add `noatime` to `/etc/fstab`
+
+- enable wireplumber in systemd
 
   ```bash
   systemctl --user --now enable wireplumber.service
   ```
 
-- add `noatime` to `/etc/fstab`
+- restart system
