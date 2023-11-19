@@ -3,7 +3,6 @@ local M = {
     build = ":TSUpdate",
     dependencies = {
         "windwp/nvim-ts-autotag",
-        "JoosepAlviste/nvim-ts-context-commentstring",
         "nvim-treesitter/nvim-treesitter-textobjects",
     },
 }
