@@ -37,8 +37,12 @@ local M = {
             },
             golines = {
                 prepend_args = {
+                    "-m",
+                    "80",
                     "--base-formatter",
                     "gofumpt",
+                    "--no-chain-split-dots",
+                    "--no-reformat-tags",
                 },
             },
         },
