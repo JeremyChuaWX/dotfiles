@@ -9,7 +9,6 @@ M.config = function()
 
     npairs.setup({
         check_ts = true,
-        ts_config = {},
         diasble_filetype = {
             "TelescopePrompt",
             "guihua",
