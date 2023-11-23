@@ -7,11 +7,6 @@ if [[ $OSTYPE = "darwin"* ]] then
     alias ls="gls"
 fi
 
-if [[ $OSTYPE = "linux"* ]] then
-    alias bat="batcat"
-    alias fd="fdfind"
-fi
-
 # directories
 alias ll="ls -AlF --color=auto --group-directories-first --human-readable"
 alias ..="cd .."
