@@ -39,8 +39,11 @@ mason_lspconfig.setup_handlers({
                         includeInlayEnumMemberValueHints = true,
                     },
                 },
-            })
-        end
+            },
+        })
+        require("tsc").setup({
+            auto_start_watch_mode = true,
+        })
     end,
 
     ["rust_analyzer"] = function()
