@@ -9,9 +9,6 @@ local M = {
 M.config = function()
     local ts_move_keys = {
         f = { query = "@function.outer", desc = "goto function" },
-        a = { query = "@attribute.inner", desc = "goto attribute" },
-        c = { query = "@class.outer", desc = "goto class" },
-        x = { query = "@comment.outer", desc = "goto comment" },
     }
 
     local ts_goto_next_start = {}
