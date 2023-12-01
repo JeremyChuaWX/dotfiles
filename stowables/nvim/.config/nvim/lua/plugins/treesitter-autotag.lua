@@ -1,6 +1,8 @@
 local M = {
     "windwp/nvim-ts-autotag",
-    config = true,
+    opts = {
+        enable_close_on_slash = false,
+    },
 }
 
 return M
