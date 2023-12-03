@@ -28,25 +28,23 @@ local M = {
             },
         })
 
-        local set = vim.keymap.set
-
-        set({ "i", "s" }, "<C-u>", function()
+        vim.keymap.set({ "i", "s" }, "<C-u>", function()
             if luasnip.choice_active() then
                 luasnip.change_choice(1)
             end
         end)
 
-        set({ "i", "s" }, "<C-k>", function()
+        vim.keymap.set({ "i", "s" }, "<C-k>", function()
             luasnip.expand()
         end)
 
-        set({ "i", "s" }, "<C-j>", function()
+        vim.keymap.set({ "i", "s" }, "<C-j>", function()
             if luasnip.jumpable(-1) then
                 luasnip.jump(-1)
             end
         end)
 
-        set({ "i", "s" }, "<C-l>", function()
+        vim.keymap.set({ "i", "s" }, "<C-l>", function()
             if luasnip.jumpable(1) then
                 luasnip.jump(1)
             end
