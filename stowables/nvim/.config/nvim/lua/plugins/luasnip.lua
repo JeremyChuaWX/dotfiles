@@ -3,6 +3,8 @@ local M = {
     dependencies = {
         "rafamadriz/friendly-snippets",
     },
+    version = "v2.1.1",
+    build = "make install_jsregexp",
     config = function()
         local types = require("luasnip.util.types")
         local luasnip = require("luasnip")
