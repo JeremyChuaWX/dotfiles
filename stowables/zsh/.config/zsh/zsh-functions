@@ -122,7 +122,8 @@ function fzf_preview() {
 
 function git_commit() {
     if [ $1 ]; then
-        git commit -m $1
+        type=$(echo "fix\nfeat\nbuild\nchore\nci\ndocs\nstyle\nrefactor\nperf\ntest" | fzf)
+        git commit -m "$type: $1"
         return
     fi
     git commit -v
