@@ -125,20 +125,25 @@ function git_commit() {
     scope=""
     usage="usage: [-m=<commit message>] [-s=<scope>]"
     while getopts "m:s:" flag; do
-        case "${flag}" in
-            m) msg="{$flag}" ;;
-            s) scope="{$flag}" ;;
+        case $flag in
+            m) msg=$OPTARG ;;
+            s) scope=$OPTARG ;;
             *) echo $usage
                 return ;;
         esac
     done
-    if [ $msg -z ]; then
+    if [ -z $msg ]; then
         echo $usage
         echo "error: no commit message provided"
         return
     fi
     type=$(echo "fix\nfeat\nbuild\nchore\nci\ndocs\nstyle\nrefactor\nperf\ntest" | fzf)
-    if [ $scope -n ]; then
+    if [ -z $type ]; then
+        echo $usage
+        echo "error: no commit type provided"
+        return
+    fi
+    if [ -n $scope ]; then
         git commit -m "$type: $msg"
     else
         git commit -m "$type($scope): $msg"
