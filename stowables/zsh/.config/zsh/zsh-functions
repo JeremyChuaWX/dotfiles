@@ -121,12 +121,29 @@ function fzf_preview() {
 }
 
 function git_commit() {
-    if [ $1 ]; then
-        type=$(echo "fix\nfeat\nbuild\nchore\nci\ndocs\nstyle\nrefactor\nperf\ntest" | fzf)
-        git commit -m "$type: $1"
+    msg=""
+    scope=""
+    usage="usage: [-m=<commit message>] [-s=<scope>]"
+    while getopts "m:s:" flag; do
+        case "${flag}" in
+            m) msg="{$flag}" ;;
+            s) scope="{$flag}" ;;
+            *) echo $usage
+                return ;;
+        esac
+    done
+    if [ $msg -z ]; then
+        echo $usage
+        echo "error: no commit message provided"
         return
     fi
-    git commit -v
+    type=$(echo "fix\nfeat\nbuild\nchore\nci\ndocs\nstyle\nrefactor\nperf\ntest" | fzf)
+    if [ $scope -n ]; then
+        git commit -m "$type: $msg"
+    else
+        git commit -m "$type($scope): $msg"
+    fi
+    return
 }
 
 function fuzzy_git_checkout() {
