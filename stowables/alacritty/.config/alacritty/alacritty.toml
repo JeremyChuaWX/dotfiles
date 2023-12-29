@@ -1,0 +1,67 @@
+[colors.bright]
+black = "#686868"
+blue = "#59C2FF"
+cyan = "#95E6CB"
+green = "#C2D94C"
+magenta = "#FFEE99"
+red = "#F07178"
+white = "#FFFFFF"
+yellow = "#FFB454"
+
+[colors.normal]
+black = "#01060E"
+blue = "#53BDFA"
+cyan = "#90E1C6"
+green = "#91B362"
+magenta = "#FAE994"
+red = "#EA6C73"
+white = "#C7C7C7"
+yellow = "#F9AF4F"
+
+[colors.primary]
+background = "#0A0E14"
+foreground = "#B3B1AD"
+
+[env]
+TERM = "alacritty"
+
+[font]
+size = 18.0
+
+[font.normal]
+family = "JetBrainsMono Nerd Font Mono"
+style = "Regular"
+
+[[keyboard.bindings]]
+chars = "\u001B[105;5u"
+key = "I"
+mods = "Control"
+
+[[keyboard.bindings]]
+chars = "\u001B[46;5u"
+key = "Period"
+mods = "Control"
+
+[[keyboard.bindings]]
+chars = "\u001B[44;5u"
+key = "Comma"
+mods = "Control"
+
+[[keyboard.bindings]]
+chars = "\u001B[59;5u"
+key = "Semicolon"
+mods = "Control"
+
+[[keyboard.bindings]]
+chars = "\u001B[13;2u"
+key = "Return"
+mods = "Shift"
+
+[selection]
+save_to_clipboard = true
+semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"
+
+[window]
+dynamic_title = true
+opacity = 0.999
+option_as_alt = "Both"
