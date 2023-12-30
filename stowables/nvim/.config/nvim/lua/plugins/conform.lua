@@ -52,6 +52,7 @@ local M = {
             html = { "rustywind", "prettier" },
             javascript = { "rustywind", "prettier" },
             javascriptreact = { "rustywind", "prettier" },
+            json = { "prettier" },
             lua = { "stylua" },
             markdown = { "mdformat" },
             python = { "black" },
