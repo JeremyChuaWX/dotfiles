@@ -14,15 +14,10 @@ M.setup = function()
 
     local diagnosticConfig = {
         virtual_text = false,
-        virtual_lines = false,
-        signs = {
-            active = signs,
-        },
         update_in_insert = true,
         underline = true,
         severity_sort = true,
         float = {
-            focusable = false,
             style = "minimal",
             border = "solid",
             source = "always",
