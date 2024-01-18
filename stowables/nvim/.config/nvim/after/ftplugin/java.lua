@@ -121,9 +121,9 @@ local config = {
 
     -- Language server `initializationOptions`
     -- See https://github.com/mfussenegger/nvim-jdtls#java-debug-installation
-    init_options = {
-        bundles = bundles,
-    },
+    -- init_options = {
+    --     bundles = bundles,
+    -- },
 }
 -- This starts a new client & server,
 -- or attaches to an existing client & server depending on the `root_dir`.
