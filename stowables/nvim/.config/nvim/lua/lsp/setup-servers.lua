@@ -34,7 +34,8 @@ mason_lspconfig.setup_handlers({
             },
         })
         require("tsc").setup({
-            auto_start_watch_mode = true,
+            auto_open_qflist = false,
+            auto_close_qflist = true,
         })
     end,
 
