@@ -9,6 +9,7 @@ local mason_lspconfig = {
         ensure_installed = {
             "lua_ls",
             "tsserver",
+            "eslint",
             "jsonls",
             "tailwindcss",
             "rust_analyzer",
