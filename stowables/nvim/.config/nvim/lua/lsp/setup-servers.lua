@@ -15,6 +15,8 @@ mason_lspconfig.setup_handlers({
 
     ["jdtls"] = function() end,
 
+    ["rust_analyzer"] = function() end,
+
     ["tsserver"] = function()
         require("typescript-tools").setup({
             on_attach = require("lsp.server-config").on_attach,
@@ -36,18 +38,6 @@ mason_lspconfig.setup_handlers({
         require("tsc").setup({
             auto_open_qflist = false,
             auto_close_qflist = true,
-        })
-    end,
-
-    ["rust_analyzer"] = function()
-        local opts = get_server_opts("rust_analyzer")
-        require("rust-tools").setup({
-            server = opts,
-            tools = {
-                inlay_hints = {
-                    max_len_align = true,
-                },
-            },
         })
     end,
 })

@@ -12,7 +12,6 @@ local mason_lspconfig = {
             "eslint",
             "jsonls",
             "tailwindcss",
-            "rust_analyzer",
             "gopls",
             "pyright",
         },
