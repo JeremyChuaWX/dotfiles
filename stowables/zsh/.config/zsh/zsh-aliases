@@ -36,6 +36,7 @@ alias tl="tmux ls"
 
 # git
 alias gc="git_commit"
+alias gca="git commit --amend"
 alias gco="git checkout"
 alias ga="fuzzy_git_add"
 alias gall="git add --all"
