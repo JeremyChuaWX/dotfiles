@@ -49,6 +49,7 @@ alias gl="git log --graph --oneline --decorate --all"
 alias gb="git branch -va"
 alias gbc="git checkout -b "
 alias gbd="git branch -D "
+alias gbm="git branch -M "
 alias gd="fuzzy_git_diff"
 alias gf="git fetch --all"
 
