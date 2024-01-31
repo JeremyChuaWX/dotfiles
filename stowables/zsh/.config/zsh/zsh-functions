@@ -127,28 +127,15 @@ function new_dev_project() {
 }
 
 function git_commit() {
-    msg=""
-    scope=""
-    usage="usage: [-m=<commit message>] [-s=<scope>]"
-    while getopts "m:s:" flag; do
-        case $flag in
-            m) msg=$OPTARG ;;
-            s) scope=$OPTARG ;;
-            *) echo $usage
-                return ;;
-        esac
-    done
-    if [ -z $msg ]; then
-        echo $usage
-        echo "error: no commit message provided"
-        return
-    fi
+    echo "commit message:"
+    read msg
     type=$(echo "fix\nfeat\nbuild\nchore\nci\ndocs\nstyle\nrefactor\nperf\ntest" | fzf)
     if [ -z $type ]; then
-        echo $usage
         echo "error: no commit type provided"
         return
     fi
+    echo "commit scope:"
+    read scope
     if [ -n $scope ]; then
         git commit -m "$type: $msg"
     else
