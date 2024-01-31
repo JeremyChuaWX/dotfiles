@@ -127,15 +127,14 @@ function new_dev_project() {
 }
 
 function git_commit() {
-    echo "commit message:"
-    read msg
+    read msg\?"commit message: "
     type=$(echo "fix\nfeat\nbuild\nchore\nci\ndocs\nstyle\nrefactor\nperf\ntest" | fzf)
     if [ -z $type ]; then
         echo "error: no commit type provided"
         return
     fi
-    echo "commit scope:"
-    read scope
+    echo "commit type: $type"
+    read scope\?"commit scope: "
     if [ -n $scope ]; then
         git commit -m "$type: $msg"
     else
