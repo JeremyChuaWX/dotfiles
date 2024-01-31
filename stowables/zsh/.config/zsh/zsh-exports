@@ -35,6 +35,5 @@ export FZF_DEFAULT_OPTS="
 --bind='ctrl-b:preview-page-up'
 --bind='alt-p:change-preview-window(top,90%,wrap|40%,nowrap)'
 --bind='ctrl-a:toggle-all'
---preview='zsh -e $(functions fzf_preview); fzf_preview {}'
 --preview-window='40%'
 "

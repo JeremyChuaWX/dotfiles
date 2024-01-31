@@ -33,11 +33,27 @@ function mkcd() {
     mkdir -p "$1" && cd "$1"
 }
 
+function fzf_preview() {
+    if [[ -d $1 ]]; then
+        tree --dirsfirst -a -C -L 1 "$1"
+    elif [[ -f $1 ]]; then
+        bat --style numbers,changes --color=always "$1" | head -500
+    else
+        echo "no preview"
+    fi
+}
+
 function fuzzy_open() {
     if [ $1 ]; then
-        dir=$(fd --hidden --exclude .git --print0 | fzf --read0 --print0 --exit-0 --query $1)
+        dir=$(
+            fd --hidden --exclude .git --print0 |
+            fzf --read0 --print0 --exit-0 --query --preview="zsh -e $(functions fzf_preview); fzf_preview {}" $1
+        )
     else
-        dir=$(fd --hidden --exclude .git --print0 | fzf --read0 --print0 --exit-0)
+        dir=$(
+            fd --hidden --exclude .git --print0 |
+            fzf --read0 --print0 --exit-0 --preview="zsh -e $(functions fzf_preview); fzf_preview {}"
+        )
     fi
 
     if [ -d $dir ]; then
@@ -108,16 +124,6 @@ function new_dev_project() {
     header=${(C)$(echo "$name" | tr "\-\_" " ")}
     echo "# $header" > "$dir"/README.md
     open_dev_project "$name"
-}
-
-function fzf_preview() {
-    if [[ -d $1 ]]; then
-        tree --dirsfirst -a -C -L 1 "$1"
-    elif [[ -f $1 ]]; then
-        bat --style numbers,changes --color=always "$1" | head -500
-    else
-        echo "no preview"
-    fi
 }
 
 function git_commit() {
