@@ -22,6 +22,7 @@ mason_lspconfig.setup_handlers({
             on_attach = require("lsp.server-config").on_attach,
             capabilities = require("lsp.server-config").capabilities,
             settings = {
+                expose_as_code_action = "all",
                 tsserver_file_preferences = {
                     providePrefixAndSuffixTextForRename = false,
                     includeInlayParameterNameHints = "all",
