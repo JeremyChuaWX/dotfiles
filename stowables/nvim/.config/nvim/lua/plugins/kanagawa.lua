@@ -41,6 +41,7 @@ local M = {
                 ["@comment.note"] = { link = "@text.note" },
                 ["@comment.warning"] = { link = "@text.warning" },
                 ["@comment.danger"] = { link = "@text.danger" },
+                ["@comment.todo"] = { link = "@text.todo" },
                 ["@diff.plus"] = { link = "@text.diff.add" },
                 ["@diff.minus"] = { link = "@text.diff.delete" },
             }
