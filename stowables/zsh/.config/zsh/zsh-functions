@@ -75,10 +75,6 @@ function fuzzy_tmux_kill() {
 
 function fuzzy_tmux_session() {
     [[ -n "$TMUX" ]] && change="switch-client" || change="attach-session"
-    if [ $1 ]; then
-        tmux $change -t "$1" 2>/dev/null || (tmux new-session -d -s $1 && tmux $change -t "$1")
-        return
-    fi
     session=$(
         tmux list-sessions -F \#S 2>/dev/null |
         fzf --select-1 --exit-0 --preview="tmux lsw -F '#{window_id} #{window_name}' -t {}"
@@ -86,8 +82,12 @@ function fuzzy_tmux_session() {
 }
 
 function tmux_new_session() {
-    name=$(pwd | xargs basename | tr . _)
-    tmux new-session -s $name || tmux attach-session -t $name
+    [[ -n "$TMUX" ]] && change="switch-client" || change="attach-session"
+    session=$(pwd | xargs basename | tr . _)
+    if ! tmux has-session -t "$session" 2>/dev/null; then
+        tmux new-session -ds "$session"
+    fi
+    tmux $change -t "$session"
 }
 
 function open_dev_project() {
