@@ -6,4 +6,5 @@ return {
     "b0o/schemastore.nvim",
     "pmizio/typescript-tools.nvim",
     "dmmulroy/tsc.nvim",
+    "artemave/workspace-diagnostics.nvim",
 }

@@ -19,7 +19,10 @@ mason_lspconfig.setup_handlers({
 
     ["tsserver"] = function()
         require("typescript-tools").setup({
-            on_attach = require("lsp.server-config").on_attach,
+            on_attach = function(client, bufnr)
+                require("lsp.server-config").on_attach(client, bufnr)
+                require("workspace-diagnostics").populate_workspace_diagnostics(client, bufnr)
+            end,
             capabilities = require("lsp.server-config").capabilities,
             settings = {
                 expose_as_code_action = "all",
