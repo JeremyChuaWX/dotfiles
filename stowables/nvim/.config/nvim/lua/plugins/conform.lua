@@ -25,8 +25,6 @@ local M = {
                 prepend_args = {
                     "--indent-type",
                     "Spaces",
-                    "--indent-width",
-                    "4",
                 },
             },
             beautysh = {
