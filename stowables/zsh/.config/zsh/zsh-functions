@@ -128,7 +128,23 @@ function new_dev_project() {
 
 function git_commit() {
     read msg\?"commit message: "
-    type=$(echo "feat\nbuild\nchore\nfix\nci\ndocs\nstyle\nrefactor\nperf\ntest" | fzf)
+    types="\
+build:    changes that affect the build system or external dependencies\n\
+chore:    changes that do not relate to a fix or feature and don't modify src or test files (for example updating dependencies)\n\
+ci:       continuous integration related\n\
+docs:     updates to documentation such as a the README or other markdown files\n\
+feat:     a new feature is introduced with the changes\n\
+fix:      a bug fix has occurred\n\
+perf:     performance improvements\n\
+refactor: refactored code that neither fixes a bug nor adds a feature\n\
+revert:   reverts a previous commit\
+style:    changes that do not affect the meaning of the code, likely related to code formatting such as white-space, missing semi-colons, and so on.\n\
+test:     including new or correcting previous tests\n\
+    "
+    type=$(
+        echo $types |
+        fzf --delimiter ":" --preview "echo {1}: {2}" --preview-window="wrap" --bind "enter:become(echo {1})"
+    )
     if [ -z $type ]; then
         echo "error: no commit type provided"
         return
