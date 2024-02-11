@@ -128,7 +128,7 @@ function new_dev_project() {
 
 function git_commit() {
     read msg\?"commit message: "
-    type=$(echo "fix\nfeat\nbuild\nchore\nci\ndocs\nstyle\nrefactor\nperf\ntest" | fzf)
+    type=$(echo "feat\nbuild\nchore\nfix\nci\ndocs\nstyle\nrefactor\nperf\ntest" | fzf)
     if [ -z $type ]; then
         echo "error: no commit type provided"
         return
