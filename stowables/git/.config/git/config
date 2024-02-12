@@ -11,3 +11,6 @@ defaultBranch = main
 helper = !gh auth git-credential
 [credential "https://gist.github.com"]
 helper = !gh auth git-credential
+[rerere]
+enabled = true
+autoUpdate = true
