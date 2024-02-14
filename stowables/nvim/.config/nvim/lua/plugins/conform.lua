@@ -5,6 +5,7 @@ local M = {
             "gf",
             function()
                 require("conform").format({
+                    async = true,
                     lsp_fallback = true,
                 })
             end,
@@ -41,6 +42,11 @@ local M = {
                     "gofumpt",
                     "--no-chain-split-dots",
                     "--no-reformat-tags",
+                },
+            },
+            black = {
+                prepend_args = {
+                    "--fast",
                 },
             },
         },
