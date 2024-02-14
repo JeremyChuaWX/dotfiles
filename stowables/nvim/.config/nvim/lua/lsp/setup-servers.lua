@@ -28,14 +28,6 @@ mason_lspconfig.setup_handlers({
                 expose_as_code_action = "all",
                 tsserver_file_preferences = {
                     providePrefixAndSuffixTextForRename = false,
-                    includeInlayParameterNameHints = "all",
-                    includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-                    includeInlayFunctionParameterTypeHints = true,
-                    includeInlayVariableTypeHints = true,
-                    includeInlayVariableTypeHintsWhenTypeMatchesName = true,
-                    includeInlayPropertyDeclarationTypeHints = true,
-                    includeInlayFunctionLikeReturnTypeHints = true,
-                    includeInlayEnumMemberValueHints = true,
                 },
             },
         })
