@@ -38,7 +38,9 @@ zsh_add_plugin "zsh-users/zsh-autosuggestions"
 zsh_add_plugin "zsh-users/zsh-syntax-highlighting"
 zsh_add_plugin "hlissner/zsh-autopair"
 
-zstyle ':fzf-tab:complete:*:*' fzf-preview 'less ${(Q)realpath}'
+zstyle ':fzf-tab:*' fzf-flags '--height=70%'
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'less ${(Q)realpath}'
+# TODO: how to turn on for completion of files (not specific to any command)
 
 # tmp
-source "/Users/jeremy/.profile"
+source "$HOME/.profile"

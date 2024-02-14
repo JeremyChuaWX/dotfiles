@@ -12,6 +12,7 @@ zstyle ":completion:*:descriptions" format "%F{green}-- %d --%f"
 zstyle ":completion:*:messages" format " %F{purple} -- %d --%f"
 zstyle ":completion:*:warnings" format " %F{red}-- no matches found --%f"
 zstyle ":completion:*:default" list-colors ${(s.:.)LS_COLORS}
+zstyle ":completion:*:git-checkout:*" sort false
 
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-searchs

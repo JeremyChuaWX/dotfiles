@@ -117,8 +117,7 @@ function open_dev_project() {
 }
 
 function new_dev_project() {
-    echo "new project name: "
-    read name
+    read name\?"new project name: "
     dir="$HOME"/dev/"$name"
     git init "$dir"
     header=${(C)$(echo "$name" | tr "\-\_" " ")}
