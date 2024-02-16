@@ -11,6 +11,7 @@ fi
 alias ll="ls -AlF --color=auto --group-directories-first --human-readable"
 alias ..="cd .."
 alias tree="tree --dirsfirst -C"
+alias itree="tree --dirsfirst -C --gitignore"
 
 # file manipulation
 alias rm="rm -v"
