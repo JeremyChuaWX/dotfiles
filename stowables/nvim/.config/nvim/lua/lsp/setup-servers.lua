@@ -21,7 +21,7 @@ mason_lspconfig.setup_handlers({
         require("typescript-tools").setup({
             on_attach = function(client, bufnr)
                 require("lsp.server-config").on_attach(client, bufnr)
-                require("workspace-diagnostics").populate_workspace_diagnostics(client, bufnr)
+                -- require("workspace-diagnostics").populate_workspace_diagnostics(client, bufnr)
             end,
             capabilities = require("lsp.server-config").capabilities,
             settings = {
