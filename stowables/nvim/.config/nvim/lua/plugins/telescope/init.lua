@@ -25,6 +25,7 @@ local M = {
                     },
                     width = 0.80,
                     height = 0.85,
+                    scroll_speed = 3,
                 },
 
                 mappings = {
