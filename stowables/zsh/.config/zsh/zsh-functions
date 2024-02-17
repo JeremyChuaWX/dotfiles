@@ -126,6 +126,16 @@ function new_dev_project() {
 }
 
 function git_commit() {
+    init=0
+    while getopts "i" flag; do
+        case $flag in
+            i) init=1
+        esac
+    done
+    if [[ $init > 0 ]]; then
+        git commit -m "init commit"
+        return
+    fi
     read msg\?"commit message: "
     types="\
 build:    changes that affect the build system or external dependencies\n\
