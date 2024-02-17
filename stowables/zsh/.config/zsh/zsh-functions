@@ -136,7 +136,24 @@ function git_commit() {
         git commit -m "init commit"
         return
     fi
-    read msg\?"commit message: "
+
+    $EDITOR tmp
+    str=$(<tmp)
+    rm tmp
+    arr=(${(f)str})
+
+    msg=$arr[1]
+    if [[ -z $msg ]]; then
+        echo "error: commit message empty"
+        return
+    fi
+    echo "commit message: $msg"
+
+    desc=$arr[2]
+    if [[ -n $desc ]]; then
+        echo "commit description: $desc"
+    fi
+
     types="\
 build:    changes that affect the build system or external dependencies\n\
 chore:    changes that do not relate to a fix or feature and don't modify src or test files (for example updating dependencies)\n\
@@ -159,13 +176,19 @@ test:     including new or correcting previous tests\
         return
     fi
     echo "commit type: $type"
+
     read scope\?"commit scope: "
-    if [ -n $scope ]; then
-        git commit -m "$type: $msg"
+    if [ -z $scope ]; then
+        msg="$type: $msg"
     else
-        git commit -m "$type($scope): $msg"
+        msg="$type($scope): $msg"
     fi
-    return
+
+    if [[ -n $desc ]]; then
+        git commit -m "$msg" -m "$desc"
+    else
+        git commit -m "$msg"
+    fi
 }
 
 function fuzzy_git_checkout() {
