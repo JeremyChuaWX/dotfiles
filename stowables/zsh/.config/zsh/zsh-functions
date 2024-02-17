@@ -155,7 +155,7 @@ test:     including new or correcting previous tests\
         fzf --delimiter ":" --preview "echo {1}: {2}" --preview-window="wrap" --bind "enter:become(echo {1})"
     )
     if [ -z $type ]; then
-        echo "error: no commit type provided"
+        echo "error: no commit type selected"
         return
     fi
     echo "commit type: $type"
