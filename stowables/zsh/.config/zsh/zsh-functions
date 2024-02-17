@@ -138,8 +138,8 @@ perf:     performance improvements\n\
 refactor: refactored code that neither fixes a bug nor adds a feature\n\
 revert:   reverts a previous commit\
 style:    changes that do not affect the meaning of the code, likely related to code formatting such as white-space, missing semi-colons, and so on.\n\
-test:     including new or correcting previous tests\n\
-    "
+test:     including new or correcting previous tests\
+"
     type=$(
         echo $types |
         fzf --delimiter ":" --preview "echo {1}: {2}" --preview-window="wrap" --bind "enter:become(echo {1})"
