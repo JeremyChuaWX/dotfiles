@@ -36,9 +36,12 @@ M.get_server_opts = function(server_name)
         on_attach = M.on_attach,
         capabilities = M.capabilities,
     }
-    local server_opts = require("lsp.servers")[server_name] or {}
-
-    return vim.tbl_deep_extend("keep", server_opts, opts)
+    local ok, server_opts = pcall(require, "lsp.servers." .. server_name)
+    if ok then
+        return vim.tbl_deep_extend("keep", server_opts, opts)
+    else
+        return opts
+    end
 end
 
 return M

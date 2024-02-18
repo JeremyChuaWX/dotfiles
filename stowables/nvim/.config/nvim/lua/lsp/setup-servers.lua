@@ -15,7 +15,22 @@ mason_lspconfig.setup_handlers({
 
     ["jdtls"] = function() end,
 
-    ["rust_analyzer"] = function() end,
+    ["rust_analyzer"] = function()
+        vim.g.rustaceanvim = {
+            server = {
+                on_attach = require("lsp.server-config").on_attach,
+                capabilities = require("lsp.server-config").capabilities,
+                -- settings = {
+                --     ["rust-analyzer"] = {
+                --         check = {
+                --             command = "clippy",
+                --             extraArgs = { "--", "-W", "clippy::all" },
+                --         },
+                --     },
+                -- },
+            },
+        }
+    end,
 
     ["tsserver"] = function()
         require("typescript-tools").setup({
