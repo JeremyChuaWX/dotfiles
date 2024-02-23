@@ -13,7 +13,7 @@ local mason_lspconfig = {
             "jsonls",
             "tailwindcss",
             "gopls",
-            "pyright",
+            "ruff_lsp",
         },
     },
 }
@@ -29,7 +29,6 @@ local mason_tools = {
             "rustywind",
             "gofumpt",
             "golines",
-            "black",
         },
     },
 }
