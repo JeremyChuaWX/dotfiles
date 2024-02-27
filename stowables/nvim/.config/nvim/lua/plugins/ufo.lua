@@ -1,7 +1,10 @@
 local M = {
     "kevinhwang91/nvim-ufo",
     dependencies = {
-        "kevinhwang91/promise-async",
+        {
+            "kevinhwang91/promise-async",
+            commit = "94f6f03",
+        },
         "luukvbaal/statuscol.nvim",
     },
     config = function()
