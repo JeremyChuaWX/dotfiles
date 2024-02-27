@@ -33,7 +33,7 @@ local M = {
                 ["<C-f>"] = cmp.mapping.scroll_docs(1),
                 ["<C-y>"] = cmp.mapping.complete(),
                 ["<C-e>"] = cmp.mapping.abort(),
-                ["<CR>"] = cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Replace }),
+                ["<CR>"] = cmp.mapping.confirm({ select = true }),
             }),
             snippet = {
                 expand = function(args)
