@@ -17,6 +17,9 @@ local M = {
         local lspkind = require("lspkind")
 
         cmp.setup({
+            confirmation = {
+                default_behavior = "replace",
+            },
             formatting = {
                 format = lspkind.cmp_format({
                     mode = "symbol_text",

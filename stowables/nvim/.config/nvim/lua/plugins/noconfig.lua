@@ -7,4 +7,5 @@ return {
     "pmizio/typescript-tools.nvim",
     "dmmulroy/tsc.nvim",
     "artemave/workspace-diagnostics.nvim",
+    "dmmulroy/ts-error-translator.nvim",
 }

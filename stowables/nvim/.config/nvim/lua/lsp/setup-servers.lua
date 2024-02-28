@@ -45,10 +45,14 @@ mason_lspconfig.setup_handlers({
                     providePrefixAndSuffixTextForRename = false,
                 },
             },
+            handlers = {
+                ["textDocument/publishDiagnostics"] = function(...)
+                    require("ts-error-translator").translate_diagnostics(...)
+                    vim.lsp.diagnostic.on_publish_diagnostics(...)
+                end,
+            },
         })
         require("tsc").setup({
-            auto_open_qflist = false,
-            auto_close_qflist = true,
             pretty_errors = false, -- pretty errors not working with new tsserver
         })
     end,
