@@ -32,11 +32,10 @@ export FZF_DEFAULT_OPTS="
 --scroll-off=5
 --info=hidden
 --cycle
---bind='ctrl-e:preview-down'
---bind='ctrl-y:preview-up'
---bind='ctrl-f:preview-page-down'
---bind='ctrl-b:preview-page-up'
+--bind='ctrl-f:preview-down'
+--bind='ctrl-b:preview-up'
 --bind='alt-p:change-preview-window(top,90%,wrap|60%,nowrap)'
---bind='ctrl-a:toggle-all'
+--bind='ctrl-a:select-all'
+--bind='ctrl-t:toggle-all'
 --preview-window='60%'
 "
