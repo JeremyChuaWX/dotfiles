@@ -53,7 +53,7 @@ mason_lspconfig.setup_handlers({
             },
         })
         require("tsc").setup({
-            pretty_errors = false, -- pretty errors not working with new tsserver
+            auto_focus_qflist = true,
         })
     end,
 })
