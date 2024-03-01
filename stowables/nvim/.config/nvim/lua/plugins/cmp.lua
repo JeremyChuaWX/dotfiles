@@ -29,6 +29,7 @@ local M = {
                         fuzzy_buffer = "[buf]",
                         path = "[path]",
                     },
+                    symbol_map = { Copilot = "" },
                 }),
             },
             mapping = cmp.mapping.preset.insert({
@@ -44,6 +45,7 @@ local M = {
                 end,
             },
             sources = cmp.config.sources({
+                { name = "copilot" },
                 {
                     name = "nvim_lsp",
                     entry_filter = function(entry)
