@@ -38,6 +38,7 @@ alias tl="tmux ls"
 # git
 alias gc="git_commit"
 alias gca="git commit --amend"
+alias gcan="git commit --amend --no-edit"
 alias gco="fuzzy_git_checkout"
 alias gcO="git checkout"
 alias ga="fuzzy_git_add"
