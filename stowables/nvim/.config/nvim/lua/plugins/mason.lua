@@ -34,7 +34,7 @@ local mason_tools = {
     },
 }
 
-M = {
+local M = {
     mason,
     mason_lspconfig,
     mason_tools,
