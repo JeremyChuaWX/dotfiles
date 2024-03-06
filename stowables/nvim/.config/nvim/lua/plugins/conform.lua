@@ -59,7 +59,6 @@ local M = {
             json = { "prettier" },
             lua = { "stylua" },
             markdown = { "mdformat" },
-            python = { "black" },
             rust = { "rustfmt" },
             sh = { "beautysh" },
             typescript = { "rustywind", "prettier" },
