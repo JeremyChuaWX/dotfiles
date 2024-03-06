@@ -163,7 +163,7 @@ feat:     a new feature is introduced with the changes\n\
 fix:      a bug fix has occurred\n\
 perf:     performance improvements\n\
 refactor: refactored code that neither fixes a bug nor adds a feature\n\
-revert:   reverts a previous commit\
+revert:   reverts a previous commit\n\
 style:    changes that do not affect the meaning of the code, likely related to code formatting such as white-space, missing semi-colons, and so on.\n\
 test:     including new or correcting previous tests\
 "
