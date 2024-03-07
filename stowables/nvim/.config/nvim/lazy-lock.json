@@ -46,7 +46,7 @@
   "popup.nvim": { "branch": "master", "commit": "b7404d35d5d3548a82149238289fa71f7f6de4ac" },
   "promise-async": { "branch": "main", "commit": "94f6f03c6c1e2aab551aacdf0c1e597a7269abb6" },
   "rustaceanvim": { "branch": "master", "commit": "387ca846d632f8c90631536341ca1778b4c2c497" },
-  "schemastore.nvim": { "branch": "main", "commit": "88355559bb42cc8e4f6ca7b624dc4c3b654c5c08" },
+  "schemastore.nvim": { "branch": "main", "commit": "5d7f8c3e7ae4e3fa5daedb83306406f95257201c" },
   "statuscol.nvim": { "branch": "main", "commit": "d954893262a57a92e46edd87de67e2b3fe72305e" },
   "tailiscope.nvim": { "branch": "main", "commit": "d756e166cc1fec4eb06549b218b275c21d652e1e" },
   "telescope-fzf-native.nvim": { "branch": "main", "commit": "9ef21b2e6bb6ebeaf349a0781745549bbb870d27" },
