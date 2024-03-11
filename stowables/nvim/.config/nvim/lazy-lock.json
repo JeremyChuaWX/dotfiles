@@ -45,7 +45,7 @@
   "plenary.nvim": { "branch": "master", "commit": "f7adfc4b3f4f91aab6caebf42b3682945fbc35be" },
   "popup.nvim": { "branch": "master", "commit": "b7404d35d5d3548a82149238289fa71f7f6de4ac" },
   "promise-async": { "branch": "main", "commit": "94f6f03c6c1e2aab551aacdf0c1e597a7269abb6" },
-  "rustaceanvim": { "branch": "master", "commit": "c787f5b0fafc29f9487b1314b19515451fd990e7" },
+  "rustaceanvim": { "branch": "master", "commit": "5dc35a075ad7c9d2f6493065e1e5970e4ad61504" },
   "schemastore.nvim": { "branch": "main", "commit": "b788bde023f9fbc2eb86e89d32c0bf98a60ae406" },
   "statuscol.nvim": { "branch": "main", "commit": "d954893262a57a92e46edd87de67e2b3fe72305e" },
   "tailiscope.nvim": { "branch": "main", "commit": "d756e166cc1fec4eb06549b218b275c21d652e1e" },
