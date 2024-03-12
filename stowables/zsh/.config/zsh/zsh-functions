@@ -127,29 +127,35 @@ function new_dev_project() {
 
 function git_commit() {
     init=0
-    while getopts "i" flag; do
+    msg=""
+    desc=""
+    while getopts "im:" flag; do
         case $flag in
-            i) init=1
+            i) init=1 ;;
+            m) msg=$OPTARG ;;
         esac
     done
+
     if [[ $init > 0 ]]; then
         git commit -m "init commit"
         return
     fi
 
-    $EDITOR tmp
-    str=$(<tmp)
-    rm tmp
-    arr=(${(f)str})
+    if [[ -z $msg ]]; then
+        $EDITOR tmp
+        str=$(<tmp)
+        rm tmp
+        arr=(${(f)str})
+        msg=$arr[1]
+        desc=$arr[2]
+    fi
 
-    msg=$arr[1]
     if [[ -z $msg ]]; then
         echo "error: commit message empty"
         return
     fi
     echo "commit message: $msg"
 
-    desc=$arr[2]
     if [[ -n $desc ]]; then
         echo "commit description: $desc"
     fi
