@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "Applying OSX settings"
-zsh osx_settings
+source osx_settings
 
 echo "Installing homebrew"
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -16,7 +16,7 @@ echo "Logging in with github"
 gh auth login
 
 echo "Installing npm packages"
-./npmfile
+source npmfile
 
 echo "Install JetBrains Font"
 cp $HOME/.dotfiles/stowables/fonts/* $HOME/Library/Fonts
