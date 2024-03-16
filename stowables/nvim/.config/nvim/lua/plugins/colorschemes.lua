@@ -45,15 +45,26 @@ local kanagawa = {
 local sonokai = {
     "sainnhe/sonokai",
     config = function()
-        vim.g.sonokai_style = "shusia"
+        vim.g.sonokai_style = "espresso"
         vim.g.sonokai_enable_italic = 1
         vim.g.sonokai_better_performance = 1
+    end,
+}
+
+local gruvbox = {
+    "sainnhe/gruvbox-material",
+    config = function()
+        vim.g.gruvbox_material_foreground = "original"
+        vim.g.gruvbox_material_background = "medium"
+        vim.g.gruvbox_material_enable_italic = 1
+        vim.g.gruvbox_material_better_performance = 1
     end,
 }
 
 local M = {
     kanagawa,
     sonokai,
+    gruvbox,
 }
 
 return M
