@@ -1,4 +1,4 @@
-local M = {
+local kanagawa = {
     "rebelot/kanagawa.nvim",
     config = function()
         local overrides = function(colors)
@@ -40,6 +40,20 @@ local M = {
             },
         })
     end,
+}
+
+local sonokai = {
+    "sainnhe/sonokai",
+    config = function()
+        vim.g.sonokai_style = "shusia"
+        vim.g.sonokai_enable_italic = 1
+        vim.g.sonokai_better_performance = 1
+    end,
+}
+
+local M = {
+    kanagawa,
+    sonokai,
 }
 
 return M
