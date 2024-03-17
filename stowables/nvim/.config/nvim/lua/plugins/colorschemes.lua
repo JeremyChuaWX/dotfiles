@@ -42,6 +42,11 @@ local kanagawa = {
     end,
 }
 
+local rosepine = {
+    "rose-pine/neovim",
+    name = "rose-pine",
+}
+
 local sonokai = {
     "sainnhe/sonokai",
     config = function()
@@ -63,6 +68,7 @@ local gruvbox = {
 
 local M = {
     kanagawa,
+    rosepine,
     sonokai,
     gruvbox,
 }
