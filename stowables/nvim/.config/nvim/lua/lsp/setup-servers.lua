@@ -57,3 +57,10 @@ mason_lspconfig.setup_handlers({
         })
     end,
 })
+-- gleam
+
+local config = require("lsp.server-config")
+require("lspconfig").gleam.setup({
+    on_attach = config.on_attach,
+    capabilities = config.capabilities,
+})
