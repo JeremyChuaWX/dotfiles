@@ -21,8 +21,8 @@ local kanagawa = {
                 PmenuThumb = { bg = theme.ui.bg_p2 },
 
                 -- status line
-                StatusLine = { fg = theme.ui.fg, bg = "none", blend = 10 },
-                StatusLineNC = { fg = theme.ui.fg_dim, bg = "none", blend = 10 },
+                StatusLine = { fg = theme.ui.fg, bg = "none" },
+                StatusLineNC = { fg = theme.ui.fg_dim, bg = "none" },
             }
         end
 
