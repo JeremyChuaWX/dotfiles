@@ -42,5 +42,7 @@ zstyle ':fzf-tab:*' fzf-flags '--height=70%'
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'less ${(Q)realpath}'
 # TODO: how to turn on for completion of files (not specific to any command)
 
-# tmp
-source "$HOME/.profile"
+# adhoc stuff
+if [[ -f "$HOME/.profile" ]]; then
+    source "$HOME/.profile"
+fi
