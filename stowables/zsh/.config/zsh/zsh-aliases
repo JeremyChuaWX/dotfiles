@@ -34,6 +34,7 @@ alias t="fuzzy_tmux_session"
 alias tn="tmux_new_session"
 alias tm="tmux_many_new_sessions"
 alias tk="fuzzy_tmux_kill"
+alias tkk="tmux kill-server"
 alias tl="tmux ls"
 
 # git
