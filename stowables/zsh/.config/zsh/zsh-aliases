@@ -5,6 +5,7 @@ if [[ $OSTYPE = "darwin"* ]] then
 
     # replace ls with gls
     alias ls="gls"
+    alias head="ghead"
 fi
 
 # directories
