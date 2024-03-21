@@ -32,6 +32,7 @@ alias ppath="echo $PATH | tr '\:' '\n' | fzf"
 # tmux
 alias t="fuzzy_tmux_session"
 alias tn="tmux_new_session"
+alias tm="tmux_many_new_sessions"
 alias tk="fuzzy_tmux_kill"
 alias tl="tmux ls"
 

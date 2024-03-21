@@ -90,6 +90,14 @@ function tmux_new_session() {
     tmux $change -t "$session"
 }
 
+function tmux_many_new_sessions() {
+    for dir in $*; do
+        if ! tmux has-session -t "$dir" 2>/dev/null; then
+            tmux new-session -ds "$dir" -c "$dir"
+        fi
+    done
+}
+
 function open_dev_project() {
     if [[ $1 ]]; then
         dir="$HOME"/dev/"$1"
