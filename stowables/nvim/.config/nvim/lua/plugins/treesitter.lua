@@ -30,6 +30,7 @@ local M = {
                 "markdown",
                 "python",
                 "typescript",
+                "dockerfile",
             },
             auto_install = true,
             highlight = {
