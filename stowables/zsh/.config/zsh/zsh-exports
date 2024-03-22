@@ -7,6 +7,7 @@ fi
 export PATH="$HOME/.cargo/bin:$PATH" # rust
 export PATH="$HOME/go/bin:$PATH" # go
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH" # java
+export PATH="$HOME/.local/share/bob/nvim-bin:$PATH" # bob (neovim version manager)
 export PATH="$HOME/.local/bin:$PATH" # local/bin
 export FPATH="$FPATH:$HOME/.config/zsh/completions" # own completions
 
