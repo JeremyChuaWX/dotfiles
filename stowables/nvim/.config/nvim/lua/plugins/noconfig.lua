@@ -8,4 +8,5 @@ return {
     "dmmulroy/tsc.nvim",
     "artemave/workspace-diagnostics.nvim",
     "dmmulroy/ts-error-translator.nvim",
+    "luckasRanarison/tailwind-tools.nvim",
 }

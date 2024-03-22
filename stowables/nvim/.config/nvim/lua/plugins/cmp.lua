@@ -30,6 +30,7 @@ local M = {
                         path = "[path]",
                     },
                     symbol_map = { Copilot = "" },
+                    before = require("tailwind-tools.cmp").lspkind_format,
                 }),
             },
             mapping = cmp.mapping.preset.insert({

@@ -2,6 +2,11 @@ return {
     on_attach = function(client, bufnr)
         require("lsp.server-config").on_attach(client, bufnr)
         require("telescope").load_extension("tailiscope")
+        require("tailwind-tools").setup({
+            document_color = {
+                kind = "background",
+            },
+        })
     end,
     root_dir = require("lspconfig.util").root_pattern(
         "tailwind.config.js",
