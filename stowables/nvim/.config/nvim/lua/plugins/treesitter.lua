@@ -22,8 +22,16 @@ local M = {
         end
 
         require("nvim-treesitter.configs").setup({
-            ensure_installed = "all",
-            ignore_install = { "phpdoc", "beancount" },
+            ensure_installed = {
+                "go",
+                "javascript",
+                "json",
+                "lua",
+                "markdown",
+                "python",
+                "typescript",
+            },
+            auto_install = true,
             highlight = {
                 enable = true,
                 additional_vim_regex_highlighting = false,
