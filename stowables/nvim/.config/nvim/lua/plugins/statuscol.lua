@@ -5,12 +5,18 @@ local M = {
         require("statuscol").setup({
             relculright = true,
             segments = {
-                { text = { builtin.foldfunc, " " }, click = "v:lua.ScFa" },
                 {
-                    sign = { name = { "Diagnostic" }, maxwidth = 1 },
+                    text = { builtin.foldfunc, " " },
+                    click = "v:lua.ScFa",
+                },
+                {
+                    sign = { namespace = { "diagnostic" }, maxwidth = 1 },
                     click = "v:lua.ScSa",
                 },
-                { text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa" },
+                {
+                    text = { builtin.lnumfunc, " " },
+                    click = "v:lua.ScLa",
+                },
                 {
                     sign = { namespace = { "gitsigns" }, colwidth = 1, wrap = true },
                     click = "v:lua.ScSa",
