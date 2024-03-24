@@ -1,32 +1,28 @@
 local M = {}
 
-local function lsp_keymaps(bufnr)
-    local set = function(mode, lhs, rhs, opts)
-        local final_opts = opts or {}
-        final_opts = vim.tbl_deep_extend("keep", { buffer = bufnr }, final_opts)
-        vim.keymap.set(mode, lhs, rhs, final_opts)
-    end
-
-    set("n", "gr", function()
-        require("telescope.builtin").lsp_references()
-    end)
-
-    set("n", "gd", function()
-        require("telescope.builtin").lsp_definitions({
-            jump_type = "never",
-        })
-    end)
-
-    set("n", "gl", vim.diagnostic.open_float)
-    set("n", "]d", vim.diagnostic.goto_next)
-    set("n", "[d", vim.diagnostic.goto_prev)
-    set("n", "ga", vim.lsp.buf.code_action)
-    set("n", "K", vim.lsp.buf.hover)
-    set("n", "gR", vim.lsp.buf.rename)
+local set = function(mode, lhs, rhs, bufnr)
+    vim.keymap.set(mode, lhs, rhs, { buffer = bufnr })
 end
 
 M.on_attach = function(client, bufnr)
-    lsp_keymaps(bufnr)
+    -- keymaps
+    set("n", "gr", function()
+        require("telescope.builtin").lsp_references({ jump_type = "never" })
+    end, bufnr)
+    set("n", "gd", function()
+        require("telescope.builtin").lsp_definitions({ jump_type = "never" })
+    end, bufnr)
+    set("n", "gs", function()
+        require("telescope.builtin").lsp_document_symbols()
+    end, bufnr)
+    set("n", "gl", vim.diagnostic.open_float, bufnr)
+    set("n", "]d", vim.diagnostic.goto_next, bufnr)
+    set("n", "[d", vim.diagnostic.goto_prev, bufnr)
+    set("n", "ga", vim.lsp.buf.code_action, bufnr)
+    set("n", "K", vim.lsp.buf.hover, bufnr)
+    set("n", "gR", vim.lsp.buf.rename, bufnr)
+
+    -- inlay hints
     if client.server_capabilities.inlayHintProvider then
         vim.lsp.inlay_hint.enable(bufnr, true)
     end
@@ -36,7 +32,6 @@ M.capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 M.get_server_opts = function(server_name)
     local opts = {
-        on_attach = M.on_attach,
         capabilities = M.capabilities,
     }
     local ok, server_opts = pcall(require, "lsp.servers." .. server_name)

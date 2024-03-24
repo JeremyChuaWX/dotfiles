@@ -1,25 +1,29 @@
-local mason_lspconifg_ok, mason_lspconfig = pcall(require, "mason-lspconfig")
-if not mason_lspconifg_ok then
-    return
-end
+local lspconfig = require("lspconfig")
+local mason_lspconfig = require("mason-lspconfig")
+local server_config = require("lsp.server-config")
 
-local get_server_opts = require("lsp.server-config").get_server_opts
-
-local function default_setup_function(server_name)
-    local opts = get_server_opts(server_name)
-    require("lspconfig")[server_name].setup(opts)
-end
+local augroup = vim.api.nvim_create_augroup("user_lsp_autocmds", { clear = true })
+vim.api.nvim_create_autocmd("LspAttach", {
+    group = augroup,
+    callback = function(args)
+        local bufnr = args.buf
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        server_config.on_attach(client, bufnr)
+    end,
+})
 
 mason_lspconfig.setup_handlers({
-    default_setup_function,
+    function(server_name)
+        local opts = server_config.get_server_opts(server_name)
+        lspconfig[server_name].setup(opts)
+    end,
 
     ["jdtls"] = function() end,
 
     ["rust_analyzer"] = function()
         vim.g.rustaceanvim = {
             server = {
-                on_attach = require("lsp.server-config").on_attach,
-                capabilities = require("lsp.server-config").capabilities,
+                capabilities = server_config.capabilities,
                 -- settings = {
                 --     ["rust-analyzer"] = {
                 --         check = {
@@ -34,11 +38,7 @@ mason_lspconfig.setup_handlers({
 
     ["tsserver"] = function()
         require("typescript-tools").setup({
-            on_attach = function(client, bufnr)
-                require("lsp.server-config").on_attach(client, bufnr)
-                -- require("workspace-diagnostics").populate_workspace_diagnostics(client, bufnr)
-            end,
-            capabilities = require("lsp.server-config").capabilities,
+            capabilities = server_config.capabilities,
             settings = {
                 expose_as_code_action = "all",
                 tsserver_file_preferences = {
@@ -63,8 +63,6 @@ mason_lspconfig.setup_handlers({
 })
 
 -- gleam
-local config = require("lsp.server-config")
-require("lspconfig").gleam.setup({
-    on_attach = config.on_attach,
-    capabilities = config.capabilities,
+lspconfig.gleam.setup({
+    capabilities = server_config.capabilities,
 })
