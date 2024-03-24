@@ -1,5 +1,7 @@
 local M = {}
 
+local telescope_pickers = require("telescope.builtin")
+
 local set = function(mode, lhs, rhs, bufnr)
     vim.keymap.set(mode, lhs, rhs, { buffer = bufnr })
 end
@@ -7,13 +9,22 @@ end
 M.on_attach = function(client, bufnr)
     -- keymaps
     set("n", "gr", function()
-        require("telescope.builtin").lsp_references({ jump_type = "never" })
+        telescope_pickers.lsp_references({
+            jump_type = "never",
+        })
     end, bufnr)
     set("n", "gd", function()
-        require("telescope.builtin").lsp_definitions({ jump_type = "never" })
+        telescope_pickers.lsp_definitions({
+            jump_type = "never",
+        })
     end, bufnr)
     set("n", "gs", function()
-        require("telescope.builtin").lsp_document_symbols()
+        telescope_pickers.lsp_document_symbols({
+            symbols = {
+                "object",
+                "function",
+            },
+        })
     end, bufnr)
     set("n", "gl", vim.diagnostic.open_float, bufnr)
     set("n", "]d", vim.diagnostic.goto_next, bufnr)

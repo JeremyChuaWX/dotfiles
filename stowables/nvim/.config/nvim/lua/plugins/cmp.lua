@@ -15,6 +15,7 @@ local M = {
         local cmp = require("cmp")
         local luasnip = require("luasnip")
         local lspkind = require("lspkind")
+        local tailwind_tools = require("tailwind-tools.cmp")
 
         cmp.setup({
             confirmation = {
@@ -30,7 +31,7 @@ local M = {
                         path = "[path]",
                     },
                     symbol_map = { Copilot = "" },
-                    before = require("tailwind-tools.cmp").lspkind_format,
+                    before = tailwind_tools.lspkind_format,
                 }),
             },
             mapping = cmp.mapping.preset.insert({
