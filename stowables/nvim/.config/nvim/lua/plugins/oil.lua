@@ -16,6 +16,9 @@ local M = {
         view_options = {
             show_hidden = true,
         },
+        float = {
+            border = "none",
+        },
     },
 }
 
