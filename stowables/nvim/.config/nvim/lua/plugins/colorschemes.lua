@@ -23,6 +23,9 @@ local kanagawa = {
                 -- status line
                 StatusLine = { fg = theme.ui.fg, bg = "none" },
                 StatusLineNC = { fg = theme.ui.fg_dim, bg = "none" },
+
+                -- window separator
+                WinSeparator = { fg = theme.ui.special, bold = true },
             }
         end
 
