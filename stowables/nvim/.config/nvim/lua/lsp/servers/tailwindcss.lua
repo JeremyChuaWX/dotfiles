@@ -7,4 +7,22 @@ return {
             },
         })
     end,
+    filetypes = {
+        "astro",
+        "astro-markdown",
+        "gohtml",
+        "gohtmltmpl",
+        "handlebars",
+        "html",
+        "mdx",
+        "css",
+        "postcss",
+        "sass",
+        "scss",
+        "javascriptreact",
+        "typescriptreact",
+        "vue",
+        "svelte",
+        "templ",
+    },
 }
