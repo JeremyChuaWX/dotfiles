@@ -20,9 +20,10 @@ M.on_attach = function(client, bufnr)
     end, bufnr)
     set("n", "gs", function()
         telescope_pickers.lsp_document_symbols({
-            symbols = {
-                "object",
-                "function",
+            ignore_symbols = {
+                "constant",
+                "property",
+                "variable",
             },
         })
     end, bufnr)
