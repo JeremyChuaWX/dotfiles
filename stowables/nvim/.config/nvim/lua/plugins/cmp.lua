@@ -47,7 +47,6 @@ local M = {
                 end,
             },
             sources = cmp.config.sources({
-                { name = "copilot" },
                 {
                     name = "nvim_lsp",
                     entry_filter = function(entry)
