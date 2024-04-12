@@ -19,7 +19,7 @@ echo "Installing npm packages"
 source npmfile
 
 echo "Install JetBrains Font"
-cp $HOME/.dotfiles/stowables/fonts/* $HOME/Library/Fonts
+cp $HOME/.dotfiles/fonts/* $HOME/Library/Fonts
 
 echo "Stowing configs"
 cd $HOME/.dotfiles/stowables
