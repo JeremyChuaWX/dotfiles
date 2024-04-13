@@ -29,3 +29,6 @@ echo "Install tmux terminfo"
 cd $HOME
 curl -LO https://invisible-island.net/datafiles/current/terminfo.src.gz && gunzip terminfo.src.gz
 /usr/bin/tic -xe tmux-256color terminfo.src
+
+echo "Link .profile from icloud to home"
+ln -s "$HOME/Library/Mobile Documents/com~apple~CloudDocs/.profile" "$HOME/.profile"
