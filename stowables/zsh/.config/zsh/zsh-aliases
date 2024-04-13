@@ -70,3 +70,6 @@ alias fnme="eval '$(fnm env)'"
 # docker commands
 alias dup="docker compose up --build"
 alias ddo="docker compose down --remove-orphans --volumes"
+
+# source python venv
+alias pysrc="source ./.venv/bin/activate"
