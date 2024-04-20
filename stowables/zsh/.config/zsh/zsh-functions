@@ -247,6 +247,16 @@ function fuzzy_git_diff() {
     fi
 }
 
+function clone_from_github_cli() {
+    if ! type "gh" > /dev/null; then
+        echo "github CLI not installed"
+        return
+    fi
+    gh repo list --json name --jq ".[].name" |
+    fzf --print0 --exit-0 |
+    xargs gh repo clone
+}
+
 function fuzzy_reverse_search() {
     local selected num
     selected=($(
