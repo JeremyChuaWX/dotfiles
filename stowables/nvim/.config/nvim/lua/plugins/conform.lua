@@ -44,11 +44,6 @@ local M = {
                     "--no-reformat-tags",
                 },
             },
-            black = {
-                prepend_args = {
-                    "--fast",
-                },
-            },
         },
         formatters_by_ft = {
             bash = { "beautysh" },
