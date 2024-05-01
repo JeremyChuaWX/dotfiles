@@ -14,6 +14,11 @@ local M = {
     },
     opts = {
         formatters = {
+            forge_fmt = {
+                command = "forge",
+                args = { "fmt", "--check", "--raw", "$FILENAME" },
+                exit_codes = { 0, 1 },
+            },
             prettier = {
                 prepend_args = {
                     "--tab-width",
@@ -56,6 +61,7 @@ local M = {
             markdown = { "mdformat" },
             rust = { "rustfmt" },
             sh = { "beautysh" },
+            solidity = { "forge_fmt" },
             typescript = { "rustywind", "prettier" },
             typescriptreact = { "rustywind", "prettier" },
             zsh = { "beautysh" },
