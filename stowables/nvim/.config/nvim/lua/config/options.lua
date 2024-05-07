@@ -80,7 +80,7 @@ vim.opt.whichwrap = "b,s,<,>,[,]"
 vim.opt.joinspaces = false
 vim.opt.backspace = { "indent", "eol", "start" }
 vim.opt.list = true
-vim.opt.listchars = { tab = "  ", trail = "", eol = "" }
+vim.opt.listchars = { tab = "  ", trail = "", eol = "󰌑" }
 vim.opt.iskeyword:append("-")
 vim.opt.cursorline = true
 vim.opt.scrolloff = 10
