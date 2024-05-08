@@ -22,7 +22,7 @@ local M = {
                 },
                 [types.snippet] = {
                     active = {
-                        virt_text = { { " - snippet active", "Comment" } },
+                        virt_text = { { " - snippet active", "Comment" } },
                     },
                 },
             },
