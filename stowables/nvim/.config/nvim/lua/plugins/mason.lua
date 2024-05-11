@@ -30,6 +30,7 @@ local mason_tools = {
             "rustywind",
             "gofumpt",
             "golines",
+            "golangci-lint",
         },
     },
 }
