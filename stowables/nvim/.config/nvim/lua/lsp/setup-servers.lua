@@ -1,6 +1,7 @@
 local lspconfig = require("lspconfig")
 local mason_lspconfig = require("mason-lspconfig")
 local server_config = require("lsp.server-config")
+local lsp_signature = require("lsp_signature")
 
 local augroup = vim.api.nvim_create_augroup("user_lsp_autocmds", { clear = true })
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -8,7 +9,22 @@ vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
         local bufnr = args.buf
         local client = vim.lsp.get_client_by_id(args.data.client_id)
-        server_config.on_attach(client, bufnr)
+        if client == nil then
+            return
+        end
+
+        server_config.lsp_keymaps(bufnr)
+
+        lsp_signature.on_attach({
+            floating_window = false,
+            hint_enable = true,
+            hint_prefix = "",
+            hint_scheme = "Comment",
+        }, bufnr)
+
+        if client.server_capabilities.inlayHintProvider then
+            vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+        end
     end,
 })
 

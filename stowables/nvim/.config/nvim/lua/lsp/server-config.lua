@@ -6,8 +6,7 @@ local set = function(mode, lhs, rhs, bufnr)
     vim.keymap.set(mode, lhs, rhs, { buffer = bufnr })
 end
 
-M.on_attach = function(client, bufnr)
-    -- keymaps
+M.lsp_keymaps = function(bufnr)
     set("n", "gr", function()
         telescope_pickers.lsp_references({
             jump_type = "never",
@@ -33,11 +32,6 @@ M.on_attach = function(client, bufnr)
     set("n", "ga", vim.lsp.buf.code_action, bufnr)
     set("n", "K", vim.lsp.buf.hover, bufnr)
     set("n", "gR", vim.lsp.buf.rename, bufnr)
-
-    -- inlay hints
-    if client.server_capabilities.inlayHintProvider then
-        vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-    end
 end
 
 M.capabilities = require("cmp_nvim_lsp").default_capabilities()

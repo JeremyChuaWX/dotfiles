@@ -9,4 +9,5 @@ return {
     "artemave/workspace-diagnostics.nvim",
     "dmmulroy/ts-error-translator.nvim",
     "luckasRanarison/tailwind-tools.nvim",
+    "ray-x/lsp_signature.nvim",
 }
