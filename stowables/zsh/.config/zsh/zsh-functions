@@ -33,26 +33,16 @@ function mkcd() {
     mkdir -p "$1" && cd "$1"
 }
 
-function fzf_preview() {
-    if [[ -d $1 ]]; then
-        tree --dirsfirst -a -C -L 1 "$1"
-    elif [[ -f $1 ]]; then
-        bat --style numbers,changes --color=always "$1" | head -500
-    else
-        echo "no preview"
-    fi
-}
-
 function fuzzy_open() {
     if [ $1 ]; then
         dir=$(
             fd --hidden --exclude .git --print0 |
-            fzf --read0 --print0 --exit-0 --query --preview="zsh -e $(functions fzf_preview); fzf_preview {}" $1
+            fzf --read0 --print0 --exit-0 --query --preview="less {}" $1
         )
     else
         dir=$(
             fd --hidden --exclude .git --print0 |
-            fzf --read0 --print0 --exit-0 --preview="zsh -e $(functions fzf_preview); fzf_preview {}"
+            fzf --read0 --print0 --exit-0 --preview="less {}"
         )
     fi
 

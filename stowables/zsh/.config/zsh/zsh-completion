@@ -20,4 +20,4 @@ zstyle ":completion:*:warnings" format " %F{red}-- no matches found --%f"
 zstyle ":completion:*:git-checkout:*" sort false
 
 zstyle ':fzf-tab:*' fzf-flags '--height=70%'
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'tree --dirsfirst -a -C -L 1 $realpath'
+zstyle ':fzf-tab:complete:*:*' fzf-preview 'less ${(Q)realpath}'
