@@ -1,6 +1,11 @@
-setopt autocd extendedglob nomatch menucomplete
+setopt autocd
+setopt extendedglob
+setopt nomatch
+setopt menucomplete
 setopt interactive_comments
+
 stty stop undef	# Disable ctrl-s to freeze terminal.
+
 zle_highlight=('paste:none')
 
 # beeping is annoying

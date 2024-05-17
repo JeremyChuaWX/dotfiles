@@ -21,7 +21,6 @@ zstyle ":vcs_info:*" enable git
 precmd() { vcs_info }
 
 # format git prompt
-# zstyle ':vcs_info:git*' formats " %b "
 zstyle ':vcs_info:git*' formats "%F{008}(%b)%f "
 
 #--------#
