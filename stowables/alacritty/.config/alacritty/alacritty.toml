@@ -57,6 +57,16 @@ chars = "\u001B[13;2u"
 key = "Return"
 mods = "Shift"
 
+[[keyboard.bindings]]
+chars = "\u001B[1;6P"
+key = "P"
+mods = "Control|Shift"
+
+[[keyboard.bindings]]
+chars = "\u001B[1;6N"
+key = "N"
+mods = "Control|Shift"
+
 [selection]
 save_to_clipboard = true
 semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"

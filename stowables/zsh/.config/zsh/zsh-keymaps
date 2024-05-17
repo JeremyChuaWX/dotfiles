@@ -1,5 +1,13 @@
-bindkey -s "^p" "open_dev_project\n"
-bindkey -s "^n" "new_dev_project\n"
+bindkey -M menuselect "h" vi-backward-char
+bindkey -M menuselect "k" vi-up-line-or-history
+bindkey -M menuselect "j" vi-down-line-or-history
+bindkey -M menuselect "l" vi-forward-char
+
+bindkey '^p' history-search-backward
+bindkey '^n' history-search-forward
+
+bindkey -s "\u001B[1;6P" "open_dev_project\n"
+bindkey -s "\u001B[1;6N" "new_dev_project\n"
 bindkey -s "^f" "fuzzy_open\n"
 
 zle -N fuzzy_reverse_search

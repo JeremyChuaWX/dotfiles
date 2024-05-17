@@ -1,25 +1,23 @@
 autoload -Uz compinit; compinit
+
 autoload -Uz up-line-or-beginning-search
+zle -N up-line-or-beginning-search
+
 autoload -Uz down-line-or-beginning-search
+zle -N down-line-or-beginning-searchs
+
 zmodload zsh/complist
 
 _comp_options+=(globdots) # Include hidden files.
 
-zstyle ":completion:*" menu select
+zstyle ":completion:*" menu no
 zstyle ":completion:*" matcher-list "" "m:{a-zA-Z}={A-Za-z}" "r:|[._-]=* r:|=*" "l:|=* r:|=*"
 zstyle ":completion:*" group-name ""
+zstyle ":completion:*:default" list-colors ${(s.:.)LS_COLORS}
 zstyle ":completion:*:descriptions" format "%F{green}-- %d --%f"
 zstyle ":completion:*:messages" format " %F{purple} -- %d --%f"
 zstyle ":completion:*:warnings" format " %F{red}-- no matches found --%f"
-zstyle ":completion:*:default" list-colors ${(s.:.)LS_COLORS}
 zstyle ":completion:*:git-checkout:*" sort false
 
-zle -N up-line-or-beginning-search
-zle -N down-line-or-beginning-searchs
-
-bindkey -M menuselect "${terminfo[kcbt]}" reverse-menu-complete # s-tab to go backwards in compselect
-bindkey -M menuselect "h" vi-backward-char
-bindkey -M menuselect "k" vi-up-line-or-history
-bindkey -M menuselect "j" vi-down-line-or-history
-bindkey -M menuselect "l" vi-forward-char
-bindkey -M menuselect "^f" history-incremental-search-forward
+zstyle ':fzf-tab:*' fzf-flags '--height=70%'
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls -AlF --color=auto --group-directories-first --human-readable $realpath'
