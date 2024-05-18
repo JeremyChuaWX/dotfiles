@@ -69,8 +69,7 @@ mason_lspconfig.setup_handlers({
             },
         })
         require("tsc").setup({
-            auto_open_qflist = false,
-            use_diagnostics = true,
+            auto_focus_qflist = true,
         })
     end,
 })
