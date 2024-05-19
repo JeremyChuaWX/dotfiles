@@ -72,11 +72,14 @@ local M = {
                             local single = action_state.get_selected_entry()
                             local cmd = ""
                             if #multi > 0 then
+                                local cmds = {}
                                 for _, selection in pairs(multi) do
-                                    cmd = cmd .. "edit " .. selection[1] .. " | "
+                                    table.insert(cmds, "edit " .. selection[1])
                                 end
+                                cmd = table.concat(cmds, " | ")
+                            else
+                                cmd = "edit " .. single[1]
                             end
-                            cmd = cmd .. " edit " .. single[1]
                             actions.close(prompt_bufnr)
                             vim.api.nvim_command(cmd)
                         end
@@ -88,17 +91,17 @@ local M = {
                     attach_mappings = function(prompt_bufnr, map)
                         local del_buf = function()
                             local picker = action_state.get_current_picker(prompt_bufnr)
-                            local multi_selections = picker:get_multi_selection()
-                            if next(multi_selections) == nil then
-                                local selection = action_state.get_selected_entry()
-                                actions.close(prompt_bufnr)
-                                bufdelete.bufdelete(selection.bufnr, true)
-                            else
-                                actions.close(prompt_bufnr)
-                                for _, selection in ipairs(multi_selections) do
+                            local multi = picker:get_multi_selection()
+                            local single = action_state.get_selected_entry()
+                            if #multi > 0 then
+                                for _, selection in ipairs(multi) do
                                     bufdelete.bufdelete(selection.bufnr, true)
                                 end
+                            else
+                                bufdelete.bufdelete(single.bufnr, true)
                             end
+                            -- TODO: find out how to refresh instead of close
+                            actions.close(prompt_bufnr)
                         end
                         map({ "i", "n" }, "<c-x>", del_buf)
                         return true
