@@ -27,10 +27,7 @@ M.lsp_keymaps = function(bufnr)
         })
     end, bufnr)
     set("n", "gl", vim.diagnostic.open_float, bufnr)
-    set("n", "]d", vim.diagnostic.goto_next, bufnr)
-    set("n", "[d", vim.diagnostic.goto_prev, bufnr)
     set("n", "ga", vim.lsp.buf.code_action, bufnr)
-    set("n", "K", vim.lsp.buf.hover, bufnr)
     set("n", "gR", vim.lsp.buf.rename, bufnr)
 end
 
