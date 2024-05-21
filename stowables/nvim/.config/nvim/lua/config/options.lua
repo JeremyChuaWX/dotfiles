@@ -123,7 +123,6 @@ vim.opt.smartindent = true
 ----------------
 
 vim.opt.background = "dark"
-vim.opt.termguicolors = true
 
 ------------
 -- search --
