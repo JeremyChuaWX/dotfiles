@@ -14,6 +14,9 @@ local M = {
             bo = {
                 modifiable = false,
             },
+            wo = {
+                winfixbuf = true,
+            },
         },
     },
 }
