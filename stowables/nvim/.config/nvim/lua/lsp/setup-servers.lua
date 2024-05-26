@@ -21,10 +21,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
             hint_prefix = "",
             hint_scheme = "Comment",
         }, bufnr)
-
-        if client.server_capabilities.inlayHintProvider then
-            vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-        end
     end,
 })
 
