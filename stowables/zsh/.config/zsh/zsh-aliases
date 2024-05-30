@@ -56,6 +56,8 @@ alias gbd="git branch -D "
 alias gbm="git branch -M "
 alias gd="fuzzy_git_diff"
 alias gf="gpr && git fetch --all"
+alias gss="git stash"
+alias gsp="git stash pop"
 
 # github
 alias ghb="gh browse"
