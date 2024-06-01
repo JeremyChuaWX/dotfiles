@@ -1,7 +1,62 @@
 local M = {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
-    keys = require("plugins.telescope.keys"),
+    keys = {
+        {
+            "<leader>tt",
+            ":Telescope<CR>",
+            desc = "telescope main menu",
+        },
+        {
+            "<leader>tf",
+            function()
+                require("telescope.builtin").find_files({ hidden = true })
+            end,
+            desc = "telescope find files",
+        },
+        {
+            "<leader>tF",
+            function()
+                require("telescope.builtin").git_files()
+            end,
+            desc = "telescope find in git files",
+        },
+        {
+            "<leader>tg",
+            function()
+                require("telescope.builtin").git_status()
+            end,
+            desc = "telescope git status",
+        },
+        {
+            "<leader>ts",
+            function()
+                require("telescope.builtin").live_grep()
+            end,
+            desc = "telescope live grep",
+        },
+        {
+            "<leader>th",
+            function()
+                require("telescope.builtin").help_tags()
+            end,
+            desc = "telescope help tags",
+        },
+        {
+            "<leader>tb",
+            function()
+                require("telescope.builtin").buffers()
+            end,
+            desc = "telescope buffers",
+        },
+        {
+            "<leader>td",
+            function()
+                require("telescope.builtin").diagnostics()
+            end,
+            desc = "telescope diagnostics",
+        },
+    },
     dependencies = {
         "DanielVolchek/tailiscope.nvim",
         { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
@@ -27,7 +82,6 @@ local M = {
                     height = 0.85,
                     scroll_speed = 3,
                 },
-
                 mappings = {
                     i = {
                         ["<C-c>"] = "close",
@@ -44,12 +98,10 @@ local M = {
                         ["<C-y>"] = "results_scrolling_up",
                     },
                 },
-
                 file_ignore_patterns = {
                     "node_modules",
                     ".git/",
                 },
-
                 initial_mode = "insert",
                 results_title = false,
                 prompt_title = false,
@@ -61,7 +113,6 @@ local M = {
                 selection_caret = "  ",
                 entry_prefix = "  ",
             },
-
             pickers = {
                 find_files = {
                     hidden = true,
@@ -108,7 +159,6 @@ local M = {
                     end,
                 },
             },
-
             extensions = {
                 tailiscope = {
                     register = '"',
@@ -116,7 +166,6 @@ local M = {
                 },
             },
         })
-
         telescope.load_extension("fzf")
     end,
 }
