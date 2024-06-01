@@ -4,6 +4,10 @@ local M = {
         require("lint").linters_by_ft = {
             go = { "golangcilint" },
             solidity = { "solhint" },
+            javascript = { "eslint" },
+            javascriptreact = { "eslint" },
+            typescript = { "eslint" },
+            typescriptreact = { "eslint" },
         }
         vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter" }, {
             callback = function()
