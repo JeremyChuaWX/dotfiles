@@ -1,11 +1,8 @@
-local M = {
+return {
     settings = {
         Lua = {
             workspace = {
                 checkThirdParty = "Disable",
-            },
-            telemetry = {
-                enable = false,
             },
             diagnostics = {
                 disable = { "missing-fields" },
@@ -13,5 +10,3 @@ local M = {
         },
     },
 }
-
-return M
