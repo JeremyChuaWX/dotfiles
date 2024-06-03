@@ -1,4 +1,4 @@
-local M = {
+return {
     "windwp/nvim-autopairs",
     config = function()
         local npairs = require("nvim-autopairs")
@@ -16,5 +16,3 @@ local M = {
         cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
     end,
 }
-
-return M

@@ -1,9 +1,7 @@
-local M = {
+return {
     settings = {
         gopls = {
             semanticTokens = true,
         },
     },
 }
-
-return M

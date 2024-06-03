@@ -1,4 +1,4 @@
-local M = {
+return {
     "stevearc/dressing.nvim",
     opts = {
         input = {
@@ -11,5 +11,3 @@ local M = {
         },
     },
 }
-
-return M

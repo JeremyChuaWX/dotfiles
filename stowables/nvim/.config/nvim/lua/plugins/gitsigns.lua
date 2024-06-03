@@ -1,4 +1,4 @@
-local M = {
+return {
     "lewis6991/gitsigns.nvim",
     opts = {
         signs = {
@@ -52,5 +52,3 @@ local M = {
         end,
     },
 }
-
-return M

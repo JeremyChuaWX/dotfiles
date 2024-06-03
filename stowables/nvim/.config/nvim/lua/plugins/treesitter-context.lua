@@ -1,4 +1,4 @@
-local M = {
+return {
     "nvim-treesitter/nvim-treesitter-context",
     config = function()
         require("treesitter-context").setup({
@@ -10,5 +10,3 @@ local M = {
         end)
     end,
 }
-
-return M

@@ -1,4 +1,4 @@
-local M = {
+return {
     "RRethy/vim-illuminate",
     opts = {
         delay = 200,
@@ -29,5 +29,3 @@ local M = {
         })
     end,
 }
-
-return M

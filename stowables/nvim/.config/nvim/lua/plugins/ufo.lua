@@ -1,4 +1,4 @@
-local M = {
+return {
     "kevinhwang91/nvim-ufo",
     dependencies = {
         "kevinhwang91/promise-async",
@@ -18,5 +18,3 @@ local M = {
         end)
     end,
 }
-
-return M

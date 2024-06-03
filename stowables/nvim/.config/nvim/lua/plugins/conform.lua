@@ -1,4 +1,4 @@
-local M = {
+return {
     "stevearc/conform.nvim",
     keys = {
         {
@@ -68,5 +68,3 @@ local M = {
         },
     },
 }
-
-return M

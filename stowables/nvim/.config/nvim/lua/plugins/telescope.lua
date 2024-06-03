@@ -1,4 +1,4 @@
-local M = {
+return {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
     keys = {
@@ -169,5 +169,3 @@ local M = {
         telescope.load_extension("fzf")
     end,
 }
-
-return M

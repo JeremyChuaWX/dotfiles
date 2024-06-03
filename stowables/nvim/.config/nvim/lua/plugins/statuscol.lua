@@ -1,4 +1,4 @@
-local M = {
+return {
     "luukvbaal/statuscol.nvim",
     config = function()
         local builtin = require("statuscol.builtin")
@@ -25,5 +25,3 @@ local M = {
         })
     end,
 }
-
-return M

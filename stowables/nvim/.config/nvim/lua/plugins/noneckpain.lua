@@ -1,4 +1,4 @@
-local M = {
+return {
     "shortcuts/no-neck-pain.nvim",
     keys = {
         {
@@ -20,5 +20,3 @@ local M = {
         },
     },
 }
-
-return M

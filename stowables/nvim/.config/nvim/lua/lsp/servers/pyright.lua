@@ -1,4 +1,4 @@
-local M = {
+return {
     settings = {
         pyright = {
             -- Using Ruff's import organizer
@@ -12,5 +12,3 @@ local M = {
         },
     },
 }
-
-return M

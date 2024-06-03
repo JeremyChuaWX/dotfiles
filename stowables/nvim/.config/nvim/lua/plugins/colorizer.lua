@@ -1,4 +1,4 @@
-local M = {
+return {
     "NvChad/nvim-colorizer.lua",
     opts = {
         user_default_options = {
@@ -7,5 +7,3 @@ local M = {
         },
     },
 }
-
-return M

@@ -1,4 +1,4 @@
-local M = {
+return {
     "folke/todo-comments.nvim",
     config = function()
         require("todo-comments").setup({
@@ -12,5 +12,3 @@ local M = {
         end, { desc = "next TODO comment" })
     end,
 }
-
-return M

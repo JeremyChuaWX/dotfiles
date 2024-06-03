@@ -1,4 +1,4 @@
-local M = {
+return {
     "famiu/bufdelete.nvim",
     keys = {
         {
@@ -10,5 +10,3 @@ local M = {
         },
     },
 }
-
-return M

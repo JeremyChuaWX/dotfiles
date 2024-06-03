@@ -1,6 +1,4 @@
-local M = {
+return {
     "kylechui/nvim-surround",
     config = true,
 }
-
-return M

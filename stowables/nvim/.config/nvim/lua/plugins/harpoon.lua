@@ -1,4 +1,4 @@
-local M = {
+return {
     "ThePrimeagen/harpoon",
     branch = "harpoon2",
     config = function()
@@ -22,5 +22,3 @@ local M = {
         end
     end,
 }
-
-return M

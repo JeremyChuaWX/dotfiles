@@ -1,4 +1,4 @@
-local M = {
+return {
     "stevearc/oil.nvim",
     keys = {
         {
@@ -21,5 +21,3 @@ local M = {
         },
     },
 }
-
-return M
