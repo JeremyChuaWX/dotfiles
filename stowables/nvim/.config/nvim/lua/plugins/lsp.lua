@@ -104,7 +104,7 @@ local mason_lspconfig = {
                 local opts = {
                     capabilities = capabilities,
                 }
-                local ok, server_opts = pcall(require, "lsp.servers." .. server_name)
+                local ok, server_opts = pcall(require, "lsp-servers." .. server_name)
                 if ok then
                     opts = vim.tbl_deep_extend("keep", server_opts, opts)
                 end
