@@ -57,7 +57,7 @@ local config = {
         "-data",
         workspace_dir,
     },
-    capabilities = require("lsp.server-config").capabilities,
+    capabilities = require("cmp_nvim_lsp").default_capabilities(),
     root_dir = root_dir,
 
     -- See https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
