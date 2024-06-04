@@ -49,18 +49,10 @@ return {
                     goto_previous_start = ts_goto_previous_start,
                     goto_previous_end = ts_goto_previous_end,
                 },
-                swap = {
-                    enable = true,
-                    swap_next = {
-                        ["<leader>s"] = "@parameter.inner",
-                    },
-                    swap_previous = {
-                        ["<leader>S"] = "@parameter.inner",
-                    },
-                },
                 select = {
                     enable = true,
                     lookahead = true,
+                    include_surrounding_whitespace = true,
                     keymaps = {
                         ["af"] = "@function.outer",
                         ["if"] = "@function.inner",
