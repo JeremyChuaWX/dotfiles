@@ -61,7 +61,10 @@ return {
         })
 
         cmp.setup.filetype({ "markdown", "text" }, {
-            enabled = false,
+            sources = cmp.config.sources({
+                { name = "fuzzy_buffer", keyword_length = 10 },
+                { name = "path" },
+            }),
         })
 
         cmp.setup.cmdline({ "/", "?" }, {
