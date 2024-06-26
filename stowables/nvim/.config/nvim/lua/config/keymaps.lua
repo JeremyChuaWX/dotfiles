@@ -36,8 +36,10 @@ set("v", "<", "<gv")
 set("v", ">", ">gv")
 
 -- quickfix list
-set("n", "<space>co", "<cmd>copen<CR>")
-set("n", "<space>cc", "<cmd>cclose<CR>")
+set("n", "<C-c><C-o>", "<cmd>copen<CR>")
+set("n", "<C-c><C-c>", "<cmd>cclose<CR>")
+set("n", "<C-c><C-n>", "<cmd>cnext<CR>")
+set("n", "<C-c><C-p>", "<cmd>cprevious<CR>")
 
 -- move lines
 set("n", "<A-j>", ":m .+1<CR>")
