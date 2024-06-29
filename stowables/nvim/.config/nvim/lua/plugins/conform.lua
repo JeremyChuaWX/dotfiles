@@ -6,7 +6,7 @@ return {
             function()
                 require("conform").format({
                     async = true,
-                    lsp_fallback = true,
+                    lsp_format = "fallback",
                 })
             end,
             desc = "conform format",
