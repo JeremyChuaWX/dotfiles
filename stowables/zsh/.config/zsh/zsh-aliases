@@ -1,10 +1,12 @@
 if [[ $OSTYPE = "darwin"* ]] then
-    # brew
-    alias brewu="brew update && brew upgrade"
-    alias brewc="brew cleanup --prune=all && brew autoremove"
-
     alias ls="gls"
     alias head="ghead"
+fi
+
+if type brew &> /dev/null; then
+    alias brewu="brew update && brew upgrade"
+    alias brewc="brew cleanup --prune=all && brew autoremove"
+    alias brewl="brew list -1 | fzf"
 fi
 
 # directories
