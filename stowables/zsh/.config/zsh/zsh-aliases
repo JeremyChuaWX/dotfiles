@@ -12,8 +12,7 @@ fi
 # directories
 alias ll="ls -AlF --color=auto --group-directories-first --human-readable"
 alias ..="cd .."
-alias tree="tree --dirsfirst -C"
-alias itree="tree --dirsfirst -C --gitignore"
+alias tree="tree --dirsfirst -C --gitignore -a | bat"
 
 # file manipulation
 alias rm="rm -v"
