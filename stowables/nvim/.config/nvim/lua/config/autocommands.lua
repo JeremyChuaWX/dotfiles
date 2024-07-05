@@ -22,13 +22,17 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 vim.api.nvim_create_autocmd({ "InsertLeave", "WinEnter" }, {
     group = augroup,
     pattern = "*",
-    command = "set cursorline",
+    callback = function()
+        vim.opt.cursorline = true
+    end,
 })
 
 vim.api.nvim_create_autocmd({ "InsertEnter", "WinLeave" }, {
     group = augroup,
     pattern = "*",
-    command = "set nocursorline",
+    callback = function()
+        vim.opt.cursorline = false
+    end,
 })
 
 local two = false
