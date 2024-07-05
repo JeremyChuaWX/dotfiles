@@ -38,6 +38,7 @@ local mason_lspconfig = {
             ["jdtls"] = function() end,
 
             ["tsserver"] = function()
+                local ts_error_translator = require("ts-error-translator")
                 require("typescript-tools").setup({
                     capabilities = capabilities,
                     settings = {
@@ -48,7 +49,7 @@ local mason_lspconfig = {
                     },
                     handlers = {
                         ["textDocument/publishDiagnostics"] = function(...)
-                            require("ts-error-translator").translate_diagnostics(...)
+                            ts_error_translator.translate_diagnostics(...)
                             vim.lsp.diagnostic.on_publish_diagnostics(...)
                         end,
                     },
