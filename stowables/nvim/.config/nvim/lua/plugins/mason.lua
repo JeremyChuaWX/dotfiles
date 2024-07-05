@@ -37,14 +37,6 @@ local mason_lspconfig = {
 
             ["jdtls"] = function() end,
 
-            ["rust_analyzer"] = function()
-                vim.g.rustaceanvim = {
-                    server = {
-                        capabilities = capabilities,
-                    },
-                }
-            end,
-
             ["tsserver"] = function()
                 require("typescript-tools").setup({
                     capabilities = capabilities,
