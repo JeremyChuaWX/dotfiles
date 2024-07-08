@@ -73,7 +73,7 @@ alias fnme="eval '$(fnm env)'"
 # docker commands
 alias dup="docker compose up --build"
 alias ddo="docker compose down --remove-orphans --volumes"
-alias diu="docker image ls --format json | jq -r '.Repository + \":\" + .Tag' | xargs -P3 -L1 docker pull"
+alias diu="docker image ls --format json | jq -r '.Repository + \":\" + .Tag' | xargs -P3 -L1 docker pull && docker image prune"
 
 # source python venv
 alias pysrc="source ./.venv/bin/activate"
