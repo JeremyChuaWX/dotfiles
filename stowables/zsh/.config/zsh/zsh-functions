@@ -173,7 +173,7 @@ test:     including new or correcting previous tests\
 "
     type=$(
         echo $types |
-        fzf --delimiter ":" -n 1 --preview "echo {1}: {2}" --preview-window="wrap" --bind "enter:become(echo {1})"
+        fzf --delimiter ":" -n 1 --bind "enter:become(echo {1})"
     )
     if [ -z $type ]; then
         echo "error: no commit type selected"
