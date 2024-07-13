@@ -9,6 +9,7 @@ export PATH="$HOME/.cargo/bin:$PATH" # rust
 export PATH="$HOME/go/bin:$PATH" # go
 export PATH="$HOME/.local/share/bob/nvim-bin:$PATH" # bob (neovim version manager)
 export PATH="$HOME/.local/bin:$PATH" # local/bin
+export FPATH="$FPATH:$HOME/.config/zsh/plugins/zsh-completions/src" # from zsh-completions
 export FPATH="$FPATH:$HOME/.config/zsh/completions" # own completions
 
 # software version managers
@@ -19,18 +20,19 @@ export EDITOR=nvim
 
 # fzf default options
 export FZF_DEFAULT_OPTS="
+--wrap
 --reverse
 --height=70%
 --border=none
 --scroll-off=5
 --info=hidden
 --cycle
+--preview-window='60%'
 --bind='ctrl-f:preview-down'
 --bind='ctrl-b:preview-up'
 --bind='alt-p:change-preview-window(top,90%,wrap|60%,nowrap)'
 --bind='ctrl-a:select-all'
 --bind='ctrl-t:toggle-all'
---preview-window='60%'
 "
 
 # less filter
