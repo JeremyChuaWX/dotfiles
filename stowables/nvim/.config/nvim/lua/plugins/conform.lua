@@ -4,15 +4,15 @@ return {
         {
             "gf",
             function()
-                require("conform").format({
-                    async = true,
-                    lsp_format = "fallback",
-                })
+                require("conform").format()
             end,
             desc = "conform format",
         },
     },
     opts = {
+        default_format_opts = {
+            lsp_format = "fallback",
+        },
         formatters = {
             forge_fmt = {
                 command = "forge",
