@@ -6,6 +6,5 @@ return {
     "pmizio/typescript-tools.nvim",
     "dmmulroy/tsc.nvim",
     "dmmulroy/ts-error-translator.nvim",
-    "luckasRanarison/tailwind-tools.nvim",
     "ray-x/lsp_signature.nvim",
 }
