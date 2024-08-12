@@ -58,7 +58,6 @@ return {
         },
     },
     dependencies = {
-        "DanielVolchek/tailiscope.nvim",
         { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     },
     config = function()
@@ -157,12 +156,6 @@ return {
                         map({ "i", "n" }, "<c-x>", del_buf)
                         return true
                     end,
-                },
-            },
-            extensions = {
-                tailiscope = {
-                    register = '"',
-                    default = "classes",
                 },
             },
         })
