@@ -12,7 +12,7 @@ export PATH="$HOME/.local/bin:$PATH" # local/bin
 export FPATH="$FPATH:$HOME/.config/zsh/plugins/zsh-completions/src" # from zsh-completions
 export FPATH="$FPATH:$HOME/.config/zsh/completions" # own completions
 
-# software version managers
+# fast node manager
 eval "$(fnm env)"
 
 # default apps
