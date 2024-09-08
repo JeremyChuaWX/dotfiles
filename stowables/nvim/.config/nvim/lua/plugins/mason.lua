@@ -11,7 +11,7 @@ local mason_lspconfig = {
         mason_lspconfig.setup({
             ensure_installed = {
                 "lua_ls",
-                "tsserver",
+                "ts_ls",
                 "jsonls",
                 "tailwindcss",
                 "gopls",
@@ -37,7 +37,7 @@ local mason_lspconfig = {
 
             ["jdtls"] = function() end,
 
-            ["tsserver"] = function()
+            ["ts_ls"] = function()
                 local ts_error_translator = require("ts-error-translator")
                 require("typescript-tools").setup({
                     capabilities = capabilities,
