@@ -14,3 +14,5 @@ bindkey -s "^f" "fuzzy_open\n"
 
 zle -N fuzzy_reverse_search
 bindkey "^r" fuzzy_reverse_search
+
+bindkey "^w" backward-kill-word
