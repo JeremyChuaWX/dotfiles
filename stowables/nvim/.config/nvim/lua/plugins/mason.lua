@@ -77,10 +77,8 @@ local mason_tools = {
     },
 }
 
-local M = {
+return {
     mason,
     mason_lspconfig,
     mason_tools,
 }
-
-return M
