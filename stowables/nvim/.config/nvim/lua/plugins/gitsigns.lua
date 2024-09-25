@@ -38,5 +38,9 @@ return {
             end, { desc = "visual gitsigns stage hunk" })
             map("n", "<leader>gR", gitsigns.reset_buffer, { desc = "gitsigns reset buffer" })
         end,
+        preview_config = {
+            border = "single",
+            style = "minimal",
+        },
     },
 }
