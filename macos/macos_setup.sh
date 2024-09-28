@@ -12,8 +12,11 @@ export PATH=/opt/homebrew/bin:$PATH
 echo "Installing brew bundle"
 brew bundle --file="./brewfile"
 
-echo "Logging in with github"
+echo "Logging in to github CLI"
 gh auth login
+
+echo "Installing github CLI extension"
+gh extension install yusukebe/gh-markdown-preview
 
 echo "Installing npm packages"
 source npmfile
