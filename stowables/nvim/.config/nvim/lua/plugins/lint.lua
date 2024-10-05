@@ -8,6 +8,7 @@ return {
             javascriptreact = { "eslint" },
             typescript = { "eslint" },
             typescriptreact = { "eslint" },
+            markdown = { "markdownlint" },
         }
         vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter" }, {
             callback = function()
