@@ -23,6 +23,7 @@ return {
 
         require("nvim-treesitter.configs").setup({
             ensure_installed = {
+                "diff",
                 "go",
                 "javascript",
                 "json",
