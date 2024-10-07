@@ -73,7 +73,7 @@ local mason_tools = {
             "gofumpt",
             "golines",
             "golangci-lint",
-            "markdownlint",
+            "mdformat",
         },
     },
 }

@@ -59,7 +59,7 @@ return {
             javascriptreact = { "prettier", "rustywind" },
             json = { "prettier" },
             lua = { "stylua" },
-            markdown = { "markdownlint" },
+            markdown = { "mdformat" },
             rust = { "rustfmt" },
             sh = { "beautysh" },
             solidity = { "forge_fmt" },
