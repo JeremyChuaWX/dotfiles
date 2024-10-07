@@ -75,6 +75,7 @@ alias dup="docker compose up --build"
 alias ddo="docker compose down --remove-orphans --volumes"
 alias diu="docker image ls --format json | jq -r '.Repository + \":\" + .Tag' | xargs -P3 -L1 docker pull && docker image prune"
 alias dir="docker image ls --format json | jq -r '.Repository + \":\" + .Tag' | fzf --exit-0 | xargs docker run"
+alias dip="docker image prune -f"
 
 # source python venv
 alias pysrc="source ./.venv/bin/activate"
