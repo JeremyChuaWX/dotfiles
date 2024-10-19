@@ -58,6 +58,7 @@ return {
             javascript = { "prettier", "rustywind" },
             javascriptreact = { "prettier", "rustywind" },
             json = { "prettier" },
+            jsonc = { "prettier" },
             lua = { "stylua" },
             markdown = { "markdownlint", "mdslw" },
             rust = { "rustfmt" },
