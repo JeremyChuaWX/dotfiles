@@ -64,7 +64,6 @@ return {
         local telescope = require("telescope")
         local action_state = require("telescope.actions.state")
         local actions = require("telescope.actions")
-        local bufdelete = require("bufdelete")
 
         telescope.setup({
             defaults = {
@@ -138,24 +137,11 @@ return {
                     end,
                 },
                 buffers = {
-                    attach_mappings = function(prompt_bufnr, map)
-                        local del_buf = function()
-                            local picker = action_state.get_current_picker(prompt_bufnr)
-                            local multi = picker:get_multi_selection()
-                            local single = action_state.get_selected_entry()
-                            if #multi > 0 then
-                                for _, selection in ipairs(multi) do
-                                    bufdelete.bufdelete(selection.bufnr, true)
-                                end
-                            else
-                                bufdelete.bufdelete(single.bufnr, true)
-                            end
-                            -- TODO: find out how to refresh instead of close
-                            actions.close(prompt_bufnr)
-                        end
-                        map({ "i", "n" }, "<c-x>", del_buf)
-                        return true
-                    end,
+                    mappings = {
+                        i = {
+                            ["<c-x>"] = actions.delete_buffer + actions.move_to_top,
+                        },
+                    },
                 },
             },
         })
