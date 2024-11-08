@@ -14,13 +14,14 @@ return {
     },
     config = function()
         local cmp = require("cmp")
+        local types = require("cmp.types")
         local luasnip = require("luasnip")
         local lspkind = require("lspkind")
         local tailwind_tools = require("tailwind-tools.cmp")
 
         cmp.setup({
             confirmation = {
-                default_behavior = "replace",
+                default_behavior = types.cmp.ConfirmBehavior.Replace,
             },
             formatting = {
                 format = lspkind.cmp_format({
