@@ -139,7 +139,10 @@ return {
                 buffers = {
                     mappings = {
                         i = {
-                            ["<c-x>"] = actions.delete_buffer + actions.move_to_top,
+                            ["<c-w>"] = actions.delete_buffer + actions.move_to_top,
+                        },
+                        n = {
+                            ["<c-w>"] = actions.delete_buffer + actions.move_to_top,
                         },
                     },
                 },
