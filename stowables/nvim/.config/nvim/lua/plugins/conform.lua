@@ -16,9 +16,8 @@ return {
         formatters = {
             forge_fmt = {
                 command = "forge",
-                args = { "fmt", "--check", "--raw", "-" },
+                args = { "fmt", "--raw", "-" },
                 stdin = true,
-                exit_codes = { 0, 1 },
             },
             prettier = {
                 prepend_args = {
