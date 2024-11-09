@@ -29,26 +29,6 @@ return {
         })
 
         local telescope_pickers = require("telescope.builtin")
-        vim.lsp.handlers["textDocument/references"] = vim.lsp.with(function()
-            telescope_pickers.lsp_references({
-                jump_type = "never",
-            })
-        end, {})
-        vim.lsp.handlers["textDocument/definition"] = vim.lsp.with(function()
-            telescope_pickers.lsp_definitions({
-                jump_type = "never",
-            })
-        end, {})
-        vim.lsp.handlers["textDocument/documentSymbol"] = vim.lsp.with(function()
-            telescope_pickers.lsp_document_symbols({
-                ignore_symbols = {
-                    "constant",
-                    "property",
-                    "variable",
-                },
-            })
-        end, {})
-
         local augroup = vim.api.nvim_create_augroup("user_lsp_autocmds", { clear = true })
         vim.api.nvim_create_autocmd("LspAttach", {
             group = augroup,
@@ -59,8 +39,25 @@ return {
                     return
                 end
 
-                vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = bufnr })
-                vim.keymap.set("n", "gs", vim.lsp.buf.document_symbol, { buffer = bufnr })
+                vim.keymap.set("n", "grr", function()
+                    telescope_pickers.lsp_references({
+                        jump_type = "never",
+                    })
+                end, { buffer = bufnr })
+                vim.keymap.set("n", "gd", function()
+                    telescope_pickers.lsp_definitions({
+                        jump_type = "never",
+                    })
+                end, { buffer = bufnr })
+                vim.keymap.set("n", "gs", function()
+                    telescope_pickers.lsp_document_symbols({
+                        ignore_symbols = {
+                            "constant",
+                            "property",
+                            "variable",
+                        },
+                    })
+                end, { buffer = bufnr })
                 vim.keymap.set("n", "gl", vim.diagnostic.open_float, { buffer = bufnr })
 
                 require("lsp_signature").on_attach({
