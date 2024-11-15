@@ -1,7 +1,7 @@
 return {
     {
         "bullets-vim/bullets.vim",
-        config = function()
+        init = function()
             vim.g.bullets_outline_levels = { "ROM", "ABC", "num", "abc", "rom", "std-" }
         end,
     },
