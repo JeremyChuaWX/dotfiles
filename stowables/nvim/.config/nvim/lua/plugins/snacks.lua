@@ -42,6 +42,9 @@ return {
         notifier = {
             timeout = 1500,
         },
+        statuscolumn = {
+            enabled = true,
+        },
         words = {
             enabled = true,
         },
