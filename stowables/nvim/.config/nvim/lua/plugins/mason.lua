@@ -16,7 +16,8 @@ local mason_lspconfig = {
                 "tailwindcss",
                 "gopls",
                 "ruff",
-                "pyright",
+                "basedpyright",
+                -- "pylyzer",
             },
         })
 
