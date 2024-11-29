@@ -40,7 +40,7 @@ return {
     },
     opts = {
         notifier = {
-            timeout = 1500,
+            timeout = 2000,
         },
         statuscolumn = {
             enabled = true,
