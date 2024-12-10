@@ -48,6 +48,9 @@ return {
                 hl = "SnacksIndent3",
             },
         },
+        input = {
+            enabled = true,
+        },
         notifier = {
             timeout = 2000,
         },
@@ -58,6 +61,12 @@ return {
             enabled = true,
         },
         styles = {
+            input = {
+                keys = {
+                    i_esc = { "<esc>", "stopinsert", mode = "i" },
+                    n_esc = { "<esc>", "cancel", mode = "n" },
+                },
+            },
             notification = {
                 wo = { wrap = true },
             },
