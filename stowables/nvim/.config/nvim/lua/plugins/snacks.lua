@@ -39,6 +39,15 @@ return {
         },
     },
     opts = {
+        indent = {
+            scope = {
+                animate = {
+                    enabled = false,
+                },
+                char = "┃",
+                hl = "SnacksIndent3",
+            },
+        },
         notifier = {
             timeout = 2000,
         },
