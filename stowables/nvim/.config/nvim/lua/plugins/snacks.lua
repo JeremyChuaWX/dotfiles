@@ -40,10 +40,10 @@ return {
     },
     opts = {
         indent = {
+            animate = {
+                enabled = false,
+            },
             scope = {
-                animate = {
-                    enabled = false,
-                },
                 char = "┃",
                 hl = "SnacksIndent3",
             },
