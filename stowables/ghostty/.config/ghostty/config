@@ -1,0 +1,11 @@
+shell-integration = none
+
+font-family = "JetBrainsMono Nerd Font Mono"
+font-style = Regular
+font-size = 18
+font-thicken = true
+
+theme = /Users/jer/.config/ghostty/theme
+
+cursor-style = block
+cursor-style-blink = false
