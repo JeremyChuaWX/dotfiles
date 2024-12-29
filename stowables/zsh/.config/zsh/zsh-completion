@@ -19,7 +19,7 @@ zstyle ":completion:*:messages" format " %F{purple} -- %d --%f"
 zstyle ":completion:*:warnings" format " %F{red}-- no matches found --%f"
 zstyle ":completion:*:git-checkout:*" sort false
 
-zstyle ':fzf-tab:*' fzf-flags '--height=70%'
-zstyle ':fzf-tab:complete:*:*' fzf-preview 'less ${(Q)realpath}'
+zstyle ':fzf-tab:complete:*' fzf-flags ${(Q)${(Z:nC:)FZF_DEFAULT_OPTS}}
+zstyle ':fzf-tab:complete:*' fzf-preview 'less ${(Q)realpath}'
 zstyle ':fzf-tab:complete:*:options' fzf-preview
 zstyle ':fzf-tab:complete:*:argument-1' fzf-preview
