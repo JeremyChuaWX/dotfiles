@@ -17,5 +17,10 @@ cursor-style-blink = false
 
 keybind = ctrl+shift+p=csi:1;6P
 keybind = ctrl+shift+n=csi:1;6N
+keybind = super+r=reload_config
 
 window-padding-balance = true
+
+confirm-close-surface = false
+
+auto-update = check
