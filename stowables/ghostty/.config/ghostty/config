@@ -1,4 +1,9 @@
 shell-integration = none
+shell-integration-features = no-cursor,sudo,no-title
+
+copy-on-select = clipboard
+
+macos-option-as-alt = true
 
 font-family = "JetBrainsMono Nerd Font Mono"
 font-style = Regular
@@ -9,3 +14,6 @@ theme = /Users/jer/.config/ghostty/theme
 
 cursor-style = block
 cursor-style-blink = false
+
+keybind = ctrl+shift+p=csi:1;6P
+keybind = ctrl+shift+n=csi:1;6N
