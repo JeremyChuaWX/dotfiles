@@ -59,11 +59,13 @@ return {
     },
     dependencies = {
         { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+        "nvim-telescope/telescope-ui-select.nvim",
     },
     config = function()
         local telescope = require("telescope")
         local action_state = require("telescope.actions.state")
         local actions = require("telescope.actions")
+        local themes = require("telescope.themes")
 
         telescope.setup({
             defaults = {
@@ -147,7 +149,19 @@ return {
                     },
                 },
             },
+            extensions = {
+                ["ui-select"] = {
+                    themes.get_dropdown({
+                        layout_config = {
+                            width = 0.3,
+                            height = 0.3,
+                            scroll_speed = 3,
+                        },
+                    }),
+                },
+            },
         })
         telescope.load_extension("fzf")
+        telescope.load_extension("ui-select")
     end,
 }
