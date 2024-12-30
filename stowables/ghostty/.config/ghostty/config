@@ -7,9 +7,9 @@ macos-option-as-alt = true
 macos-titlebar-style = hidden
 
 font-family = JetBrainsMonoNL Nerd Font Mono
-font-style = SemiBold
+font-style = Bold
 font-style-bold = ExtraBold
-font-style-italic = SemiBold Italic
+font-style-italic = Bold Italic
 font-style-bold-italic = Extrabold Italic
 font-size = 18
 
