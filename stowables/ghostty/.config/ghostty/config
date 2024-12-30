@@ -1,14 +1,17 @@
 shell-integration = none
 shell-integration-features = no-cursor,sudo,no-title
 
-copy-on-select = clipboard
+clipboard-trim-trailing-spaces = true
 
 macos-option-as-alt = true
+macos-titlebar-style = hidden
 
-font-family = "JetBrainsMono Nerd Font Mono"
-font-style = Regular
+font-family = JetBrainsMonoNL Nerd Font Mono
+font-style = SemiBold
+font-style-bold = ExtraBold
+font-style-italic = SemiBold Italic
+font-style-bold-italic = Extrabold Italic
 font-size = 18
-font-thicken = true
 
 theme = /Users/jer/.config/ghostty/theme
 
@@ -19,8 +22,13 @@ keybind = ctrl+shift+p=csi:1;6P
 keybind = ctrl+shift+n=csi:1;6N
 keybind = super+r=reload_config
 
+window-padding-x = 10
+window-padding-y = 10
 window-padding-balance = true
+window-padding-color = background
 
 confirm-close-surface = false
 
-auto-update = check
+title = " "
+
+quit-after-last-window-closed = true
