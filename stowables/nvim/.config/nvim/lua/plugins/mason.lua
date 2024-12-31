@@ -17,7 +17,6 @@ local mason_lspconfig = {
                 "gopls",
                 "ruff",
                 "basedpyright",
-                -- "pylyzer",
             },
         })
 
