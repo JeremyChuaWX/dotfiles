@@ -15,14 +15,8 @@ brew bundle --file="./brewfile"
 echo "Logging in to github CLI"
 gh auth login
 
-echo "Installing github CLI extension"
-gh extension install yusukebe/gh-markdown-preview
-
 echo "Installing npm packages"
 source npmfile
-
-echo "Install JetBrains Font"
-cp $HOME/.dotfiles/fonts/* $HOME/Library/Fonts
 
 echo "Stowing configs"
 cd $HOME/.dotfiles/stowables
