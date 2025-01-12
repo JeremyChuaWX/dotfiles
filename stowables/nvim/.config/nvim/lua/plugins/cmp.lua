@@ -5,12 +5,12 @@ return {
     dependencies = {
         "tzachar/fuzzy.nvim",
         "tzachar/cmp-fuzzy-buffer",
-        "hrsh7th/cmp-path",
-        "hrsh7th/cmp-cmdline",
+        "https://codeberg.org/FelipeLema/cmp-async-path",
         "saadparwaiz1/cmp_luasnip",
-        "hrsh7th/cmp-nvim-lsp",
         "onsails/lspkind.nvim",
         "L3MON4D3/LuaSnip",
+        { "iguanacucumber/mag-nvim-lsp", name = "cmp-nvim-lsp", opts = {} },
+        { "iguanacucumber/mag-cmdline", name = "cmp-cmdline" },
     },
     config = function()
         local cmp = require("cmp")
@@ -58,14 +58,14 @@ return {
                 { name = "luasnip" },
             }, {
                 { name = "fuzzy_buffer", keyword_length = 10 },
-                { name = "path" },
+                { name = "async_path" },
             }),
         })
 
         cmp.setup.filetype({ "markdown", "text" }, {
             sources = cmp.config.sources({
                 { name = "fuzzy_buffer", keyword_length = 10 },
-                { name = "path" },
+                { name = "async_path" },
             }),
         })
 
@@ -80,7 +80,7 @@ return {
             mapping = cmp.mapping.preset.cmdline(),
             sources = cmp.config.sources({
                 { name = "cmdline" },
-                { name = "path" },
+                { name = "async_path" },
             }),
         })
     end,
