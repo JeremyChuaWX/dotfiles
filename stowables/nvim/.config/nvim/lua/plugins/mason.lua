@@ -41,6 +41,8 @@ local mason_lspconfig = {
 
             ["jdtls"] = function() end,
 
+            ["tailwindcss"] = function() end,
+
             ["ts_ls"] = function()
                 local ts_error_translator = require("ts-error-translator")
                 require("typescript-tools").setup({
