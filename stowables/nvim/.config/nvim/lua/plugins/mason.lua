@@ -60,9 +60,6 @@ local mason_lspconfig = {
                         end,
                     },
                 })
-                require("tsc").setup({
-                    auto_focus_qflist = true,
-                })
             end,
         })
     end,
