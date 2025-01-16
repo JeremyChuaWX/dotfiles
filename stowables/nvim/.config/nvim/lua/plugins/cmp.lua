@@ -57,14 +57,12 @@ return {
                 },
                 { name = "luasnip" },
             }, {
-                { name = "fuzzy_buffer", keyword_length = 10 },
                 { name = "async_path" },
             }),
         })
 
         cmp.setup.filetype({ "markdown", "text" }, {
             sources = cmp.config.sources({
-                { name = "fuzzy_buffer", keyword_length = 10 },
                 { name = "async_path" },
             }),
         })
