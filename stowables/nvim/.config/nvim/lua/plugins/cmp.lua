@@ -10,7 +10,7 @@ return {
         "onsails/lspkind.nvim",
         "L3MON4D3/LuaSnip",
         { "iguanacucumber/mag-nvim-lsp", name = "cmp-nvim-lsp", opts = {} },
-        { "iguanacucumber/mag-cmdline", name = "cmp-cmdline" },
+        { "iguanacucumber/mag-cmdline", name = "cmp-cmdline", commit = "bc85ff5" },
     },
     config = function()
         local cmp = require("cmp")
