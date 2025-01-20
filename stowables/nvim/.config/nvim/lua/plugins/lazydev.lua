@@ -2,6 +2,8 @@ return {
     "folke/lazydev.nvim",
     ft = "lua",
     opts = {
-        enabled = true,
+        library = {
+            { path = "snacks.nvim", words = { "Snacks" } },
+        },
     },
 }
