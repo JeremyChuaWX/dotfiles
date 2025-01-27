@@ -240,6 +240,18 @@ function fuzzy_git_diff() {
     fi
 }
 
+function fuzzy_git_restore() {
+    if [ $# -gt 0 ]; then
+        git restore $*
+    else
+        git ls-files -m -o --exclude-standard |
+        fzf -m --print0 --exit-0 \
+            --preview='git diff -w --color=always {}' \
+            --bind='ctrl-o:become($EDITOR {} < /dev/tty > /dev/tty)' |
+        xargs -r0 git restore
+    fi
+}
+
 function clone_from_github_cli() {
     if ! type "gh" > /dev/null; then
         echo "github CLI not installed"

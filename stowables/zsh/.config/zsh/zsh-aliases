@@ -60,6 +60,7 @@ alias gd="fuzzy_git_diff"
 alias gf="gpr && git fetch --all"
 alias gss="git stash"
 alias gsp="git stash pop"
+alias gr="fuzzy_git_restore"
 
 # github
 alias ghb="gh browse"
