@@ -153,8 +153,8 @@ return {
                 ["ui-select"] = {
                     themes.get_dropdown({
                         layout_config = {
-                            width = 0.3,
-                            height = 0.3,
+                            width = 0.4,
+                            height = 0.4,
                             scroll_speed = 3,
                         },
                     }),
