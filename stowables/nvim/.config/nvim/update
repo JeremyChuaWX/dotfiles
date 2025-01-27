@@ -2,23 +2,7 @@
 
 LOCK_FILE="lazy-lock.json"
 
-spinner() {
-  local pid=$1
-  local delay=0.1
-  local spinner=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
-  while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
-    for char in "${spinner[@]}"; do
-      printf " %s " "$char"
-      sleep $delay
-      printf "\b\b\b"
-    done
-  done
-  printf "   \b\b\b"
-}
-
-echo -n "lazy sync "
-nvim --headless "+Lazy sync" +qa & spinner $!
-echo ""
+nvim --headless "+Lazy! sync" +qa
 
 if git diff --quiet -- "$LOCK_FILE"; then
   echo "no changes to $LOCK_FILE"
