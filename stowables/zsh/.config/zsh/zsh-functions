@@ -204,7 +204,7 @@ function fuzzy_git_checkout() {
         grep -v '^[*+]' |
         awk '{print $1}' |
         sed 's/remotes\///g' |
-        fzf --print0 --exit-0 --preview='git log --graph --oneline --decorate --all --color=always' --query $1 |
+        fzf --print0 --exit-0 --preview='git log --graph --oneline --decorate --color=always {}' --query $1 |
         xargs -r0 git checkout
         return
     fi
@@ -212,7 +212,7 @@ function fuzzy_git_checkout() {
     grep -v '^[*+]' |
     awk '{print $1}' |
     sed 's/remotes\///g' |
-    fzf --print0 --exit-0 --preview='git log --graph --oneline --decorate --all --color=always' |
+    fzf --print0 --exit-0 --preview='git log --graph --oneline --decorate --color=always {}' |
     xargs -r0 git checkout
 }
 
