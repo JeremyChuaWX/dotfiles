@@ -162,17 +162,17 @@ function git_commit() {
     fi
 
     types="\
-build:    changes that affect the build system or external dependencies\n\
-chore:    changes that do not relate to a fix or feature and don't modify src or test files (for example updating dependencies)\n\
-ci:       continuous integration related\n\
-docs:     updates to documentation such as a the README or other markdown files\n\
-feat:     a new feature is introduced with the changes\n\
-fix:      a bug fix has occurred\n\
+feat:     new feature\n\
+fix:      bug fix\n\
+docs:     documentation changes\n\
+style:    code style changes that do not affect the meaning of the code (formatting, missing semi-colons, etc.)\n\
+refactor: code changes that neither fix a bug nor add a feature\n\
 perf:     performance improvements\n\
-refactor: refactored code that neither fixes a bug nor adds a feature\n\
-revert:   reverts a previous commit\n\
-style:    changes that do not affect the meaning of the code, likely related to code formatting such as white-space, missing semi-colons, and so on.\n\
-test:     including new or correcting previous tests\
+test:     adding or correcting tests\n\
+build:    changes that affect the build system or external dependencies\n\
+ci:       continuous integration related changes\n\
+chore:    other changes that don't modify src or test files\n\
+revert:   reverts a previous commit\
 "
     type=$(
         echo $types |
