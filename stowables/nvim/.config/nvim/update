@@ -4,10 +4,10 @@ LOCK_FILE="lazy-lock.json"
 
 nvim --headless "+Lazy! sync" +qa
 
-if git diff --quiet -- "$LOCK_FILE"; then
-  echo "no changes to $LOCK_FILE"
-else
-  git add "$LOCK_FILE"
-  git commit -m "chore: update lazy lock"
-  echo "$LOCK_FILE updated and committed"
-fi
+# if git diff --quiet -- "$LOCK_FILE"; then
+#   echo "no changes to $LOCK_FILE"
+# else
+#   git add "$LOCK_FILE"
+#   git commit -m "chore: update lazy lock"
+#   echo "$LOCK_FILE updated and committed"
+# fi
