@@ -2,7 +2,10 @@
 
 LOCK_FILE="lazy-lock.json"
 
-nvim --headless "+Lazy! sync" +qa
+nvim --headless \
+    "+Lazy! sync" \
+    "+TSUpdateSync" \
+    +qa
 
 if git diff --quiet -- "$LOCK_FILE"; then
   echo "no changes to $LOCK_FILE"
