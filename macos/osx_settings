@@ -106,8 +106,8 @@ defaults write com.apple.dock autohide -bool true
 # Dock icon size
 defaults write com.apple.dock tilesize -int 60
 
-# Set dock on the left
-defaults write com.apple.dock orientation -string "left"
+# Set dock on the right
+defaults write com.apple.dock orientation -string "right"
 
 # Disable recent apps in dock
 defaults write com.apple.dock show-recents -bool false
