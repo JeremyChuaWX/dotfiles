@@ -2,7 +2,6 @@ return {
     "neovim/nvim-lspconfig",
     config = function()
         vim.diagnostic.config({
-            virtual_text = false,
             update_in_insert = true,
             severity_sort = true,
             float = {
