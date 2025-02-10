@@ -7,35 +7,28 @@ return {
             function()
                 Snacks.notifier.hide()
             end,
-            desc = "Dismiss All Notifications",
+            desc = "dismiss all notifications",
         },
         {
             "<leader>w",
             function()
                 Snacks.bufdelete()
             end,
-            desc = "Delete Buffer",
-        },
-        {
-            "<leader>sg",
-            function()
-                Snacks.gitbrowse()
-            end,
-            desc = "Git Browse",
+            desc = "delete buffer",
         },
         {
             "]]",
             function()
                 Snacks.words.jump(vim.v.count1, true)
             end,
-            desc = "Next Reference",
+            desc = "next reference",
         },
         {
             "[[",
             function()
                 Snacks.words.jump(-vim.v.count1, true)
             end,
-            desc = "Prev Reference",
+            desc = "prev reference",
         },
     },
     opts = {
