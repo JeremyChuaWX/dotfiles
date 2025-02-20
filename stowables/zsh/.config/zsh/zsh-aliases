@@ -65,6 +65,7 @@ alias gr="fuzzy_git_restore"
 # github
 alias ghb="gh browse"
 alias ghc="clone_from_github_cli"
+alias ghl="gh repo list --json 'nameWithOwner' --jq '.[].nameWithOwner' | fzf"
 
 # ffmpeg
 alias examscreen="ffmpeg -f avfoundation -r 1 -probesize 40M -threads 1 -i "1:none" -vcodec libx264 -b:v 128k -s hd720 /Users/jeremy/Desktop/recording.mp4"
