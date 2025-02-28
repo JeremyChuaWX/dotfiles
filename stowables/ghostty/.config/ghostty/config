@@ -10,7 +10,7 @@ font-family = JetBrainsMonoNL Nerd Font Mono
 font-size = 18
 font-thicken = true
 
-theme = /Users/jer/.config/ghostty/theme
+theme = theme
 
 cursor-style = block
 cursor-style-blink = false
