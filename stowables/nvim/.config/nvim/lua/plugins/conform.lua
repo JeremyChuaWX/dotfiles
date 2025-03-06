@@ -49,6 +49,12 @@ return {
                     "--no-reformat-tags",
                 },
             },
+            mdslw = {
+                prepend_args = {
+                    "--end-markers",
+                    "",
+                },
+            },
         },
         formatters_by_ft = {
             bash = { "beautysh" },

@@ -1,3 +1,25 @@
+local LSP = {
+    "lua_ls",
+    "ts_ls",
+    "jsonls",
+    "tailwindcss",
+    "gopls",
+    "ruff",
+    "basedpyright",
+}
+
+local TOOLS = {
+    "prettier",
+    "stylua",
+    "beautysh",
+    "rustywind",
+    "gofumpt",
+    "golines",
+    "golangci-lint",
+    "markdownlint",
+    "mdslw",
+}
+
 local mason = {
     "williamboman/mason.nvim",
     config = true,
@@ -9,15 +31,7 @@ local mason_lspconfig = {
         local mason_lspconfig = require("mason-lspconfig")
 
         mason_lspconfig.setup({
-            ensure_installed = {
-                "lua_ls",
-                "ts_ls",
-                "jsonls",
-                "tailwindcss",
-                "gopls",
-                "ruff",
-                "basedpyright",
-            },
+            ensure_installed = LSP,
         })
 
         local lspconfig = require("lspconfig")
@@ -68,17 +82,7 @@ local mason_lspconfig = {
 local mason_tools = {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     opts = {
-        ensure_installed = {
-            "prettier",
-            "stylua",
-            "beautysh",
-            "rustywind",
-            "gofumpt",
-            "golines",
-            "golangci-lint",
-            "markdownlint",
-            "mdslw",
-        },
+        ensure_installed = TOOLS,
     },
 }
 
