@@ -25,7 +25,6 @@ alias egrep="egrep --color=auto"
 alias fgrep="fgrep --color=auto"
 
 # shortcuts
-alias notes="cd $HOME/notes/"
 alias dev="cd $HOME/dev/"
 alias dotf="cd $HOME/.dotfiles/"
 alias nconf="cd $HOME/.dotfiles/stowables/nvim/.config/nvim/"
