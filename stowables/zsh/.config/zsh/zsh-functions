@@ -215,6 +215,33 @@ function fuzzy_git_checkout() {
     xargs -r0 git checkout
 }
 
+function fuzzy_git_checkout_remote() {
+    local selected remote_branch local_branch
+
+    # Handle search query (if provided)
+    if [ "$1" ]; then
+        selected=$(git branch -r | grep -v -- '->' | awk '{print $1}' | fzf --query "$1" --print0 --preview='git log --graph --oneline --decorate --color=always {}' | tr -d '\0')
+    else
+        selected=$(git branch -r | grep -v -- '->' | awk '{print $1}' | fzf --print0 --preview='git log --graph --oneline --color=always {}' | tr -d '\0')
+    fi
+
+    # Exit if no selection
+    [ -z "$selected" ] && return
+
+    # Extract local branch name from remote path
+    remote_branch="$selected"
+    local_branch=${remote_branch##*/}  # Extracts "feature" from "origin/feature"
+
+    # Check if local branch already exists
+    if git rev-parse --verify "refs/heads/$local_branch" >/dev/null 2>&1; then
+        # Local branch exists - just checkout
+        git checkout "$local_branch"
+    else
+        # Local branch does not exist - create and track
+        git checkout -b "$local_branch" --track "$remote_branch"
+    fi
+}
+
 function fuzzy_git_add() {
     if [ $# -gt 0 ]; then
         git add $*
