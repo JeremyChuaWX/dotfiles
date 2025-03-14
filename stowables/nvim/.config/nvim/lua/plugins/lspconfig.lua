@@ -27,8 +27,17 @@ return {
             },
         })
 
+        local show_virtual_lines = false
+        local function toggle_virtual_lines()
+            show_virtual_lines = not show_virtual_lines
+            vim.diagnostic.config({
+                virtual_lines = show_virtual_lines,
+            })
+        end
+
         local telescope_pickers = require("telescope.builtin")
         local augroup = vim.api.nvim_create_augroup("user_lsp_autocmds", { clear = true })
+
         vim.api.nvim_create_autocmd("LspAttach", {
             group = augroup,
             callback = function(args)
@@ -43,11 +52,13 @@ return {
                         jump_type = "never",
                     })
                 end, { buffer = bufnr })
+
                 vim.keymap.set("n", "gd", function()
                     telescope_pickers.lsp_definitions({
                         jump_type = "never",
                     })
                 end, { buffer = bufnr })
+
                 vim.keymap.set("n", "gs", function()
                     telescope_pickers.lsp_document_symbols({
                         ignore_symbols = {
@@ -57,7 +68,10 @@ return {
                         },
                     })
                 end, { buffer = bufnr })
+
                 vim.keymap.set("n", "gl", vim.diagnostic.open_float, { buffer = bufnr })
+
+                vim.keymap.set("n", "gL", toggle_virtual_lines, { buffer = bufnr })
 
                 require("lsp_signature").on_attach({
                     floating_window = false,
