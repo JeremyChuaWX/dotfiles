@@ -3,19 +3,9 @@ if not status then
     return
 end
 
--- Determine OS
-local home = os.getenv("HOME")
-if vim.fn.has("mac") == 1 then
-    WORKSPACE_PATH = home .. "/workspace/"
-    CONFIG = "mac"
-elseif vim.fn.has("unix") == 1 then
-    WORKSPACE_PATH = home .. "/workspace/"
-    CONFIG = "linux"
-else
-    print("Unsupported system")
-end
+local CONFIG = vim.uv.os_uname().sysname == "Darwin" and "mac" or "linux"
+local WORKSPACE_PATH = vim.fn.expand("~/workspace/")
 
--- Find root of project
 local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" }
 local root_dir = require("jdtls.setup").find_root(root_markers)
 if root_dir == "" then
@@ -32,28 +22,26 @@ local workspace_dir = WORKSPACE_PATH .. project_name
 local config = {
     -- https://github.com/eclipse/eclipse.jdt.ls#running-from-the-command-line
     cmd = {
-        "java", -- or '/path/to/java11_or_newer/bin/java'
-        -- depends on if `java` is in your $PATH env variable and if it points to the right version.
-
+        "java",
         "-Declipse.application=org.eclipse.jdt.ls.core.id1",
         "-Dosgi.bundles.defaultStartLevel=4",
         "-Declipse.product=org.eclipse.jdt.ls.core.product",
         "-Dlog.protocol=true",
         "-Dlog.level=ALL",
-        "-javaagent:" .. home .. "/.local/share/nvim/mason/packages/jdtls/lombok.jar",
+        "-javaagent:" .. vim.fn.expand("~/.local/share/nvim/mason/packages/jdtls/lombok.jar"),
         "-Xms1g",
+        "-Xmx4g", -- Added max heap size
         "--add-modules=ALL-SYSTEM",
         "--add-opens",
         "java.base/java.util=ALL-UNNAMED",
         "--add-opens",
         "java.base/java.lang=ALL-UNNAMED",
-
         "-jar",
-        vim.fn.glob(home .. "/.local/share/nvim/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar"),
-
+        vim.fn.glob(
+            vim.fn.expand("~/.local/share/nvim/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar")
+        ),
         "-configuration",
-        home .. "/.local/share/nvim/mason/packages/jdtls/config_" .. CONFIG,
-
+        vim.fn.expand("~/.local/share/nvim/mason/packages/jdtls/config_" .. CONFIG),
         "-data",
         workspace_dir,
     },
