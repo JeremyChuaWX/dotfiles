@@ -57,6 +57,7 @@ return {
             },
         },
         formatters_by_ft = {
+            astro = { "prettier", "rustywind" },
             bash = { "beautysh" },
             go = { "golines" },
             html = { "prettier", "rustywind" },

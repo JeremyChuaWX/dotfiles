@@ -41,6 +41,9 @@ return {
                 hl = "SnacksIndent3",
             },
         },
+        input = {
+            enabled = true,
+        },
         notifier = {
             timeout = 2000,
         },
