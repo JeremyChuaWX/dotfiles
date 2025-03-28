@@ -29,12 +29,12 @@ local mason_lspconfig = {
     "williamboman/mason-lspconfig.nvim",
     config = function()
         local mason_lspconfig = require("mason-lspconfig")
+        local lspconfig = require("lspconfig")
 
         mason_lspconfig.setup({
             ensure_installed = LSP,
         })
 
-        local lspconfig = require("lspconfig")
         local capabilities = vim.tbl_deep_extend(
             "force",
             vim.lsp.protocol.make_client_capabilities(),

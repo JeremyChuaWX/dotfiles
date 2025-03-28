@@ -24,6 +24,14 @@ vim.diagnostic.config({
     },
 })
 
+vim.lsp.config("*", {
+    capabilities = vim.tbl_deep_extend(
+        "force",
+        vim.lsp.protocol.make_client_capabilities(),
+        require("cmp_nvim_lsp").default_capabilities()
+    ),
+})
+
 local show_virtual_lines = false
 local function toggle_virtual_lines()
     show_virtual_lines = not show_virtual_lines
