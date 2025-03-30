@@ -1,23 +1,22 @@
 local LSP = {
-    "lua_ls",
-    "ts_ls",
-    "jsonls",
-    "tailwindcss",
-    "gopls",
-    "ruff",
     "basedpyright",
+    "gopls",
+    "jsonls",
+    "lua_ls",
+    "ruff",
+    "tailwindcss",
+    "ts_ls",
 }
 
 local TOOLS = {
-    "prettier",
-    "stylua",
-    "beautysh",
-    "rustywind",
     "gofumpt",
-    "golines",
     "golangci-lint",
+    "golines",
     "markdownlint",
     "mdslw",
+    "prettier",
+    "rustywind",
+    "stylua",
 }
 
 local mason = {

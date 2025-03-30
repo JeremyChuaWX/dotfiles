@@ -33,12 +33,6 @@ return {
                     "Spaces",
                 },
             },
-            beautysh = {
-                prepend_args = {
-                    "--indent-size",
-                    "4",
-                },
-            },
             golines = {
                 prepend_args = {
                     "-m",
@@ -58,7 +52,6 @@ return {
         },
         formatters_by_ft = {
             astro = { "prettier", "rustywind" },
-            bash = { "beautysh" },
             go = { "golines" },
             html = { "prettier", "rustywind" },
             javascript = { "prettier", "rustywind" },
@@ -68,11 +61,9 @@ return {
             lua = { "stylua" },
             markdown = { "markdownlint", "mdslw" },
             rust = { "rustfmt" },
-            sh = { "beautysh" },
             solidity = { "forge_fmt" },
             typescript = { "prettier", "rustywind" },
             typescriptreact = { "prettier", "rustywind" },
-            zsh = { "beautysh" },
         },
     },
 }
