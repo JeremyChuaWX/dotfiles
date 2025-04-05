@@ -23,6 +23,8 @@
 
 [rebase]
     updateRefs = true
+    autoSquash = true
+    autoStash = true
 
 [diff]
     algorithm = histogram
@@ -34,6 +36,9 @@
     default = simple
     autoSetupRemote = true
     followTags = true
+
+[pull]
+    rebase = true
 
 [fetch]
     prune = true
