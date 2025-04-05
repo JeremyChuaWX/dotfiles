@@ -1,18 +1,41 @@
 [core]
-editor = nvim
+    editor = nvim
+
 [user]
-name = Jeremy Chua
-email = chua.jeremy.wx@gmail.com
+    name = Jeremy Chua
+    email = chua.jeremy.wx@gmail.com
+
 [color]
-ui = auto
+    ui = auto
+
 [init]
-defaultBranch = main
+    defaultBranch = main
+
 [credential "https://github.com"]
-helper = !gh auth git-credential
+    helper = !gh auth git-credential
+
 [credential "https://gist.github.com"]
-helper = !gh auth git-credential
+    helper = !gh auth git-credential
+
 [rerere]
-enabled = true
-autoUpdate = true
+    enabled = true
+    autoUpdate = true
+
 [rebase]
-updateRefs = true
+    updateRefs = true
+
+[diff]
+    algorithm = histogram
+    colorMoved = plain
+    mnemonicPrefix = true
+    renames = true
+
+[push]
+    default = simple
+    autoSetupRemote = true
+    followTags = true
+
+[fetch]
+    prune = true
+    pruneTags = true
+    all = true
