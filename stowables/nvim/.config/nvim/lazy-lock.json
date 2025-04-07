@@ -46,5 +46,5 @@
   "todo-comments.nvim": { "branch": "main", "commit": "304a8d204ee787d2544d8bc23cd38d2f929e7cc5" },
   "ts-autotag.nvim": { "branch": "master", "commit": "0f1dc38fddd99b468ef58938d7cd99ce1d6bcb0e" },
   "ts-error-translator.nvim": { "branch": "main", "commit": "47e5ba89f71b9e6c72eaaaaa519dd59bd6897df4" },
-  "typescript-tools.nvim": { "branch": "master", "commit": "cbf908bcb9ec1699b5baeca4c206c37cd231fbd4" }
+  "typescript-tools.nvim": { "branch": "master", "commit": "a4109c70e7d6a3a86f971cefea04ab6720582ba9" }
 }
