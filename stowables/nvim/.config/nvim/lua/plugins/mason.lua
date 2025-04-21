@@ -19,37 +19,20 @@ local TOOLS = {
     "stylua",
 }
 
-local mason = {
-    "williamboman/mason.nvim",
-    config = true,
-}
-
 local mason_lspconfig = {
     "williamboman/mason-lspconfig.nvim",
     config = function()
         local mason_lspconfig = require("mason-lspconfig")
-        local lspconfig = require("lspconfig")
 
         mason_lspconfig.setup({
             ensure_installed = LSP,
         })
 
-        local capabilities = vim.tbl_deep_extend(
-            "force",
-            vim.lsp.protocol.make_client_capabilities(),
-            require("cmp_nvim_lsp").default_capabilities()
-        )
+        require("config.lsp").setup()
 
         mason_lspconfig.setup_handlers({
             function(server_name)
-                local opts = {
-                    capabilities = capabilities,
-                }
-                local ok, server_opts = pcall(require, "lsp-servers." .. server_name)
-                if ok then
-                    opts = vim.tbl_deep_extend("keep", server_opts, opts)
-                end
-                lspconfig[server_name].setup(opts)
+                vim.lsp.enable(server_name)
             end,
 
             ["jdtls"] = function() end,
@@ -59,7 +42,7 @@ local mason_lspconfig = {
             ["ts_ls"] = function()
                 local ts_error_translator = require("ts-error-translator")
                 require("typescript-tools").setup({
-                    capabilities = capabilities,
+                    capabilities = vim.lsp.config["*"].capabilities,
                     settings = {
                         expose_as_code_action = "all",
                         tsserver_file_preferences = {
@@ -83,6 +66,11 @@ local mason_tools = {
     opts = {
         ensure_installed = TOOLS,
     },
+}
+
+local mason = {
+    "williamboman/mason.nvim",
+    config = true,
 }
 
 return {
