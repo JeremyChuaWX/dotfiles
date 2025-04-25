@@ -29,6 +29,7 @@ alias dev="cd $HOME/dev/"
 alias dotf="cd $HOME/.dotfiles/"
 alias nconf="cd $HOME/.dotfiles/stowables/nvim/.config/nvim/"
 alias ppath="echo $PATH | tr '\:' '\n' | fzf"
+alias cap="cat_and_copy"
 
 # tmux
 alias t="fuzzy_tmux_session"
