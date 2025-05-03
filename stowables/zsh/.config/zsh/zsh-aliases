@@ -66,6 +66,7 @@ alias gr="fuzzy_git_restore"
 # github
 alias ghb="gh browse"
 alias ghc="clone_from_github_cli"
+alias ghC="gh repo create --private --source=. --remote=origin --push"
 alias ghl="gh repo list --json 'nameWithOwner' --jq '.[].nameWithOwner' | fzf"
 
 # software version managers
