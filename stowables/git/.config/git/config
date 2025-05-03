@@ -1,9 +1,13 @@
-[core]
-    editor = nvim
-
 [user]
     name = Jeremy Chua
     email = chua.jeremy.wx@gmail.com
+
+[core]
+    editor = nvim
+    compression = 9
+    fsync = none
+    whitespace = error
+    autocrlf = input
 
 [color]
     ui = auto
@@ -30,10 +34,15 @@
     algorithm = histogram
     colorMoved = plain
     mnemonicPrefix = true
-    renames = true
+    renames = copies
+    context = 3
+    interHunkContext = 10
+
+[commit]
+    template = ~/.config/git/template
 
 [push]
-    default = simple
+    default = current
     autoSetupRemote = true
     followTags = true
 
@@ -44,3 +53,6 @@
     prune = true
     pruneTags = true
     all = true
+
+[url "git@github.com:"]
+    insteadOf = "gh:"
