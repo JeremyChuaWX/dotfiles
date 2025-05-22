@@ -15,6 +15,9 @@ export FPATH="$FPATH:$HOME/.config/zsh/completions" # own completions
 # fast node manager
 eval "$(fnm env)"
 
+# orbstack
+source ~/.orbstack/shell/init.zsh 2>/dev/null || :
+
 # default apps
 export EDITOR=nvim
 
