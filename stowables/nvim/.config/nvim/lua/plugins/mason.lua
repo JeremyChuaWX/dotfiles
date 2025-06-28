@@ -14,7 +14,6 @@ local TOOLS = {
     "golines",
     "markdownlint",
     "mdslw",
-    "prettier",
     "rustywind",
     "stylua",
 }

@@ -1,3 +1,10 @@
+local function biome_config_available(ctx)
+    return vim.fs.find(
+        { ".biomerc.json", "biome.config.js", "biome.config.ts", "biome.toml" },
+        { path = ctx.root, upward = true }
+    ) ~= nil
+end
+
 return {
     "stevearc/conform.nvim",
     keys = {
@@ -26,6 +33,9 @@ return {
                     "--config-precedence",
                     "prefer-file",
                 },
+                condition = function(ctx)
+                    return not biome_config_available(ctx)
+                end,
             },
             stylua = {
                 prepend_args = {
@@ -49,21 +59,24 @@ return {
                     "",
                 },
             },
+            biome = {
+                condition = biome_config_available,
+            },
         },
         formatters_by_ft = {
             astro = { "prettier", "rustywind" },
             go = { "golines" },
             html = { "prettier", "rustywind" },
-            javascript = { "prettier", "rustywind" },
-            javascriptreact = { "prettier", "rustywind" },
+            javascript = { "biome", "prettier", "rustywind" },
+            javascriptreact = { "biome", "prettier", "rustywind" },
             json = { "prettier" },
             jsonc = { "prettier" },
             lua = { "stylua" },
             markdown = { "markdownlint", "mdslw" },
             rust = { "rustfmt" },
             solidity = { "forge_fmt" },
-            typescript = { "prettier", "rustywind" },
-            typescriptreact = { "prettier", "rustywind" },
+            typescript = { "biome", "prettier", "rustywind" },
+            typescriptreact = { "biome", "prettier", "rustywind" },
         },
     },
 }
