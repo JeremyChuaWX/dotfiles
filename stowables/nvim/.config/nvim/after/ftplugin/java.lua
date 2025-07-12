@@ -45,7 +45,7 @@ local config = {
         "-data",
         workspace_dir,
     },
-    capabilities = require("cmp_nvim_lsp").default_capabilities(),
+    capabilities = require("blink.cmp").get_lsp_capabilities(),
     root_dir = root_dir,
 
     -- See https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
