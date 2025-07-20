@@ -30,6 +30,11 @@ return {
         },
         sources = {
             default = { "lsp", "snippets", "path", "buffer" },
+            providers = {
+                buffer = {
+                    min_keyword_length = 5,
+                },
+            },
         },
         fuzzy = {
             implementation = "prefer_rust_with_warning",
