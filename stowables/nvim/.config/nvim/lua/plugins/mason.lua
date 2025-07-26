@@ -1,11 +1,11 @@
 local LSP = {
-    "basedpyright",
     "gopls",
     "jsonls",
     "lua_ls",
     "ruff",
     "tailwindcss",
     "ts_ls",
+    "ty",
 }
 
 local TOOLS = {
