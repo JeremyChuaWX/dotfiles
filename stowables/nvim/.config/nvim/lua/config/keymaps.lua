@@ -20,10 +20,6 @@ set("", "<Space>", "<Nop>")
 -- set("n", "<C-k>", "<C-w>k")
 -- set("n", "<C-l>", "<C-w>l")
 
--- buffer management
-set("n", "[b", ":bprevious<CR>")
-set("n", "]b", ":bnext<CR>")
-
 -- faster scrolling
 set("n", "<C-e>", "3<C-e>")
 set("n", "<C-y>", "3<C-y>")
