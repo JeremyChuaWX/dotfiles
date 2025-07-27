@@ -1,8 +1,9 @@
 local function biome_config_available(ctx)
-    return vim.fs.find(
+    local res = vim.fs.find(
         { ".biomerc.json", "biome.config.js", "biome.config.ts", "biome.toml" },
-        { path = ctx.root, upward = true }
-    ) ~= nil
+        { path = ctx.dirname, upward = true }
+    )
+    return #res > 0
 end
 
 return {
@@ -33,7 +34,7 @@ return {
                     "--config-precedence",
                     "prefer-file",
                 },
-                condition = function(ctx)
+                condition = function(_, ctx)
                     return not biome_config_available(ctx)
                 end,
             },
@@ -60,7 +61,9 @@ return {
                 },
             },
             biome = {
-                condition = biome_config_available,
+                condition = function(_, ctx)
+                    return biome_config_available(ctx)
+                end,
             },
         },
         formatters_by_ft = {
