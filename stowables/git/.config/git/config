@@ -54,5 +54,5 @@
     pruneTags = true
     all = true
 
-[url "git@github.com:"]
+[url "https://github.com/"]
     insteadOf = "gh:"
