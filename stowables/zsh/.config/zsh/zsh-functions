@@ -249,7 +249,8 @@ function fuzzy_git_add() {
         git ls-files -m -o --exclude-standard |
         fzf -m --print0 --exit-0 \
             --preview='git diff -w --color=always {}' \
-            --bind='ctrl-o:become($EDITOR {} < /dev/tty > /dev/tty)' |
+            --bind='ctrl-o:become($EDITOR {} < /dev/tty > /dev/tty)' \
+            --bind='ctrl-r:execute(git restore {} 2>/dev/null)+reload(git ls-files -m -o --exclude-standard)' |
         xargs -r0 git add
     fi
 }
@@ -261,7 +262,8 @@ function fuzzy_git_diff() {
         git ls-files -m -o --exclude-standard |
         fzf -m --print0 --exit-0 \
             --preview='git diff -w --color=always {}' \
-            --bind='ctrl-o:become($EDITOR {} < /dev/tty > /dev/tty)' |
+            --bind='ctrl-o:become($EDITOR {} < /dev/tty > /dev/tty)' \
+            --bind='ctrl-r:execute(git restore {} 2>/dev/null)+reload(git ls-files -m -o --exclude-standard)' |
         xargs -r0 git diff -w --color=always
     fi
 }
