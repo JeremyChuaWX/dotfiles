@@ -1,3 +1,5 @@
+-- TODO: https://github.com/mfussenegger/nvim-jdtls
+
 local status, jdtls = pcall(require, "jdtls")
 if not status then
     return
