@@ -6,4 +6,5 @@ return {
     { "neovim/nvim-lspconfig", lazy = true },
     { "nvim-lua/plenary.nvim", lazy = true },
     { "nvim-tree/nvim-web-devicons", lazy = true },
+    { "dmmulroy/ts-error-translator.nvim", lazy = true },
 }

@@ -28,7 +28,6 @@ local mason_lspconfig = {
                 exclude = {
                     "jdtls",
                     "tailwindcss",
-                    "ts_ls",
                 },
             },
         })
