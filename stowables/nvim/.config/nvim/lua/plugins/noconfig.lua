@@ -1,5 +1,4 @@
 return {
-    -- "nvim-lua/popup.nvim",
     { "ray-x/lsp_signature.nvim", lazy = true },
     { "b0o/schemastore.nvim", lazy = true },
     { "mfussenegger/nvim-jdtls", lazy = true },
