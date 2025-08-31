@@ -3,9 +3,9 @@ return {
     cmd = "Telescope",
     keys = {
         {
-            "<leader>tt",
+            "<leader>TT",
             ":Telescope<CR>",
-            desc = "telescope main menu",
+            desc = "telescope pickers",
         },
         {
             "<leader>tf",
@@ -55,6 +55,11 @@ return {
                 require("telescope.builtin").diagnostics()
             end,
             desc = "telescope diagnostics",
+        },
+        {
+            "<leader>tt",
+            ":TodoTelescope<CR>",
+            desc = "telescope todos",
         },
     },
     dependencies = {
