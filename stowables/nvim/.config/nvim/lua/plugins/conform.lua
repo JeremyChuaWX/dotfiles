@@ -60,7 +60,7 @@ return {
                     "",
                 },
             },
-            biome = {
+            ["biome-check"] = {
                 condition = function(_, ctx)
                     return biome_config_available(ctx)
                 end,
@@ -70,16 +70,16 @@ return {
             astro = { "prettier", "rustywind" },
             go = { "golines" },
             html = { "prettier", "rustywind" },
-            javascript = { "biome", "prettier", "rustywind" },
-            javascriptreact = { "biome", "prettier", "rustywind" },
+            javascript = { "biome-check", "prettier", "rustywind" },
+            javascriptreact = { "biome-check", "prettier", "rustywind" },
             json = { "prettier" },
             jsonc = { "prettier" },
             lua = { "stylua" },
             markdown = { "markdownlint", "mdslw" },
             rust = { "rustfmt" },
             solidity = { "forge_fmt" },
-            typescript = { "biome", "prettier", "rustywind" },
-            typescriptreact = { "biome", "prettier", "rustywind" },
+            typescript = { "biome-check", "prettier", "rustywind" },
+            typescriptreact = { "biome-check", "prettier", "rustywind" },
         },
     },
 }
