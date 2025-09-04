@@ -10,5 +10,8 @@ return {
         vim.keymap.set("n", "[t", function()
             require("todo-comments").jump_prev()
         end, { desc = "next TODO comment" })
+        vim.keymap.set("n", "<leader>ft", function()
+            require("todo-comments.fzf").todo()
+        end, { desc = "fzf-lua todo" })
     end,
 }
