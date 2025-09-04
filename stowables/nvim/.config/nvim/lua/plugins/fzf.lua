@@ -1,3 +1,4 @@
+-- TODO: transfer remaining telescope stuff
 return {
     "ibhagwan/fzf-lua",
     dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -24,5 +25,5 @@ return {
             desc = "fzf-lua buffers",
         },
     },
-    opts = {},
+    opts = { "borderless" },
 }
