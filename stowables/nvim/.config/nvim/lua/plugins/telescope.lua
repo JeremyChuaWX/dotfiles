@@ -17,7 +17,6 @@ return {
     },
     dependencies = {
         { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-        "nvim-telescope/telescope-ui-select.nvim",
     },
     config = function()
         local telescope = require("telescope")
@@ -124,7 +123,6 @@ return {
             },
         })
         telescope.load_extension("fzf")
-        telescope.load_extension("ui-select")
 
         vim.keymap.set("n", "<leader>tS", function()
             local custom_previewer = previewers.new_buffer_previewer({

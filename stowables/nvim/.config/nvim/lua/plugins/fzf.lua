@@ -25,5 +25,28 @@ return {
             desc = "fzf-lua buffers",
         },
     },
-    opts = { "borderless" },
+    config = function()
+        local fzf = require("fzf-lua")
+        fzf.setup({
+            "borderless",
+            keymap = {
+                builtin = {
+                    ["<C-f>"] = "preview-down",
+                    ["<C-b>"] = "preview-up",
+                },
+                fzf = {},
+            },
+        })
+        fzf.register_ui_select()
+    end,
+    -- opts = {
+    --     "borderless",
+    --     keymap = {
+    --         builtin = {
+    --             ["<C-f>"] = "preview-down",
+    --             ["<C-b>"] = "preview-up",
+    --         },
+    --         fzf = {},
+    --     },
+    -- },
 }
