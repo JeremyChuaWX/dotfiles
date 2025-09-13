@@ -70,11 +70,25 @@ return {
         local telescope = require("telescope")
         local action_state = require("telescope.actions.state")
         local actions = require("telescope.actions")
+        local action_set = require("telescope.actions.set")
         local themes = require("telescope.themes")
         local previewers = require("telescope.previewers")
         local pickers = require("telescope.pickers")
         local finders = require("telescope.finders")
         local conf = require("telescope.config").values
+
+        local mappings = {
+            ["<C-c>"] = actions.close,
+            ["<C-f>"] = actions.preview_scrolling_down,
+            ["<C-b>"] = actions.preview_scrolling_up,
+            ["<C-e>"] = function(prompt_bufnr)
+                action_set.scroll_results(prompt_bufnr, 3)
+            end,
+            ["<C-y>"] = function(prompt_bufnr)
+                action_set.scroll_results(prompt_bufnr, -3)
+            end,
+            ["<c-s>"] = actions.to_fuzzy_refine,
+        }
 
         telescope.setup({
             defaults = {
@@ -92,20 +106,8 @@ return {
                     scroll_speed = 3,
                 },
                 mappings = {
-                    i = {
-                        ["<C-c>"] = "close",
-                        ["<C-f>"] = "preview_scrolling_down",
-                        ["<C-b>"] = "preview_scrolling_up",
-                        ["<C-e>"] = "results_scrolling_down",
-                        ["<C-y>"] = "results_scrolling_up",
-                    },
-                    n = {
-                        ["<C-c>"] = "close",
-                        ["<C-f>"] = "preview_scrolling_down",
-                        ["<C-b>"] = "preview_scrolling_up",
-                        ["<C-e>"] = "results_scrolling_down",
-                        ["<C-y>"] = "results_scrolling_up",
-                    },
+                    i = mappings,
+                    n = mappings,
                 },
                 file_ignore_patterns = {
                     "node_modules",
@@ -117,8 +119,6 @@ return {
                 sorting_strategy = "ascending",
                 prompt_prefix = " ",
                 path_display = { "truncate" },
-                file_sorter = require("telescope.sorters").get_fuzzy_file,
-                generic_sorter = require("telescope.sorters").get_generic_fuzzy_sorter,
                 selection_caret = "  ",
                 entry_prefix = "  ",
             },
