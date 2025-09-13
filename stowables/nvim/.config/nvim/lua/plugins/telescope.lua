@@ -8,15 +8,63 @@ return {
             desc = "telescope pickers",
         },
         {
+            "<leader>tf",
+            function()
+                require("telescope.builtin").find_files({ hidden = true })
+            end,
+            desc = "telescope find files",
+        },
+        {
+            "<leader>tF",
+            function()
+                require("telescope.builtin").git_files()
+            end,
+            desc = "telescope find in git files",
+        },
+        {
+            "<leader>tg",
+            function()
+                require("telescope.builtin").git_status()
+            end,
+            desc = "telescope git status",
+        },
+        {
+            "<leader>ts",
+            function()
+                require("telescope.builtin").live_grep()
+            end,
+            desc = "telescope live grep",
+        },
+        {
             "<leader>th",
             function()
                 require("telescope.builtin").help_tags()
             end,
             desc = "telescope help tags",
         },
+        {
+            "<leader>tb",
+            function()
+                require("telescope.builtin").buffers()
+            end,
+            desc = "telescope buffers",
+        },
+        {
+            "<leader>td",
+            function()
+                require("telescope.builtin").diagnostics()
+            end,
+            desc = "telescope diagnostics",
+        },
+        {
+            "<leader>tt",
+            ":TodoTelescope<CR>",
+            desc = "telescope todos",
+        },
     },
     dependencies = {
         { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+        "nvim-telescope/telescope-ui-select.nvim",
     },
     config = function()
         local telescope = require("telescope")
@@ -123,6 +171,7 @@ return {
             },
         })
         telescope.load_extension("fzf")
+        telescope.load_extension("ui-select")
 
         vim.keymap.set("n", "<leader>tS", function()
             local custom_previewer = previewers.new_buffer_previewer({

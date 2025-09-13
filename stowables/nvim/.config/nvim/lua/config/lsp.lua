@@ -49,12 +49,28 @@ return {
                     return
                 end
 
+                local telescope_pickers = require("telescope.builtin")
+
                 vim.keymap.set("n", "grr", function()
-                    require("fzf-lua").lsp_references()
+                    telescope_pickers.lsp_references({
+                        jump_type = "never",
+                    })
                 end, { buffer = bufnr })
 
                 vim.keymap.set("n", "gd", function()
-                    require("fzf-lua").lsp_definitions()
+                    telescope_pickers.lsp_definitions({
+                        jump_type = "never",
+                    })
+                end, { buffer = bufnr })
+
+                vim.keymap.set("n", "gs", function()
+                    telescope_pickers.lsp_document_symbols({
+                        ignore_symbols = {
+                            "constant",
+                            "property",
+                            "variable",
+                        },
+                    })
                 end, { buffer = bufnr })
 
                 vim.keymap.set("n", "gl", vim.diagnostic.open_float, { buffer = bufnr })
