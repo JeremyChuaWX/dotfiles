@@ -49,6 +49,11 @@ return {
                     return
                 end
 
+                if client:supports_method("textDocument/foldingRange", bufnr) then
+                    local win = vim.api.nvim_get_current_win()
+                    vim.wo[win][0].foldexpr = "v:lua.vim.lsp.foldexpr()"
+                end
+
                 local telescope_pickers = require("telescope.builtin")
 
                 vim.keymap.set("n", "grr", function()
