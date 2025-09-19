@@ -19,26 +19,31 @@ return {
         branch = "main",
         build = ":TSUpdate",
         lazy = false,
-        opts = {
-            ensure_installed = {
+        config = function()
+            local treesitter = require("nvim-treesitter")
+            treesitter.setup({
+                auto_install = true,
+                highlight = {
+                    enable = true,
+                    additional_vim_regex_highlighting = false,
+                },
+                indent = {
+                    enable = true,
+                },
+            })
+            treesitter.install({
                 "diff",
+                "dockerfile",
                 "go",
                 "javascript",
                 "json",
+                "jsx",
                 "lua",
                 "markdown",
                 "python",
+                "tsx",
                 "typescript",
-                "dockerfile",
-            },
-            auto_install = true,
-            highlight = {
-                enable = true,
-                additional_vim_regex_highlighting = false,
-            },
-            indent = {
-                enable = true,
-            },
-        },
+            })
+        end,
     },
 }

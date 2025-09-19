@@ -97,6 +97,8 @@ vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99
 vim.opt.foldenable = true
 vim.opt.fillchars:append("fold: ,foldsep: ,foldopen:,foldclose:")
+vim.o.foldmethod = "expr"
+vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 
 ---------------------
 -- buffer and tabs --
