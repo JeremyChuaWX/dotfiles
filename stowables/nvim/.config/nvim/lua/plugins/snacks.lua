@@ -55,5 +55,8 @@ return {
                 wo = { wrap = true },
             },
         },
+        statuscolumn = {
+            enabled = true,
+        },
     },
 }
