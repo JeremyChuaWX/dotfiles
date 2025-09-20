@@ -8,6 +8,9 @@ return {
     },
     {
         "lewis6991/ts-install.nvim",
+        dependencies = {
+            "nvim-treesitter/nvim-treesitter",
+        },
         opts = {
             ensure_install = {
                 "diff",
