@@ -75,7 +75,7 @@ return {
         local previewers = require("telescope.previewers")
         local pickers = require("telescope.pickers")
         local finders = require("telescope.finders")
-        local conf = require("telescope.config").values
+        local sorters = require("telescope.sorters")
 
         local mappings = {
             ["<C-c>"] = actions.close,
@@ -113,7 +113,7 @@ return {
                 },
                 file_ignore_patterns = {
                     "node_modules",
-                    ".git/",
+                    ".git",
                 },
                 initial_mode = "insert",
                 results_title = false,
@@ -123,6 +123,16 @@ return {
                 path_display = { "truncate" },
                 selection_caret = "  ",
                 entry_prefix = "  ",
+                vimgrep_arguments = {
+                    "rg",
+                    "--color=never",
+                    "--no-heading",
+                    "--with-filename",
+                    "--line-number",
+                    "--column",
+                    "--smart-case",
+                    "--trim",
+                },
             },
             pickers = {
                 find_files = {
@@ -175,51 +185,11 @@ return {
         telescope.load_extension("fzf")
         telescope.load_extension("ui-select")
 
-        local custom_previewer = previewers.new_buffer_previewer({
-            title = "File Preview",
-            define_preview = function(self, entry)
-                -- Parse the ripgrep output
-                local parts = vim.split(entry.value, ":")
-                local file_path = parts[1]
-                local line_num = tonumber(parts[2])
-
-                -- Read the file content
-                local lines = vim.fn.readfile(file_path)
-                if not lines then
-                    return
-                end
-
-                -- Calculate preview range (10 lines before and after the match)
-                local start_line = math.max(1, line_num - 10)
-                local end_line = math.min(#lines, line_num + 10)
-
-                -- Get the preview lines
-                local preview_lines = {}
-                for i = start_line, end_line do
-                    local line = lines[i]
-                    if i == line_num then
-                        -- Highlight the matching line
-                        preview_lines[#preview_lines + 1] = "> " .. line
-                    else
-                        preview_lines[#preview_lines + 1] = "  " .. line
-                    end
-                end
-
-                -- Set the preview content
-                vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, false, preview_lines)
-
-                -- Apply syntax highlighting
-                local ft = vim.filetype.match({ filename = file_path })
-                if ft then
-                    vim.bo[self.state.bufnr].filetype = ft
-                end
-            end,
-        })
-
         vim.keymap.set("n", "<leader>tS", function()
             pickers
-                .new({}, {
+                .new({
                     prompt_title = "Search File Content",
+                    sorter = sorters.get_generic_fuzzy_sorter(),
                     finder = finders.new_oneshot_job({
                         "rg",
                         "--line-number",
@@ -227,11 +197,50 @@ return {
                         "--no-heading",
                         "--color=never",
                         "--smart-case",
+                        "--trim",
                         ".",
                     }, {}),
-                    previewer = custom_previewer,
-                    sorter = conf.generic_sorter({}),
-                    attach_mappings = function(prompt_bufnr, map)
+                    previewer = previewers.new_buffer_previewer({
+                        title = "File Preview",
+                        define_preview = function(self, entry)
+                            -- Parse the ripgrep output
+                            local parts = vim.split(entry.value, ":")
+                            local file_path = parts[1]
+                            local line_num = tonumber(parts[2])
+
+                            -- Read the file content
+                            local lines = vim.fn.readfile(file_path)
+                            if not lines then
+                                return
+                            end
+
+                            -- Calculate preview range (10 lines before and after the match)
+                            local start_line = math.max(1, line_num - 10)
+                            local end_line = math.min(#lines, line_num + 10)
+
+                            -- Get the preview lines
+                            local preview_lines = {}
+                            for i = start_line, end_line do
+                                local line = lines[i]
+                                if i == line_num then
+                                    -- Highlight the matching line
+                                    preview_lines[#preview_lines + 1] = "> " .. line
+                                else
+                                    preview_lines[#preview_lines + 1] = "  " .. line
+                                end
+                            end
+
+                            -- Set the preview content
+                            vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, false, preview_lines)
+
+                            -- Apply syntax highlighting
+                            local ft = vim.filetype.match({ filename = file_path })
+                            if ft then
+                                vim.bo[self.state.bufnr].filetype = ft
+                            end
+                        end,
+                    }),
+                    attach_mappings = function(prompt_bufnr)
                         actions.select_default:replace(function()
                             local selection = action_state.get_selected_entry()
                             actions.close(prompt_bufnr)
@@ -249,7 +258,7 @@ return {
 
                         return true
                     end,
-                })
+                }, {})
                 :find()
         end)
     end,
