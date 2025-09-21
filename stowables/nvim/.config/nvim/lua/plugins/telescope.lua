@@ -88,6 +88,8 @@ return {
                 action_set.scroll_results(prompt_bufnr, -3)
             end,
             ["<c-s>"] = actions.to_fuzzy_refine,
+            ["<c-j>"] = actions.move_selection_next,
+            ["<c-k>"] = actions.move_selection_previous,
         }
 
         telescope.setup({
@@ -173,48 +175,48 @@ return {
         telescope.load_extension("fzf")
         telescope.load_extension("ui-select")
 
+        local custom_previewer = previewers.new_buffer_previewer({
+            title = "File Preview",
+            define_preview = function(self, entry)
+                -- Parse the ripgrep output
+                local parts = vim.split(entry.value, ":")
+                local file_path = parts[1]
+                local line_num = tonumber(parts[2])
+
+                -- Read the file content
+                local lines = vim.fn.readfile(file_path)
+                if not lines then
+                    return
+                end
+
+                -- Calculate preview range (10 lines before and after the match)
+                local start_line = math.max(1, line_num - 10)
+                local end_line = math.min(#lines, line_num + 10)
+
+                -- Get the preview lines
+                local preview_lines = {}
+                for i = start_line, end_line do
+                    local line = lines[i]
+                    if i == line_num then
+                        -- Highlight the matching line
+                        preview_lines[#preview_lines + 1] = "> " .. line
+                    else
+                        preview_lines[#preview_lines + 1] = "  " .. line
+                    end
+                end
+
+                -- Set the preview content
+                vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, false, preview_lines)
+
+                -- Apply syntax highlighting
+                local ft = vim.filetype.match({ filename = file_path })
+                if ft then
+                    vim.bo[self.state.bufnr].filetype = ft
+                end
+            end,
+        })
+
         vim.keymap.set("n", "<leader>tS", function()
-            local custom_previewer = previewers.new_buffer_previewer({
-                title = "File Preview",
-                define_preview = function(self, entry)
-                    -- Parse the ripgrep output
-                    local parts = vim.split(entry.value, ":")
-                    local file_path = parts[1]
-                    local line_num = tonumber(parts[2])
-
-                    -- Read the file content
-                    local lines = vim.fn.readfile(file_path)
-                    if not lines then
-                        return
-                    end
-
-                    -- Calculate preview range (10 lines before and after the match)
-                    local start_line = math.max(1, line_num - 10)
-                    local end_line = math.min(#lines, line_num + 10)
-
-                    -- Get the preview lines
-                    local preview_lines = {}
-                    for i = start_line, end_line do
-                        local line = lines[i]
-                        if i == line_num then
-                            -- Highlight the matching line
-                            preview_lines[#preview_lines + 1] = "> " .. line
-                        else
-                            preview_lines[#preview_lines + 1] = "  " .. line
-                        end
-                    end
-
-                    -- Set the preview content
-                    vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, false, preview_lines)
-
-                    -- Apply syntax highlighting
-                    local ft = vim.filetype.match({ filename = file_path })
-                    if ft then
-                        vim.bo[self.state.bufnr].filetype = ft
-                    end
-                end,
-            })
-
             pickers
                 .new({}, {
                     prompt_title = "Search File Content",
