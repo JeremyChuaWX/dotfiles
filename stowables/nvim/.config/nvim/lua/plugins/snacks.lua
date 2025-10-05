@@ -1,6 +1,7 @@
 return {
     "folke/snacks.nvim",
     lazy = false,
+    priority = 1000,
     keys = {
         {
             "<leader>sn",
