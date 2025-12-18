@@ -5,5 +5,4 @@ return {
     "neovim/nvim-lspconfig",
     "nvim-lua/plenary.nvim",
     "nvim-tree/nvim-web-devicons",
-    "dmmulroy/ts-error-translator.nvim",
 }
