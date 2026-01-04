@@ -55,7 +55,6 @@ return {
                 "go",
                 "javascript",
                 "json",
-                "jsonc",
                 "jsx",
                 "lua",
                 "markdown",
