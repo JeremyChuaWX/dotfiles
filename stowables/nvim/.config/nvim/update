@@ -1,15 +1,58 @@
 #!/bin/zsh
 
+# Colors for better readability
+BOLD='\033[1m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[0;33m'
+GRAY='\033[0;90m'
+NC='\033[0m' # No Color
+
 LOCK_FILE="lazy-lock.json"
 
-nvim --headless \
-    "+Lazy! sync" \
-    +qa
+# Detect lazy.nvim installation path
+DATA_PATH=$(nvim --headless -E -u NONE '+lua print(vim.fn.stdpath("data"))' +q 2>&1)
+LAZY_PATH="$DATA_PATH/lazy"
+
+echo "${BLUE}${BOLD}==> Starting Neovim plugin update...${NC}"
+
+# Run lazy sync headlessly
+nvim --headless "+Lazy! sync" +qa > /dev/null 2>&1
 
 if git diff --quiet -- "$LOCK_FILE"; then
-  echo "no changes to $LOCK_FILE"
+    echo "${GREEN}No changes detected. All plugins are up to date.${NC}"
 else
-  git add "$LOCK_FILE"
-  git commit -m "chore: update lazy lock"
-  echo "$LOCK_FILE updated and committed"
+    echo "\n${YELLOW}${BOLD}Plugin Update Summary:${NC}"
+    echo "========================================"
+    
+    # Process the diff. We capture the full hashes for git log, 
+    # but display them as short hashes.
+    git diff -U0 "$LOCK_FILE" | grep -E '^\+\s+"|^-\s+"' | \
+    sed -E 'N;s/^-  "([^"]+)": \{[^\}]*"commit": "([^"]+)"[^\}]*\}.*\n\+  "[^"]+": \{[^\}]*"commit": "([^"]+)"[^\}]*\}.*/\1 \2 \3/' | \
+    while read -r name old_hash new_hash; do
+        
+        # Display Plugin Name and Short Hashes
+        short_old=${old_hash:0:7}
+        short_new=${new_hash:0:7}
+        printf "${BLUE}${BOLD}%-30s${NC} ${GRAY}%s -> %s${NC}\n" "$name" "$short_old" "$short_new"
+
+        # Attempt to show git logs
+        plugin_dir="$LAZY_PATH/$name"
+        if [ -d "$plugin_dir" ]; then
+            # Get the log between the two hashes
+            # --oneline: one line per commit
+            # --no-decorate: hide tag/branch info
+            git -C "$plugin_dir" log --oneline --no-decorate --color=always ${old_hash}..${new_hash} 2>/dev/null | sed 's/^/    /'
+        else
+            echo "    ${GRAY}(Plugin directory not found, skipping logs)${NC}"
+        fi
+        echo "" # Add a newline between plugins
+    done
+
+    echo "========================================"
+
+    # Commit the changes
+    git add "$LOCK_FILE"
+    git commit -m "chore: update lazy lock"
+    echo "${GREEN}${BOLD}✔ $LOCK_FILE updated and committed successfully.${NC}"
 fi
