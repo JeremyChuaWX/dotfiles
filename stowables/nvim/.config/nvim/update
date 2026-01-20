@@ -14,9 +14,10 @@ LOCK_FILE="lazy-lock.json"
 DATA_PATH=$(nvim --headless -E -u NONE '+lua print(vim.fn.stdpath("data"))' +q 2>&1)
 LAZY_PATH="$DATA_PATH/lazy"
 
-echo "${BLUE}${BOLD}==> Starting Neovim plugin update...${NC}"
+echo "${BLUE}${BOLD}==> Updating Mason tools & registries...${NC}"
+nvim --headless "+MasonToolsUpdateSync" +qa > /dev/null 2>&1
 
-# Run lazy sync headlessly
+echo "${BLUE}${BOLD}==> Starting Neovim plugin update...${NC}"
 nvim --headless "+Lazy! sync" +qa > /dev/null 2>&1
 
 if git diff --quiet -- "$LOCK_FILE"; then
@@ -25,8 +26,7 @@ else
     echo "\n${YELLOW}${BOLD}Plugin Update Summary:${NC}"
     echo "========================================"
     
-    # Process the diff. We capture the full hashes for git log, 
-    # but display them as short hashes.
+    # Process the diff.
     git diff -U0 "$LOCK_FILE" | grep -E '^\+\s+"|^-\s+"' | \
     sed -E 'N;s/^-  "([^"]+)": \{[^\}]*"commit": "([^"]+)"[^\}]*\}.*\n\+  "[^"]+": \{[^\}]*"commit": "([^"]+)"[^\}]*\}.*/\1 \2 \3/' | \
     while read -r name old_hash new_hash; do
@@ -34,19 +34,18 @@ else
         # Display Plugin Name and Short Hashes
         short_old=${old_hash:0:7}
         short_new=${new_hash:0:7}
-        printf "${BLUE}${BOLD}%-30s${NC} ${GRAY}%s -> %s${NC}\n" "$name" "$short_old" "$short_new"
+        printf "${BLUE}${BOLD}%-30s${NC} ${GRAY}%s -> %s${NC}\n" \
+            "$name" "$short_old" "$short_new"
 
         # Attempt to show git logs
         plugin_dir="$LAZY_PATH/$name"
         if [ -d "$plugin_dir" ]; then
-            # Get the log between the two hashes
-            # --oneline: one line per commit
-            # --no-decorate: hide tag/branch info
-            git -C "$plugin_dir" log --oneline --no-decorate --color=always ${old_hash}..${new_hash} 2>/dev/null | sed 's/^/    /'
+            git -C "$plugin_dir" log --oneline --no-decorate --color=always \
+                ${old_hash}..${new_hash} 2>/dev/null | sed 's/^/    /'
         else
             echo "    ${GRAY}(Plugin directory not found, skipping logs)${NC}"
         fi
-        echo "" # Add a newline between plugins
+        echo "" 
     done
 
     echo "========================================"
