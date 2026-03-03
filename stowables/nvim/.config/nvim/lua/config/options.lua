@@ -66,6 +66,7 @@ vim.opt.fillchars:append({
     vertright = "┣",
     verthoriz = "╋",
 })
+vim.o.termguicolors = true
 
 ------------
 -- editor --
