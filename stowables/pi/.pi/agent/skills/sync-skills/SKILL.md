@@ -1,14 +1,14 @@
 ---
 name: sync-skills
-description: Temporarily clone latest matt-skills and patch selected Pi skills with upstream prompt improvements while preserving local-first .harness workflows and manual-only invocation. Use manually when updating this Pi config's adapted skills.
+description: Temporarily clone latest matt-skills and patch selected Pi skills with upstream prompt improvements while following Matt's local markdown issue-tracker conventions and preserving manual-only invocation. Use manually when updating this Pi config's adapted skills.
 disable-model-invocation: true
 ---
 
 # Sync Skills
 
-Update this Pi config's adapted Matt Pocock skills without adopting Matt's remote issue-tracker workflow.
+Update this Pi config's adapted Matt Pocock skills while following Matt's **local markdown issue tracker** convention only.
 
-This is a **local-first adaptation patch** workflow: temporarily clone upstream Matt skills, pull in phrasing and prompt improvements, then patch the corresponding Pi skills while preserving local `.harness/` artifacts and manual-only behavior.
+This is a **local-first local-tracker adaptation patch** workflow: temporarily clone upstream Matt skills, pull in phrasing and prompt improvements, then patch the corresponding Pi skills while preserving manual-only behavior and using Matt's `.scratch/` local issue tracker convention. Ignore GitHub, GitLab, Linear, Jira, and any other remote tracker workflow.
 
 ## Mapping
 
@@ -19,8 +19,8 @@ Use these source-to-destination mappings:
 | `grill-me` | `skills/productivity/grill-me` | Preserve Pi manual-only frontmatter. |
 | `grill-with-docs` | `skills/engineering/grill-with-docs` | Preserve Pi manual-only frontmatter and no tracker assumptions. |
 | `improve-codebase-architecture` | `skills/engineering/improve-codebase-architecture` | Preserve Pi manual-only frontmatter and adapt any subagent/tool wording to available Pi tools. |
-| `to-prd` | `skills/engineering/to-prd` | Import phrasing, but keep local `.harness/<feature-slug>/PRD.md`; do not publish to an issue tracker. |
-| `to-plan` | `skills/engineering/to-issues` | Treat upstream `to-issues` as the conceptual source, but output local `.harness/<feature-slug>/plan/*.md` plan slices, not tracker issues. |
+| `to-prd` | `skills/engineering/to-prd` | Import phrasing and publish to Matt's local markdown issue tracker: `.scratch/<feature-slug>/PRD.md`. |
+| `to-issues` | `skills/engineering/to-issues` | Follow upstream terminology and publish local markdown issues to `.scratch/<feature-slug>/issues/*.md`. |
 
 Protected Pi-local skills with no upstream source:
 
@@ -33,11 +33,15 @@ Protected Pi-local skills with no upstream source:
 - Do not couple the workflow to GitHub, GitLab, Linear, Jira, or any other remote issue tracker.
 - Do not create or publish remote issues.
 - Preserve `disable-model-invocation: true` in every Pi `SKILL.md` you touch.
-- Preserve local-first vocabulary:
-  - **Local work artifacts**: `.harness/<feature-slug>/PRD.md`, `.harness/<feature-slug>/plan/*.md`, `.harness/<feature-slug>/IMPLEMENTATION.md`
-  - **Plan slice**: a local markdown file under `.harness/<feature-slug>/plan/`
-  - **Remote issue tracker**: external services such as GitHub/GitLab/Linear/Jira; not the default workflow
-- Preserve explicit "Do not create remote tracker items" / "Do not use remote tracker CLIs" language in `to-prd` and `to-plan`.
+- Follow Matt's local markdown issue tracker vocabulary:
+  - **Local issue tracker**: markdown files under `.scratch/`.
+  - **Feature directory**: `.scratch/<feature-slug>/`.
+  - **PRD**: `.scratch/<feature-slug>/PRD.md`.
+  - **Issue**: `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01`.
+  - **Status**: a `Status:` line near the top of each issue file.
+  - **Comments**: appended under a `## Comments` heading.
+  - **Remote issue tracker**: external services such as GitHub/GitLab/Linear/Jira; never the workflow for this Pi config.
+- Preserve explicit "Do not create remote tracker items" / "Do not use remote tracker CLIs" language in `to-prd` and `to-issues`.
 
 ## Process
 
@@ -72,11 +76,13 @@ This clones `https://github.com/mattpocock/skills.git` into a temporary director
 
 Ignore or rewrite upstream changes that assume:
 
-- issue trackers
-- tracker labels
+- remote issue trackers
+- remote tracker labels
 - `gh`, `glab`, or other remote tracker CLIs
 - publishing PRDs/issues remotely
 - Claude-specific tools unavailable in Pi
+
+Adopt upstream changes that assume a local markdown issue tracker, adapting paths to `.scratch/<feature-slug>/...` if needed.
 
 ### 3. Present an update plan
 
@@ -103,17 +109,18 @@ For direct skills (`grill-me`, `grill-with-docs`, `improve-codebase-architecture
 For `to-prd` from upstream `to-prd`:
 
 - Keep the upstream goal of synthesizing a PRD from current conversation/codebase context.
-- Keep Pi's local output: `.harness/<feature-slug>/PRD.md`.
+- Treat "publish to the project issue tracker" as writing to Matt's local markdown tracker.
+- Output `.scratch/<feature-slug>/PRD.md`.
 - Ask for approval before writing.
-- Do not publish to an issue tracker.
+- Do not publish to a remote issue tracker.
 - Do not use remote tracker CLIs.
 
-For `to-plan` from upstream `to-issues`:
+For `to-issues` from upstream `to-issues`:
 
-- Preserve tracer-bullet / vertical-slice planning ideas.
-- Translate "issues" into local **Plan slices**.
-- Translate "publish issues" into writing `.harness/<feature-slug>/plan/<NN>-<slug>.md`.
-- Translate tracker labels into local status vocabulary.
+- Preserve tracer-bullet / vertical-slice issue planning ideas.
+- Keep Matt's issue terminology instead of translating to "plan slices".
+- Treat "publish issues" as writing `.scratch/<feature-slug>/issues/<NN>-<slug>.md`.
+- Translate tracker labels into local `Status:` vocabulary where needed.
 - Preserve HITL/AFK classification when useful.
 - Preserve dependency/blocker structure using local file references.
 
@@ -129,7 +136,7 @@ Also inspect the resulting diff manually. Verify:
 
 - No unapproved skill directories were added.
 - All touched `SKILL.md` files still include `disable-model-invocation: true`.
-- `to-prd` and `to-plan` remain local-first.
+- `to-prd` and `to-issues` remain local-first and use `.scratch/` local markdown tracker paths.
 - `implement` was not overwritten.
 - Support-file links resolve.
 

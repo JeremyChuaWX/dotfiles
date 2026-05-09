@@ -34,18 +34,18 @@ while IFS= read -r skill_md; do
 done < <(find "$PI_SKILLS_DIR" -mindepth 2 -maxdepth 2 -name SKILL.md | sort)
 
 echo
-echo "== Local-first guardrail check =="
-for skill in to-prd to-plan; do
+echo "== Local markdown tracker guardrail check =="
+for skill in to-prd to-issues; do
   path="$PI_SKILLS_DIR/$skill/SKILL.md"
   if [ ! -f "$path" ]; then
-    echo "missing local-first skill: $path" >&2
+    echo "missing local tracker skill: $path" >&2
     failed=1
     continue
   fi
-  if grep -qiE 'Do not create remote tracker items|Do not use remote tracker CLIs|\.harness/' "$path"; then
-    echo "ok: $skill mentions local-first/no-remote guardrails"
+  if grep -qiE 'Do not create remote tracker items|Do not use remote tracker CLIs|\.scratch/' "$path"; then
+    echo "ok: $skill mentions local tracker/no-remote guardrails"
   else
-    echo "warning: $skill may be missing local-first/no-remote guardrails" >&2
+    echo "warning: $skill may be missing local tracker/no-remote guardrails" >&2
     failed=1
   fi
 done

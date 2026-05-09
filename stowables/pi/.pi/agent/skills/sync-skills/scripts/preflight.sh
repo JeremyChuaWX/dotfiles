@@ -41,8 +41,8 @@ Upstream URL:         $MATT_SKILLS_URL
 grill-me                      <- skills/productivity/grill-me
 grill-with-docs               <- skills/engineering/grill-with-docs
 improve-codebase-architecture <- skills/engineering/improve-codebase-architecture
-to-prd                        <- skills/engineering/to-prd (local-first adaptation)
-to-plan                       <- skills/engineering/to-issues (local-first adaptation)
+to-prd                        <- skills/engineering/to-prd (local markdown tracker)
+to-issues                     <- skills/engineering/to-issues (local markdown tracker)
 MAP
 
 echo
@@ -68,7 +68,7 @@ grill-me|skills/productivity/grill-me
 grill-with-docs|skills/engineering/grill-with-docs
 improve-codebase-architecture|skills/engineering/improve-codebase-architecture
 to-prd|skills/engineering/to-prd
-to-plan|skills/engineering/to-issues
+to-issues|skills/engineering/to-issues
 MAPS
 
 if [ "$missing" -ne 0 ]; then

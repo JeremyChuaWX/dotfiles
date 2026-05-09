@@ -46,6 +46,6 @@ done <<'MAPS'
 grill-me|skills/productivity/grill-me|
 grill-with-docs|skills/engineering/grill-with-docs|
 improve-codebase-architecture|skills/engineering/improve-codebase-architecture|
-to-prd|skills/engineering/to-prd|adapt remote publishing to local .harness PRD
-to-plan|skills/engineering/to-issues|adapt tracker issues to local plan slices
+to-prd|skills/engineering/to-prd|adapt publishing to local markdown tracker .scratch PRD
+to-issues|skills/engineering/to-issues|adapt publishing to local markdown tracker issues
 MAPS
