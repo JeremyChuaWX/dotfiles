@@ -6,59 +6,67 @@ disable-model-invocation: true
 
 # Improve Codebase Architecture
 
-Surface architectural friction and propose **deepening opportunities**: refactors that turn shallow modules into deep ones. The aim is testability and AI-navigability.
+Surface architectural friction and propose **deepening opportunities** — refactors that turn shallow modules into deep ones. The aim is testability and AI-navigability.
 
 ## Glossary
 
-Use these terms exactly. Full definitions are in [LANGUAGE.md](LANGUAGE.md).
+Use these terms exactly in every suggestion. Consistent language is the point — don't drift into "component," "service," "API," or "boundary." Full definitions in [LANGUAGE.md](LANGUAGE.md).
 
-- **Module**: anything with an interface and an implementation.
-- **Interface**: everything a caller must know to use the module.
-- **Implementation**: the code inside.
-- **Depth**: leverage at the interface.
-- **Seam**: where an interface lives.
-- **Adapter**: a concrete thing satisfying an interface at a seam.
-- **Leverage**: what callers get from depth.
-- **Locality**: what maintainers get from depth.
+- **Module** — anything with an interface and an implementation (function, class, package, slice).
+- **Interface** — everything a caller must know to use the module: types, invariants, error modes, ordering, config. Not just the type signature.
+- **Implementation** — the code inside.
+- **Depth** — leverage at the interface: a lot of behaviour behind a small interface. **Deep** = high leverage. **Shallow** = interface nearly as complex as the implementation.
+- **Seam** — where an interface lives; a place behaviour can be altered without editing in place. (Use this, not "boundary.")
+- **Adapter** — a concrete thing satisfying an interface at a seam.
+- **Leverage** — what callers get from depth.
+- **Locality** — what maintainers get from depth: change, bugs, knowledge concentrated in one place.
+
+Key principles (see [LANGUAGE.md](LANGUAGE.md) for the full list):
+
+- **Deletion test**: imagine deleting the module. If complexity vanishes, it was a pass-through. If complexity reappears across N callers, it was earning its keep.
+- **The interface is the test surface.**
+- **One adapter = hypothetical seam. Two adapters = real seam.**
+
+This skill is _informed_ by the project's domain model. The domain language gives names to good seams; ADRs record decisions the skill should not re-litigate.
 
 ## Process
 
 ### 1. Explore
 
-Read the project's domain glossary and any ADRs in the area first. Look for `CONTEXT.md`, `CONTEXT-MAP.md`, and `docs/adr/` when present.
+Read the project's domain glossary and any ADRs in the area you're touching first. Look for `CONTEXT.md`, `CONTEXT-MAP.md`, and `docs/adr/` when present.
 
-Then explore the codebase directly with available Pi Coding Agent read/search tools. Explore organically and note where you experience friction:
+Then explore the codebase directly with available Pi Coding Agent read/search tools. Don't follow rigid heuristics — explore organically and note where you experience friction:
 
 - Where does understanding one concept require bouncing between many small modules?
-- Where are modules **shallow**?
-- Where have pure functions been extracted just for testability, but real bugs hide in how they are called?
+- Where are modules **shallow** — interface nearly as complex as the implementation?
+- Where have pure functions been extracted just for testability, but the real bugs hide in how they're called (no **locality**)?
 - Where do tightly coupled modules leak across their seams?
-- Which parts are untested or hard to test through their current interface?
+- Which parts of the codebase are untested, or hard to test through their current interface?
 
-Apply the **deletion test** to suspected shallow modules: would deleting it concentrate complexity, or just move it?
+Apply the **deletion test** to anything you suspect is shallow: would deleting it concentrate complexity, or just move it? A "yes, concentrates" is the signal you want.
 
-### 2. Present Candidates
+### 2. Present candidates
 
-Present deepening opportunities first. For each candidate include:
+Present a numbered list of deepening opportunities. For each candidate:
 
-- **Files**: files/modules involved.
-- **Problem**: why the architecture causes friction.
-- **Solution**: plain English description of what would change.
-- **Benefits**: locality, leverage, and test improvement.
+- **Files** — which files/modules are involved
+- **Problem** — why the current architecture is causing friction
+- **Solution** — plain English description of what would change
+- **Benefits** — explained in terms of locality and leverage, and also in how tests would improve
 
-Use `CONTEXT.md` vocabulary for the domain and [LANGUAGE.md](LANGUAGE.md) vocabulary for architecture.
+**Use CONTEXT.md vocabulary for the domain, and [LANGUAGE.md](LANGUAGE.md) vocabulary for the architecture.** If `CONTEXT.md` defines "Order," talk about "the Order intake module" — not "the FooBarHandler," and not "the Order service."
 
-If a candidate contradicts an ADR, surface it only when the friction is real enough to warrant revisiting that ADR.
+**ADR conflicts**: if a candidate contradicts an existing ADR, only surface it when the friction is real enough to warrant revisiting the ADR. Mark it clearly (e.g. _"contradicts ADR-0007 — but worth reopening because…"_). Don't list every theoretical refactor an ADR forbids.
 
-Do not propose interfaces yet. Ask: "Which of these would you like to explore?"
+Do NOT propose interfaces yet. Ask the user: "Which of these would you like to explore?"
 
-### 3. Grilling Loop
+### 3. Grilling loop
 
-Once the user picks a candidate, walk the design tree with them: constraints, dependencies, the deepened module shape, what sits behind the seam, and what tests survive.
+Once the user picks a candidate, drop into a grilling conversation. Walk the design tree with them — constraints, dependencies, the shape of the deepened module, what sits behind the seam, what tests survive.
 
 Side effects happen inline as decisions crystallize:
 
-- If naming a deepened module after a concept not in `CONTEXT.md`, add the term to `CONTEXT.md` after confirmation.
-- If sharpening fuzzy language, update `CONTEXT.md` after confirmation.
-- If the user rejects a candidate with a load-bearing reason, offer an ADR only when future architecture reviews would need that reason.
-- If exploring alternative interfaces, use [INTERFACE-DESIGN.md](INTERFACE-DESIGN.md).
+- **Naming a deepened module after a concept not in `CONTEXT.md`?** Add the term to `CONTEXT.md` — same discipline as `/grill-with-docs` (see [CONTEXT-FORMAT.md](../grill-with-docs/CONTEXT-FORMAT.md)). Create the file lazily if it doesn't exist.
+- **Sharpening a fuzzy term during the conversation?** Update `CONTEXT.md` right there.
+- **User rejects the candidate with a load-bearing reason?** Offer an ADR, framed as: _"Want me to record this as an ADR so future architecture reviews don't re-suggest it?"_ Only offer when the reason would actually be needed by a future explorer to avoid re-suggesting the same thing — skip ephemeral reasons ("not worth it right now") and self-evident ones. See [ADR-FORMAT.md](../grill-with-docs/ADR-FORMAT.md).
+- **Want to explore alternative interfaces for the deepened module?** See [INTERFACE-DESIGN.md](INTERFACE-DESIGN.md).

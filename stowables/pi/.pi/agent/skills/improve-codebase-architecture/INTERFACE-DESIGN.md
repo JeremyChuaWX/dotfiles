@@ -1,38 +1,44 @@
 # Interface Design
 
-When the user wants to explore alternative interfaces for a chosen deepening candidate, design it more than once. Your first idea is unlikely to be the best.
+When the user wants to explore alternative interfaces for a chosen deepening candidate, use this parallel design pattern. Based on "Design It Twice" (Ousterhout) — your first idea is unlikely to be the best.
 
-Use vocabulary from [LANGUAGE.md](LANGUAGE.md): **module**, **interface**, **seam**, **adapter**, **leverage**, **locality**.
+Uses the vocabulary in [LANGUAGE.md](LANGUAGE.md) — **module**, **interface**, **seam**, **adapter**, **leverage**.
 
 ## Process
 
-### 1. Frame The Problem Space
+### 1. Frame the problem space
 
-Write a user-facing explanation of the candidate:
+Before exploring interface options, write a user-facing explanation of the problem space for the chosen candidate:
 
-- Constraints any new interface must satisfy.
-- Dependencies it would rely on.
-- A rough illustrative code sketch to ground constraints, not a proposal.
+- The constraints any new interface would need to satisfy
+- The dependencies it would rely on, and which category they fall into (see [DEEPENING.md](DEEPENING.md))
+- A rough illustrative code sketch to ground the constraints — not a proposal, just a way to make the constraints concrete
 
-### 2. Explore Alternatives
+Show this to the user, then proceed to Step 2.
 
-Explore alternatives directly with available Pi Coding Agent read/search tools. If separate Pi Coding Agent sessions or extensions are available, they may be used to independently explore radically different designs.
+### 2. Generate alternative designs
 
-Produce at least three different interface alternatives:
+Produce 3+ **radically different** interfaces for the deepened module. If the current harness supports spawned workers or subagents, use them in parallel. If not, generate the designs sequentially in the current session while keeping each design's constraints separate.
 
-- Minimize the interface: aim for 1-3 entry points max.
-- Maximize flexibility: support many use cases and extension.
-- Optimize for the most common caller: make the default case trivial.
-- If applicable, design around adapters for cross-seam dependencies.
+Use a separate technical brief for each design (file paths, coupling details, dependency category from [DEEPENING.md](DEEPENING.md), what sits behind the seam). Give each design a different constraint:
 
-Each alternative should include:
+- Design 1: "Minimize the interface — aim for 1–3 entry points max. Maximise leverage per entry point."
+- Design 2: "Maximise flexibility — support many use cases and extension."
+- Design 3: "Optimise for the most common caller — make the default case trivial."
+- Design 4 (if applicable): "Design around ports & adapters for cross-seam dependencies."
 
-1. Interface: types, methods, params, invariants, ordering, and error modes.
-2. Usage example.
-3. What the implementation hides behind the seam.
-4. Dependency strategy and adapters.
-5. Trade-offs: where leverage is high and where it is thin.
+Include both [LANGUAGE.md](LANGUAGE.md) vocabulary and CONTEXT.md vocabulary so each design names things consistently with the architecture language and the project's domain language.
 
-### 3. Present And Compare
+Each design must output:
 
-Present designs sequentially, then compare them by **depth**, **locality**, and **seam placement**. Give a strong recommendation and propose a hybrid if useful.
+1. Interface (types, methods, params — plus invariants, ordering, error modes)
+2. Usage example showing how callers use it
+3. What the implementation hides behind the seam
+4. Dependency strategy and adapters (see [DEEPENING.md](DEEPENING.md))
+5. Trade-offs — where leverage is high, where it's thin
+
+### 3. Present and compare
+
+Present designs sequentially so the user can absorb each one, then compare them in prose. Contrast by **depth** (leverage at the interface), **locality** (where change concentrates), and **seam placement**.
+
+After comparing, give your own recommendation: which design you think is strongest and why. If elements from different designs would combine well, propose a hybrid. Be opinionated — the user wants a strong read, not a menu.
