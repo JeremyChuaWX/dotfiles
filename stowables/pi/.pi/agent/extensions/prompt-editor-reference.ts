@@ -38,9 +38,13 @@ function getLastAssistantText(ctx: ExtensionContext): string {
   return "";
 }
 
-function writeLastAssistantText(ctx: ExtensionContext): void {
+function writeAssistantText(text: string): void {
   fs.mkdirSync(STATE_DIR, { recursive: true });
-  fs.writeFileSync(STATE_FILE, getLastAssistantText(ctx), "utf8");
+  fs.writeFileSync(STATE_FILE, text, "utf8");
+}
+
+function writeLastAssistantText(ctx: ExtensionContext): void {
+  writeAssistantText(getLastAssistantText(ctx));
 }
 
 function installEditorWrapper(): boolean {
@@ -66,9 +70,12 @@ export default function promptEditorReference(pi: ExtensionAPI) {
     }
   });
 
-  pi.on("message_end", (event, ctx) => {
+  pi.on("message_end", (event, _ctx) => {
     if (event.message.role === "assistant") {
-      writeLastAssistantText(ctx);
+      // At message_end, the session tree may not yet include the just-finished
+      // assistant message. Use the event payload directly so the editor sees
+      // the latest reply rather than the previous assistant reply.
+      writeAssistantText(textFromContent(event.message.content).trimEnd());
     }
   });
 
