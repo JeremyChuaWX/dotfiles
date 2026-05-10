@@ -13,6 +13,7 @@ fi
 alias ll="ls -AlF --color=auto --group-directories-first --human-readable"
 alias ..="cd .."
 alias tt="tree --dirsfirst -C --gitignore -a -I .git | bat"
+alias ttt="tree --dirsfirst -C -a -I .git | bat"
 
 # file manipulation
 alias rm="rm -v"
