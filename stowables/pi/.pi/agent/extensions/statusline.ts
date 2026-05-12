@@ -1,7 +1,7 @@
 import * as os from "node:os";
 import type { AssistantMessage } from "@earendil-works/pi-ai";
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
+import { truncateToWidth } from "@earendil-works/pi-tui";
 
 function compactPath(cwd: string): string {
   const home = process.env.HOME || os.homedir();
@@ -39,39 +39,15 @@ export default function statusline(pi: ExtensionAPI) {
           const branch = footerData.getGitBranch();
           const contextTokens = ctx.getContextUsage()?.tokens;
           const tokens = contextTokens ?? fallbackTokenCount(ctx);
-          const leftText = `${cwd}${branch ? `:${branch}` : ""} • ${formatTokens(tokens)}`;
+          const context = formatTokens(tokens);
 
           const model = ctx.model;
           const modelName = model?.id || "no-model";
-          let rightText = modelName;
-          if (model?.reasoning) {
-            const thinkingLevel = pi.getThinkingLevel();
-            rightText = thinkingLevel === "off" ? `${modelName} • thinking off` : `${modelName} • ${thinkingLevel}`;
-          }
-          if (footerData.getAvailableProviderCount() > 1 && model) {
-            const withProvider = `(${model.provider}) ${rightText}`;
-            if (visibleWidth(leftText) + 2 + visibleWidth(withProvider) <= width) {
-              rightText = withProvider;
-            }
-          }
+          const thinking = model?.reasoning ? pi.getThinkingLevel() : "";
+          const parts = [cwd, ...(branch ? [branch] : []), context, `${modelName}${thinking ? ` ${thinking}` : ""}`];
+          const fullText = parts.join(" | ");
 
-          const left = theme.fg("dim", leftText);
-          const right = theme.fg("dim", rightText);
-          const leftWidth = visibleWidth(left);
-          const rightWidth = visibleWidth(right);
-
-          if (leftWidth + 2 + rightWidth <= width) {
-            return [left + " ".repeat(width - leftWidth - rightWidth) + right];
-          }
-
-          const availableForLeft = Math.max(0, width - rightWidth - 2);
-          if (availableForLeft > 0) {
-            const truncatedLeft = truncateToWidth(left, availableForLeft, theme.fg("dim", "..."));
-            const padding = " ".repeat(Math.max(2, width - visibleWidth(truncatedLeft) - rightWidth));
-            return [truncatedLeft + padding + right];
-          }
-
-          return [truncateToWidth(left, width, theme.fg("dim", "..."))];
+          return [truncateToWidth(theme.fg("dim", fullText), width, theme.fg("dim", "..."))];
         },
       };
     });
