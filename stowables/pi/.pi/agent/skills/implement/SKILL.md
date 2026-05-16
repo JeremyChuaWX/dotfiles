@@ -6,9 +6,11 @@ disable-model-invocation: true
 
 # Implement
 
-Run through local markdown implementation issues created by `to-issues` and implement them one at a time.
+Run through local markdown implementation issues created by `to-issues` as an **orchestrator** that delegates each issue to an **Implementation worker** and then verifies the result.
 
-Use **Implementation worker** for the execution context assigned to a single issue. If worker spawning is available in the current environment, spawn one worker per issue. If it is not available, execute each issue serially in the current session while preserving the same worker boundaries.
+Default backend: run the script-backed orchestrator at `scripts/implement.mjs`. It discovers local issues, creates per-issue packets, and invokes `scripts/run-worker.mjs` to spawn a fresh headless `pi` worker per issue. This gives worker isolation without requiring native subagents in the pi config. If headless spawning is unavailable, execute each issue serially in the current session while preserving the same worker boundaries.
+
+Do not let workers own orchestration state. Workers implement one issue and report back; the orchestrator owns ordering, status changes, comments, shared logs, and final verification.
 
 The project issue tracker is Matt's **Local Markdown** tracker only:
 
@@ -32,6 +34,26 @@ The user may provide:
 If no path is provided, discover candidate issue directories under `.scratch/*/issues/` and ask which one to implement.
 
 ## Process
+
+### 0. Prefer the script-backed orchestrator
+
+Use the Node orchestrator unless the user explicitly asks for manual orchestration:
+
+```bash
+/Users/jer/.dotfiles/stowables/pi/.pi/agent/skills/implement/scripts/implement.mjs --plan .scratch/<feature-slug>
+/Users/jer/.dotfiles/stowables/pi/.pi/agent/skills/implement/scripts/implement.mjs --run .scratch/<feature-slug>
+```
+
+The script runs serially by default. It prints the plan in `--plan` mode, and `--run` executes that plan with headless pi workers.
+
+Optional worker controls:
+
+```bash
+PI_WORKER_MODEL='openai/gpt-5.5' PI_WORKER_THINKING=medium \
+  /Users/jer/.dotfiles/stowables/pi/.pi/agent/skills/implement/scripts/implement.mjs --run .scratch/<feature-slug>
+```
+
+Use the remaining process sections as the behavioral contract for the script and as the fallback procedure when running manually.
 
 ### 1. Discover the issues
 
@@ -77,7 +99,7 @@ Keep it compact. Record cross-issue insights, not exhaustive transcripts or full
 
 ### 3. Build an execution order
 
-Topologically order issues by local blockers. Default to serial execution.
+Topologically order issues by local blockers. Default to serial execution, with one fresh headless worker per issue. Only run independent issues concurrently if the user explicitly asks and the repository strategy prevents file conflicts, such as separate git worktrees.
 
 Before coding, present the execution order and ask for approval. Show:
 
@@ -85,21 +107,70 @@ Before coding, present the execution order and ask for approval. Show:
 - Why it is eligible now
 - Any unresolved blockers
 - Whether it is `AFK` or `HITL` when known
-- Whether execution will use spawned workers or current-session worker boundaries
+- Whether execution will use `scripts/implement.mjs` headless pi workers or current-session worker boundaries
+- The worker model/provider if overridden by `PI_WORKER_MODEL` or `PI_WORKER_PROVIDER`
 
 Do not start implementation until the user approves.
 
 ### 4. Create an issue packet for each Implementation worker
 
-Minimize context. Each worker receives only:
+Minimize context. For each issue, create a temporary packet under `.scratch/<feature-slug>/worker-packets/`, for example `.scratch/<feature-slug>/worker-packets/01-slug.packet.md`. Each packet contains only:
 
 - Issue path and full contents
 - Parent `.scratch/<feature-slug>/PRD.md`, or relevant PRD sections if identifiable
 - `.scratch/<feature-slug>/IMPLEMENTATION.md`
 - Verification expectations derived from acceptance criteria
 - Any relevant comments from the issue
+- A reminder that the worker must not edit issue status/comments or mark the issue done
 
 Do not preload ADRs into every worker. Instruct the worker to discover relevant docs or ADRs only when its preflight exploration touches an area with ADRs or when it faces an architectural decision.
+
+Recommended packet shape:
+
+```md
+# Implementation worker packet
+
+## Assignment
+- Issue: .scratch/<feature-slug>/issues/<NN>-<slug>.md
+- Worker boundary: implement only this issue
+- Orchestrator-owned files: issue status/comments and IMPLEMENTATION.md final updates
+
+## Issue contents
+...
+
+## Parent context
+...
+
+## Shared implementation log
+...
+
+## Verification expectations
+...
+```
+
+### 4a. Spawn the worker
+
+When using `scripts/implement.mjs`, it delegates worker execution to `scripts/run-worker.mjs`. The worker runner invokes `pi --print --no-session --no-skills` with a worker system prompt and writes the worker's final report to `.scratch/<feature-slug>/worker-reports/`.
+
+Direct worker invocation, mostly for debugging:
+
+```bash
+/Users/jer/.dotfiles/stowables/pi/.pi/agent/skills/implement/scripts/run-worker.mjs \
+  .scratch/<feature-slug>/worker-packets/<NN>-<slug>.packet.md \
+  .scratch/<feature-slug>/worker-reports/<NN>-<slug>.report.md \
+  "$PWD"
+```
+
+Manual equivalent:
+
+```bash
+pi --print --mode text --no-session --no-skills \
+  --append-system-prompt '<worker system prompt>' \
+  "Read this issue packet and act as the Implementation worker. $(cat .scratch/<feature-slug>/worker-packets/<NN>-<slug>.packet.md)" \
+  | tee .scratch/<feature-slug>/worker-reports/<NN>-<slug>.report.md
+```
+
+Before spawning, mark the issue `Status: in-progress`. After spawning, read the worker report before doing orchestrator verification.
 
 ### 5. Worker protocol
 
@@ -118,7 +189,7 @@ Each Implementation worker must:
    - decisions or insights worth adding to the Implementation log
    - follow-ups or blockers
 
-Workers should not mark issues `done` themselves unless they are also acting as the orchestrator in the current session.
+Workers must not edit issue status lines, append issue comments, or mark issues `done`; the orchestrator does that after verification.
 
 ### 6. Orchestrator verification after each worker
 
@@ -127,7 +198,7 @@ After each worker finishes, the orchestrator must:
 1. Review changed files and the worker report.
 2. Run project checks only when the user or project configuration explicitly provides them. Do not invent check commands.
 3. Mark the issue:
-   - `Status: in-progress` when beginning work
+   - `Status: in-progress` before spawning or entering the worker boundary
    - `Status: done` only if acceptance criteria and orchestrator verification pass
    - `Status: blocked` if implementation cannot proceed or verification fails
 4. Append a compact note under the issue's `## Comments` heading with:
