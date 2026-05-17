@@ -18,7 +18,9 @@ Use these source-to-destination mappings:
 | --- | --- | --- |
 | `grill-me` | `skills/productivity/grill-me` | Preserve Pi manual-only frontmatter. |
 | `grill-with-docs` | `skills/engineering/grill-with-docs` | Preserve Pi manual-only frontmatter and no tracker assumptions. |
+| `handoff` | `skills/productivity/handoff` | Preserve Pi manual-only frontmatter and local/no-remote tracker guardrails. |
 | `improve-codebase-architecture` | `skills/engineering/improve-codebase-architecture` | Preserve Pi manual-only frontmatter and adapt any subagent/tool wording to available Pi tools. |
+| `prototype` | `skills/engineering/prototype` | Preserve Pi manual-only frontmatter, throwaway-code guardrails, and local/no-remote tracker guardrails. |
 | `to-prd` | `skills/engineering/to-prd` | Import phrasing and publish to Matt's local markdown issue tracker: `.scratch/<feature-slug>/PRD.md`. |
 | `to-issues` | `skills/engineering/to-issues` | Follow upstream terminology and publish local markdown issues to `.scratch/<feature-slug>/issues/*.md`. |
 
@@ -100,7 +102,7 @@ Ask for approval before writing.
 
 Patch only approved mapped destination skills.
 
-For direct skills (`grill-me`, `grill-with-docs`, `improve-codebase-architecture`):
+For direct skills (`grill-me`, `grill-with-docs`, `handoff`, `improve-codebase-architecture`, `prototype`):
 
 - Merge upstream wording and support files.
 - Keep Pi frontmatter manual-only.

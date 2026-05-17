@@ -40,7 +40,9 @@ Upstream URL:         $MATT_SKILLS_URL
 
 grill-me                      <- skills/productivity/grill-me
 grill-with-docs               <- skills/engineering/grill-with-docs
+handoff                       <- skills/productivity/handoff
 improve-codebase-architecture <- skills/engineering/improve-codebase-architecture
+prototype                     <- skills/engineering/prototype
 to-prd                        <- skills/engineering/to-prd (local markdown tracker)
 to-issues                     <- skills/engineering/to-issues (local markdown tracker)
 MAP
@@ -66,7 +68,9 @@ while IFS='|' read -r dest source; do
 done <<'MAPS'
 grill-me|skills/productivity/grill-me
 grill-with-docs|skills/engineering/grill-with-docs
+handoff|skills/productivity/handoff
 improve-codebase-architecture|skills/engineering/improve-codebase-architecture
+prototype|skills/engineering/prototype
 to-prd|skills/engineering/to-prd
 to-issues|skills/engineering/to-issues
 MAPS

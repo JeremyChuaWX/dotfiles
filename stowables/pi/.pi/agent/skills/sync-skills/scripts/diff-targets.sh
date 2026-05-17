@@ -45,7 +45,9 @@ while IFS='|' read -r dest source note; do
 done <<'MAPS'
 grill-me|skills/productivity/grill-me|
 grill-with-docs|skills/engineering/grill-with-docs|
+handoff|skills/productivity/handoff|preserve local/no-remote guardrails
 improve-codebase-architecture|skills/engineering/improve-codebase-architecture|
+prototype|skills/engineering/prototype|preserve throwaway-code and local/no-remote guardrails
 to-prd|skills/engineering/to-prd|adapt publishing to local markdown tracker .scratch PRD
 to-issues|skills/engineering/to-issues|adapt publishing to local markdown tracker issues
 MAPS
