@@ -26,27 +26,57 @@ else
     echo "\n${YELLOW}${BOLD}Plugin Update Summary:${NC}"
     echo "========================================"
     
-    # Process the diff.
-    git diff -U0 "$LOCK_FILE" | grep -E '^\+\s+"|^-\s+"' | \
-    sed -E 'N;s/^-  "([^"]+)": \{[^\}]*"commit": "([^"]+)"[^\}]*\}.*\n\+  "[^"]+": \{[^\}]*"commit": "([^"]+)"[^\}]*\}.*/\1 \2 \3/' | \
-    while read -r name old_hash new_hash; do
-        
+    # Compare the lock file as JSON instead of trying to pair raw diff lines.
+    # This avoids bogus plugin names when multiple entries change, are added, or are removed.
+    while IFS=$'\t' read -r name old_hash new_hash status; do
         # Display Plugin Name and Short Hashes
         short_old=${old_hash:0:7}
         short_new=${new_hash:0:7}
+        if [ "$status" = "added" ]; then
+            short_old="(new)"
+        elif [ "$status" = "removed" ]; then
+            short_new="(removed)"
+        fi
         printf "${BLUE}${BOLD}%-30s${NC} ${GRAY}%s -> %s${NC}\n" \
             "$name" "$short_old" "$short_new"
 
-        # Attempt to show git logs
+        # Attempt to show git logs for updated plugins
         plugin_dir="$LAZY_PATH/$name"
-        if [ -d "$plugin_dir" ]; then
+        if [ "$status" = "updated" ] && [ -d "$plugin_dir" ]; then
             git -C "$plugin_dir" log --oneline --no-decorate --color=always \
                 ${old_hash}..${new_hash} 2>/dev/null | sed 's/^/    /'
-        else
+        elif [ "$status" = "updated" ]; then
             echo "    ${GRAY}(Plugin directory not found, skipping logs)${NC}"
         fi
-        echo "" 
-    done
+        echo ""
+    done < <(python3 - "$LOCK_FILE" <<'PY'
+import json
+import subprocess
+import sys
+
+lock_file = sys.argv[1]
+
+old_text = subprocess.check_output(["git", "show", f"HEAD:{lock_file}"], text=True)
+with open(lock_file, encoding="utf-8") as f:
+    new_text = f.read()
+
+old = json.loads(old_text)
+new = json.loads(new_text)
+
+for name in sorted(set(old) | set(new)):
+    old_hash = old.get(name, {}).get("commit", "")
+    new_hash = new.get(name, {}).get("commit", "")
+    if old_hash == new_hash:
+        continue
+    if name not in old:
+        status = "added"
+    elif name not in new:
+        status = "removed"
+    else:
+        status = "updated"
+    print(f"{name}\t{old_hash}\t{new_hash}\t{status}")
+PY
+    )
 
     echo "========================================"
 
