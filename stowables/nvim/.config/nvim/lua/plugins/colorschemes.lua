@@ -5,14 +5,19 @@ local kanagawa = {
             local theme = colors.theme
 
             return {
-                -- borderless telescope UI
-                TelescopeTitle = { fg = theme.ui.special, bold = true },
-                TelescopePromptNormal = { bg = theme.ui.bg_p1 },
-                TelescopePromptBorder = { fg = theme.ui.bg_p1, bg = theme.ui.bg_p1 },
-                TelescopeResultsNormal = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m1 },
-                TelescopeResultsBorder = { fg = theme.ui.bg_m1, bg = theme.ui.bg_m1 },
-                TelescopePreviewNormal = { bg = theme.ui.bg_dim },
-                TelescopePreviewBorder = { bg = theme.ui.bg_dim, fg = theme.ui.bg_dim },
+                -- borderless snacks picker UI
+                SnacksPickerTitle = { fg = theme.ui.special, bold = true },
+                SnacksPickerBorder = { fg = theme.ui.bg_m1, bg = theme.ui.bg_m1 },
+                SnacksPickerBoxBorder = { fg = theme.ui.bg_m1, bg = theme.ui.bg_m1 },
+                SnacksPickerInput = { bg = theme.ui.bg_p1 },
+                SnacksPickerInputBorder = { fg = theme.ui.bg_p1, bg = theme.ui.bg_p1 },
+                SnacksPickerInputTitle = { fg = theme.ui.special, bg = theme.ui.bg_p1, bold = true },
+                SnacksPickerList = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m1 },
+                SnacksPickerListBorder = { fg = theme.ui.bg_m1, bg = theme.ui.bg_m1 },
+                SnacksPickerListTitle = { fg = theme.ui.special, bg = theme.ui.bg_m1, bold = true },
+                SnacksPickerPreview = { bg = theme.ui.bg_dim },
+                SnacksPickerPreviewBorder = { fg = theme.ui.bg_dim, bg = theme.ui.bg_dim },
+                SnacksPickerPreviewTitle = { fg = theme.ui.special, bg = theme.ui.bg_dim, bold = true },
 
                 -- dark popup menu
                 Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 },

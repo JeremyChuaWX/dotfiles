@@ -52,29 +52,32 @@ vim.api.nvim_create_autocmd("LspAttach", {
         --     vim.wo[win][0].foldexpr = "v:lua.vim.lsp.foldexpr()"
         -- end
 
-        local telescope_pickers = require("telescope.builtin")
-
         vim.keymap.set("n", "grr", function()
-            telescope_pickers.lsp_references({
-                jump_type = "never",
-            })
-        end, { buffer = bufnr })
+            Snacks.picker.lsp_references()
+        end, { buffer = bufnr, desc = "LSP references" })
 
         vim.keymap.set("n", "gd", function()
-            telescope_pickers.lsp_definitions({
-                jump_type = "never",
-            })
-        end, { buffer = bufnr })
+            Snacks.picker.lsp_definitions()
+        end, { buffer = bufnr, desc = "LSP definitions" })
 
         vim.keymap.set("n", "gs", function()
-            telescope_pickers.lsp_document_symbols({
-                ignore_symbols = {
-                    "constant",
-                    "property",
-                    "variable",
+            Snacks.picker.lsp_symbols({
+                filter = {
+                    default = {
+                        "Class",
+                        "Constructor",
+                        "Enum",
+                        "Function",
+                        "Interface",
+                        "Method",
+                        "Module",
+                        "Namespace",
+                        "Struct",
+                        "Trait",
+                    },
                 },
             })
-        end, { buffer = bufnr })
+        end, { buffer = bufnr, desc = "LSP document symbols" })
 
         vim.keymap.set("n", "gl", vim.diagnostic.open_float, { buffer = bufnr })
 

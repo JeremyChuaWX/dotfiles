@@ -3,7 +3,7 @@ return {
     opts = {
         check_ts = true,
         disable_filetype = {
-            "TelescopePrompt",
+            "snacks_picker_input",
             "guihua",
         },
     },
