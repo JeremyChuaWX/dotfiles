@@ -2,7 +2,7 @@ return {
     "windwp/nvim-autopairs",
     opts = {
         check_ts = true,
-        diasble_filetype = {
+        disable_filetype = {
             "TelescopePrompt",
             "guihua",
         },
