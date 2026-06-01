@@ -9,6 +9,6 @@ return {
         end, { desc = "next TODO comment" })
         vim.keymap.set("n", "[t", function()
             require("todo-comments").jump_prev()
-        end, { desc = "next TODO comment" })
+        end, { desc = "previous TODO comment" })
     end,
 }

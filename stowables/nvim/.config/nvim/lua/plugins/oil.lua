@@ -7,7 +7,7 @@ return {
                 function()
                     require("oil").open_float()
                 end,
-                "oil open",
+                desc = "oil open",
             },
         },
         opts = {

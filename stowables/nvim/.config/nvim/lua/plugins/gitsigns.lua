@@ -20,7 +20,7 @@ return {
 
             map("n", "[g", function()
                 if vim.wo.diff then
-                    vim.cmd.normal({ "]g", bang = true })
+                    vim.cmd.normal({ "[g", bang = true })
                 else
                     gitsigns.nav_hunk("prev")
                 end
