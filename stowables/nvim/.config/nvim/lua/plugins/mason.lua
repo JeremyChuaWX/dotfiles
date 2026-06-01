@@ -1,23 +1,3 @@
-local LSP = {
-    "gopls",
-    "jsonls",
-    "lua_ls",
-    "ruff",
-    "tailwindcss",
-    "ts_ls",
-    "ty",
-}
-
-local TOOLS = {
-    "gofumpt",
-    "golangci-lint",
-    "golines",
-    "markdownlint",
-    "mdslw",
-    "rustywind",
-    "stylua",
-}
-
 local mason_lspconfig = {
     "mason-org/mason-lspconfig.nvim",
     opts = {
@@ -32,7 +12,25 @@ local mason_lspconfig = {
 local mason_tools = {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     opts = {
-        ensure_installed = vim.tbl_extend("force", LSP, TOOLS),
+        ensure_installed = {
+            -- lsp
+            "gopls",
+            "jsonls",
+            "lua_ls",
+            "ruff",
+            "tailwindcss",
+            "ts_ls",
+            "ty",
+
+            -- tools
+            "gofumpt",
+            "golangci-lint",
+            "golines",
+            "markdownlint",
+            "mdslw",
+            "rustywind",
+            "stylua",
+        },
     },
 }
 
