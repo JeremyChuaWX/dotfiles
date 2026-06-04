@@ -9,6 +9,7 @@ GRAY='\033[0;90m'
 NC='\033[0m' # No Color
 
 LOCK_FILE="lazy-lock.json"
+REPO_LOCK_FILE="$(git rev-parse --show-prefix)$LOCK_FILE"
 
 # Detect lazy.nvim installation path
 DATA_PATH=$(nvim --headless -E -u NONE '+lua print(vim.fn.stdpath("data"))' +q 2>&1)
@@ -49,14 +50,15 @@ else
             echo "    ${GRAY}(Plugin directory not found, skipping logs)${NC}"
         fi
         echo ""
-    done < <(python3 - "$LOCK_FILE" <<'PY'
+    done < <(python3 - "$LOCK_FILE" "$REPO_LOCK_FILE" <<'PY'
 import json
 import subprocess
 import sys
 
 lock_file = sys.argv[1]
+repo_lock_file = sys.argv[2]
 
-old_text = subprocess.check_output(["git", "show", f"HEAD:{lock_file}"], text=True)
+old_text = subprocess.check_output(["git", "show", f"HEAD:{repo_lock_file}"], text=True)
 with open(lock_file, encoding="utf-8") as f:
     new_text = f.read()
 
