@@ -2,11 +2,37 @@ autoload -Uz compinit
 zcompdump="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
 [[ -d "${zcompdump:h}" ]] || mkdir -p "${zcompdump:h}"
 
-if [[ ! -s "$zcompdump" || "$zcompdump" -ot "$ZDOTDIR/.zshrc" ]]; then
+zcompdump_deps=(
+    "$ZDOTDIR/.zshrc"
+    "$ZDOTDIR/zsh-completion"
+    "$ZDOTDIR"/completions/_*(N)
+    "$ZDOTDIR"/plugins/*/*.zsh(N)
+    "$ZDOTDIR"/plugins/*/*.plugin.zsh(N)
+    "$ZDOTDIR"/plugins/*/_*(N)
+    "$ZDOTDIR"/plugins/*/src/_*(N)
+    "$ZDOTDIR"/plugins/*/.git/HEAD(N)
+    "$ZDOTDIR"/plugins/*/.git/refs/heads/*(N)
+)
+
+rebuild_zcompdump=false
+if [[ ! -s "$zcompdump" ]]; then
+    rebuild_zcompdump=true
+else
+    for zcompdump_dep in $zcompdump_deps; do
+        if [[ "$zcompdump" -ot "$zcompdump_dep" ]]; then
+            rebuild_zcompdump=true
+            break
+        fi
+    done
+fi
+
+if [[ "$rebuild_zcompdump" == true ]]; then
     compinit -d "$zcompdump"
 else
     compinit -C -d "$zcompdump"
 fi
+
+unset zcompdump_dep zcompdump_deps rebuild_zcompdump
 
 autoload -Uz up-line-or-beginning-search
 zle -N up-line-or-beginning-search
