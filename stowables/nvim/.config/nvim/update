@@ -8,6 +8,9 @@ YELLOW='\033[0;33m'
 GRAY='\033[0;90m'
 NC='\033[0m' # No Color
 
+SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
+cd "$SCRIPT_DIR" || exit 1
+
 LOCK_FILE="lazy-lock.json"
 REPO_LOCK_FILE="$(git rev-parse --show-prefix)$LOCK_FILE"
 
@@ -29,13 +32,13 @@ else
     
     # Compare the lock file as JSON instead of trying to pair raw diff lines.
     # This avoids bogus plugin names when multiple entries change, are added, or are removed.
-    while IFS=$'\t' read -r name old_hash new_hash status; do
+    while IFS=$'\t' read -r name old_hash new_hash change_status; do
         # Display Plugin Name and Short Hashes
         short_old=${old_hash:0:7}
         short_new=${new_hash:0:7}
-        if [ "$status" = "added" ]; then
+        if [ "$change_status" = "added" ]; then
             short_old="(new)"
-        elif [ "$status" = "removed" ]; then
+        elif [ "$change_status" = "removed" ]; then
             short_new="(removed)"
         fi
         printf "${BLUE}${BOLD}%-30s${NC} ${GRAY}%s -> %s${NC}\n" \
@@ -43,10 +46,10 @@ else
 
         # Attempt to show git logs for updated plugins
         plugin_dir="$LAZY_PATH/$name"
-        if [ "$status" = "updated" ] && [ -d "$plugin_dir" ]; then
+        if [ "$change_status" = "updated" ] && [ -d "$plugin_dir" ]; then
             git -C "$plugin_dir" log --oneline --no-decorate --color=always \
                 ${old_hash}..${new_hash} 2>/dev/null | sed 's/^/    /'
-        elif [ "$status" = "updated" ]; then
+        elif [ "$change_status" = "updated" ]; then
             echo "    ${GRAY}(Plugin directory not found, skipping logs)${NC}"
         fi
         echo ""
@@ -84,6 +87,10 @@ PY
 
     # Commit the changes
     git add "$LOCK_FILE"
-    git commit -m "chore: update lazy lock"
-    echo "${GREEN}${BOLD}✔ $LOCK_FILE updated and committed successfully.${NC}"
+    if git commit -m "chore: update lazy lock"; then
+        echo "${GREEN}${BOLD}✔ $LOCK_FILE updated and committed successfully.${NC}"
+    else
+        echo "${YELLOW}${BOLD}Commit failed. $LOCK_FILE changes are staged.${NC}"
+        exit 1
+    fi
 fi
