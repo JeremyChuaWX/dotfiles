@@ -1,11 +1,8 @@
 return {
     {
-        "lewis6991/ts-install.nvim",
-        dependencies = {
-            "nvim-treesitter/nvim-treesitter",
-        },
+        "romus204/tree-sitter-manager.nvim",
         opts = {
-            ensure_install = {
+            ensure_installed = {
                 "diff",
                 "dockerfile",
                 "go",
@@ -19,7 +16,7 @@ return {
                 "typescript",
             },
             auto_install = true,
-            install_dir = vim.fn.stdpath("data") .. "/site",
+            highlight = {},
         },
     },
     {
