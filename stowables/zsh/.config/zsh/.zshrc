@@ -34,6 +34,11 @@ zsh_add_file "zsh-aliases"
 zsh_add_file "zsh-keymaps"
 zsh_add_file "zsh-surround"
 
+# autosuggestions
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_HISTORY_IGNORE='(cd *|ls|ll|la)'
+
 # plugins
 zsh_add_plugin "Aloxaf/fzf-tab"
 zsh_add_plugin "hlissner/zsh-autopair"
