@@ -242,13 +242,15 @@ function fuzzy_git_checkout_remote() {
     fi
 }
 
+FUZZY_GIT_PREVIEW_COMMAND='git ls-files --error-unmatch -- {} >/dev/null 2>&1 && ! git diff --quiet -- {} && git diff -w --color=always -- {} || bat --color=always --style=plain -- {}'
+
 function fuzzy_git_add() {
     if [[ $# -gt 0 ]]; then
         git add $*
     else
         git ls-files -m -o --exclude-standard |
         fzf -m --print0 --exit-0 \
-            --preview='git ls-files --error-unmatch {} 2>/dev/null && git diff -w --color=always {} || bat --color=always --style=plain {}' \
+            --preview="$FUZZY_GIT_PREVIEW_COMMAND" \
             --bind='ctrl-o:become($EDITOR {} < /dev/tty > /dev/tty)' \
             --bind='ctrl-r:execute(git restore {} 2>/dev/null)+reload(git ls-files -m -o --exclude-standard)' |
         xargs -r0 git add
@@ -261,7 +263,7 @@ function fuzzy_git_diff() {
     else
         git ls-files -m -o --exclude-standard |
         fzf -m --print0 --exit-0 \
-            --preview='git ls-files --error-unmatch {} 2>/dev/null && git diff -w --color=always {} || bat --color=always --style=plain {}' \
+            --preview="$FUZZY_GIT_PREVIEW_COMMAND" \
             --bind='ctrl-o:become($EDITOR {} < /dev/tty > /dev/tty)' \
             --bind='ctrl-r:execute(git restore {} 2>/dev/null)+reload(git ls-files -m -o --exclude-standard)' |
         xargs -r0 git diff -w --color=always
@@ -274,7 +276,7 @@ function fuzzy_git_restore() {
     else
         git ls-files -m -o --exclude-standard |
         fzf -m --print0 --exit-0 \
-            --preview='git ls-files --error-unmatch {} 2>/dev/null && git diff -w --color=always {} || bat --color=always --style=plain {}' \
+            --preview="$FUZZY_GIT_PREVIEW_COMMAND" \
             --bind='ctrl-o:become($EDITOR {} < /dev/tty > /dev/tty)' |
         xargs -r0 git restore
     fi
