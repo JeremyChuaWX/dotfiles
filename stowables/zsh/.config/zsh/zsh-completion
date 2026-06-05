@@ -1,4 +1,12 @@
-autoload -Uz compinit; compinit
+autoload -Uz compinit
+zcompdump="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
+[[ -d "${zcompdump:h}" ]] || mkdir -p "${zcompdump:h}"
+
+if [[ ! -s "$zcompdump" || "$zcompdump" -ot "$ZDOTDIR/.zshrc" ]]; then
+    compinit -d "$zcompdump"
+else
+    compinit -C -d "$zcompdump"
+fi
 
 autoload -Uz up-line-or-beginning-search
 zle -N up-line-or-beginning-search
