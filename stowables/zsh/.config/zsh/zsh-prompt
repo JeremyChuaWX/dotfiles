@@ -5,11 +5,6 @@
 # vcs_info
 autoload -Uz vcs_info
 
-# colours
-autoload -Uz colors && colors
-export CLICOLOR=1
-export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
-
 #-----#
 #-git-#
 #-----#
@@ -18,7 +13,8 @@ export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 zstyle ":vcs_info:*" enable git
 
 # setup hook that runs before every prompt
-precmd() { vcs_info }
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd vcs_info
 
 # format git prompt
 zstyle ':vcs_info:git*' formats "%F{008}(%b)%f "

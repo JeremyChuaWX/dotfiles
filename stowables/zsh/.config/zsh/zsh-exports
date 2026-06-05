@@ -14,7 +14,9 @@ export FPATH="$FPATH:$HOME/.config/zsh/plugins/zsh-completions/src" # from zsh-c
 export FPATH="$FPATH:$HOME/.config/zsh/completions" # own completions
 
 # fast node manager
-eval "$(fnm env)"
+if (( $+commands[fnm] )); then
+    eval "$(fnm env --shell zsh)"
+fi
 
 # orbstack
 source ~/.orbstack/shell/init.zsh 2>/dev/null || :
