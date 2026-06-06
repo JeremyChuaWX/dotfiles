@@ -34,6 +34,73 @@ function zsh_add_completion() {
     [[ "$2" = true ]] && compinit "${completion_file:1}"
 }
 
+function zsh_update_plugins() {
+    local bold green blue yellow gray red nc
+    bold='\033[1m'
+    green='\033[0;32m'
+    blue='\033[0;34m'
+    yellow='\033[0;33m'
+    gray='\033[0;90m'
+    red='\033[0;31m'
+    nc='\033[0m'
+
+    local plugin_dir plugin_name upstream old_hash new_hash incoming
+    local plugins=("$ZDOTDIR"/plugins/*(N/))
+
+    if (( $#plugins == 0 )); then
+        print -P "%F{yellow}No zsh plugins found.%f"
+        return 0
+    fi
+
+    printf "${blue}${bold}==> Updating zsh plugins...${nc}\n"
+
+    for plugin_dir in $plugins; do
+        plugin_name=${plugin_dir:t}
+
+        if [[ ! -d "$plugin_dir/.git" ]]; then
+            printf "\n${yellow}${bold}%-30s${nc} ${gray}not a git repo, skipping${nc}\n" "$plugin_name"
+            continue
+        fi
+
+        if [[ -n $(git -C "$plugin_dir" status --short) ]]; then
+            printf "\n${red}${bold}%-30s${nc} dirty working tree, skipping\n" "$plugin_name"
+            git -C "$plugin_dir" status --short | sed 's/^/    /'
+            continue
+        fi
+
+        upstream=$(git -C "$plugin_dir" rev-parse --abbrev-ref --symbolic-full-name '@{upstream}' 2>/dev/null)
+        if [[ -z "$upstream" ]]; then
+            printf "\n${yellow}${bold}%-30s${nc} ${gray}no upstream, skipping${nc}\n" "$plugin_name"
+            continue
+        fi
+
+        printf "\n${blue}${bold}%-30s${nc} ${gray}%s${nc}\n" "$plugin_name" "$upstream"
+
+        if ! git -C "$plugin_dir" fetch --tags --prune; then
+            printf "    ${red}fetch failed${nc}\n"
+            continue
+        fi
+
+        incoming=$(git -C "$plugin_dir" rev-list --count HEAD.."$upstream")
+        if (( incoming == 0 )); then
+            printf "    ${green}up to date${nc}\n"
+            continue
+        fi
+
+        old_hash=$(git -C "$plugin_dir" rev-parse --short HEAD)
+        new_hash=$(git -C "$plugin_dir" rev-parse --short "$upstream")
+
+        printf "    ${gray}%s -> %s, %s commits${nc}\n" "$old_hash" "$new_hash" "$incoming"
+        git -C "$plugin_dir" log --oneline --no-decorate --color=always HEAD.."$upstream" | sed 's/^/    /'
+
+        if git -C "$plugin_dir" merge --ff-only "$upstream" >/dev/null; then
+            printf "    ${green}${bold}updated${nc}\n"
+        else
+            printf "    ${red}${bold}fast-forward failed${nc}\n"
+        fi
+    done
+}
+
 function mkcd() {
     mkdir -p "$1" && cd "$1"
 }
