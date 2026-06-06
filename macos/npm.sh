@@ -1,5 +1,3 @@
 #!/bin/sh
 
-npm -g i typescript
-npm -g i neovim
-npm -g i @earendil-works/pi-coding-agent
+npm install -g typescript neovim @earendil-works/pi-coding-agent

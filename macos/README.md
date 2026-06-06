@@ -15,7 +15,7 @@ Run from the repository root:
 - Install npm packages from `npm.sh`
 - Stow dotfiles via `../stowables/setup.sh`
 - Install tmux terminfo
-- Link `.profile` from iCloud Drive
+- Link `.env` from iCloud Drive
 
 ## Manual
 

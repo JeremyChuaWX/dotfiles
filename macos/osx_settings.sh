@@ -2,7 +2,8 @@
 # macos defaults here: macos-defaults.com
 
 # Expand save panel by default
-defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool false
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
 
 # Expand print panel by default
 defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
@@ -39,7 +40,8 @@ defaults write NSGlobalDomain InitialKeyRepeat -int 12
 defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 
 # Save screenshots to screenshots folder.
-defaults write com.apple.screencapture location -string "~/Desktop/screenshots"
+mkdir -p "$HOME/Desktop/screenshots"
+defaults write com.apple.screencapture location -string "$HOME/Desktop/screenshots"
 
 # Save screenshots in jpg format
 defaults write com.apple.screencapture type jpg
@@ -98,7 +100,7 @@ defaults write com.apple.finder EmptyTrashSecurely -bool true
 defaults write com.apple.dock launchanim -bool false
 
 # Remove the auto-hiding Dock delay
-defaults write com.apple.Dock autohide-delay -float 0
+defaults write com.apple.dock autohide-delay -float 0
 
 # Remove the animation when hiding/showing the Dock
 defaults write com.apple.dock autohide-time-modifier -float 0
@@ -149,5 +151,5 @@ defaults write -g com.apple.trackpad.scaling -float 1.5
 # Restart affected apps
 for app in "cfprefsd" "Dock" "Finder" "Mail" "SystemUIServer"; do
     echo "Restarting ${app}..."
-    killall "${app}" > /dev/null 2>&1
+    killall "${app}" >/dev/null 2>&1 || true
 done
