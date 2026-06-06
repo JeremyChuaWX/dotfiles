@@ -15,7 +15,7 @@ export FPATH="$FPATH:$HOME/.config/zsh/completions" # own completions
 
 # fast node manager
 if (( $+commands[fnm] )); then
-    eval "$(fnm env --shell zsh)"
+    eval "$(fnm env --shell zsh --corepack-enabled)"
 fi
 
 # orbstack

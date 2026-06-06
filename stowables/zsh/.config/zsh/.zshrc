@@ -45,7 +45,10 @@ zsh_add_plugin "hlissner/zsh-autopair"
 zsh_add_plugin "zsh-users/zsh-autosuggestions"
 zsh_add_plugin "zsh-users/zsh-syntax-highlighting"
 
-# adhoc stuff
-if [[ -f "$ZDOTDIR/.zshrc.local" ]]; then
-    source "$ZDOTDIR/.zshrc.local"
+# adhoc stuff (kept outside this dotfiles repo for secrets/dotenv vars)
+ZSH_ADHOC_ENV_FILE="$HOME/.env"
+if [[ -f "$ZSH_ADHOC_ENV_FILE" ]]; then
+    set -a
+    source "$ZSH_ADHOC_ENV_FILE"
+    set +a
 fi
