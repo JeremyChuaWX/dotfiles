@@ -9,9 +9,11 @@ disable-model-invocation: true
 
 Write a handoff document summarizing the current conversation so a fresh agent can continue the work. Save it to a path produced by `mktemp -t handoff-XXXXXX.md`. Read the generated file path before writing to it.
 
-Suggest the skills to be used, if any, by the next session.
+Include a "Suggested skills" section listing skills the next session should invoke, if any.
 
 Do not duplicate content already captured in other artifacts (PRDs, plans, ADRs, local tracker issues, commits, diffs). Reference them by path or URL instead.
+
+Redact any sensitive information, such as API keys, passwords, or personally identifiable information.
 
 If the user passed arguments, treat them as a description of what the next session will focus on and tailor the document accordingly.
 
