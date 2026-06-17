@@ -38,6 +38,7 @@ type SearchResult = {
 const SEARCH_SYSTEM_PROMPT =
   "You are an assistant for performing web search. Return concise, useful findings and preserve source URLs.";
 const MAX_OUTPUT_TOKENS = 16000;
+const CHATGPT_USER_AGENT = "pi-web-search";
 
 function clampResultCount(value: unknown): number {
   const n = typeof value === "number" && Number.isFinite(value) ? Math.floor(value) : 5;
@@ -208,13 +209,14 @@ async function executeOpenAISearch(
     url = resolveCodexResponsesUrl(model);
     const accountId = extractChatGptAccountId(auth.apiKey);
     if (accountId) headers["chatgpt-account-id"] = accountId;
-    headers["OpenAI-Beta"] = headers["OpenAI-Beta"] ?? "responses=experimental";
-    headers.originator = headers.originator ?? "pi";
-    headers.accept = headers.accept ?? "text/event-stream";
+    headers.Accept = headers.Accept ?? headers.accept ?? "text/event-stream";
+    headers["User-Agent"] = headers["User-Agent"] ?? CHATGPT_USER_AGENT;
+    delete headers.accept;
+    // ChatGPT's Codex Responses endpoint is not the public OpenAI Responses API;
+    // keep the request body to the smaller parameter set it accepts.
+    delete body.max_output_tokens;
     body.input = [{ role: "user", content: [{ type: "input_text", text: buildSearchInput(params) }] }];
     body.stream = true;
-    body.text = { verbosity: "low" };
-    body.parallel_tool_calls = true;
   }
 
   const response = await fetch(url, { method: "POST", headers, body: JSON.stringify(body), signal });
