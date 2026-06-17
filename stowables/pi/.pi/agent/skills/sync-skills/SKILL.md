@@ -44,27 +44,30 @@ Protected Pi-local skills with no upstream source:
   - **Comments**: appended under a `## Comments` heading.
   - **Remote issue tracker**: external services such as GitHub/GitLab/Linear/Jira; never the workflow for this Pi config.
 - Preserve explicit "Do not create remote tracker items" / "Do not use remote tracker CLIs" language in `to-prd` and `to-issues`.
+- When running this skill's helper scripts, always use the absolute symlinked Pi config path under `$HOME/.pi/agent/skills/sync-skills/scripts/` with `PI_CONFIG_ROOT="$HOME"`; never use `.pi/...` relative to the current project root and never hard-code a dotfiles/stowable checkout path.
 
 ## Process
 
 ### 1. Preflight
 
-Run:
+Run the helper script through the absolute symlinked Pi config path, not a project-relative `.pi/...` path:
 
 ```bash
-.pi/agent/skills/sync-skills/scripts/preflight.sh
+PI_CONFIG_ROOT="$HOME" \
+  "$HOME/.pi/agent/skills/sync-skills/scripts/preflight.sh"
 ```
 
-This clones `https://github.com/mattpocock/skills.git` into a temporary directory, validates mapped files exist, and prints the source/destination mapping. The temporary clone is removed when the script exits.
+This clones `https://github.com/mattpocock/skills.git` into a temporary directory, validates mapped files exist, and prints the source/destination mapping. The temporary clone is removed when the script exits. Always call the script under `$HOME/.pi`; do not call `.pi/agent/...` relative to the current project root, and do not hard-code a dotfiles/stowable checkout path.
 
 If the script reports missing paths or clone failures, stop and ask the user how to proceed.
 
 ### 2. Review upstream diffs
 
-Run:
+Run the helper script through the absolute symlinked Pi config path:
 
 ```bash
-.pi/agent/skills/sync-skills/scripts/diff-targets.sh
+PI_CONFIG_ROOT="$HOME" \
+  "$HOME/.pi/agent/skills/sync-skills/scripts/diff-targets.sh"
 ```
 
 This clones `https://github.com/mattpocock/skills.git` into a temporary directory and prints diffs against the mapped Pi skills. Read the diffs. Focus on upstream prompt improvements:
@@ -128,10 +131,11 @@ For `to-issues` from upstream `to-issues`:
 
 ### 5. Verify
 
-Run:
+Run the helper script through the absolute symlinked Pi config path:
 
 ```bash
-.pi/agent/skills/sync-skills/scripts/verify.sh
+PI_CONFIG_ROOT="$HOME" \
+  "$HOME/.pi/agent/skills/sync-skills/scripts/verify.sh"
 ```
 
 Also inspect the resulting diff manually. Verify:

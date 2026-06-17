@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+SCRIPT_CONFIG_ROOT="$(cd "$SCRIPT_DIR/../../../../.." && pwd -P)"
+
 if [ -n "${PI_CONFIG_ROOT:-}" ]; then
-  PI_CONFIG_ROOT="$PI_CONFIG_ROOT"
-elif [ -d "$PWD/.pi/agent/skills" ]; then
-  PI_CONFIG_ROOT="$PWD"
+  PI_CONFIG_ROOT="${PI_CONFIG_ROOT%/}"
+elif [ -n "${HOME:-}" ] && [ -d "$HOME/.pi/agent/skills" ]; then
+  PI_CONFIG_ROOT="$HOME"
+elif [ -d "$SCRIPT_CONFIG_ROOT/.pi/agent/skills" ]; then
+  PI_CONFIG_ROOT="$SCRIPT_CONFIG_ROOT"
 else
-  git_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
-  if [ -d "$git_root/stowables/pi/.pi/agent/skills" ]; then
-    PI_CONFIG_ROOT="$git_root/stowables/pi"
-  else
-    PI_CONFIG_ROOT="$git_root"
-  fi
+  PI_CONFIG_ROOT="$SCRIPT_CONFIG_ROOT"
 fi
 
 PI_SKILLS_DIR="$PI_CONFIG_ROOT/.pi/agent/skills"
@@ -31,7 +31,7 @@ while IFS= read -r skill_md; do
     echo "missing disable-model-invocation: true: $skill_md" >&2
     failed=1
   fi
-done < <(find "$PI_SKILLS_DIR" -mindepth 2 -maxdepth 2 -name SKILL.md | sort)
+done < <(find -H "$PI_SKILLS_DIR" -mindepth 2 -maxdepth 2 -name SKILL.md | sort)
 
 echo
 echo "== Local markdown tracker guardrail check =="

@@ -6,17 +6,17 @@ TMP_ROOT="$(mktemp -d -t sync-skills-XXXXXX)"
 trap 'rm -rf "$TMP_ROOT"' EXIT
 MATT_SKILLS_REPO="$TMP_ROOT/matt-skills"
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+SCRIPT_CONFIG_ROOT="$(cd "$SCRIPT_DIR/../../../../.." && pwd -P)"
+
 if [ -n "${PI_CONFIG_ROOT:-}" ]; then
-  PI_CONFIG_ROOT="$PI_CONFIG_ROOT"
-elif [ -d "$PWD/.pi/agent/skills" ]; then
-  PI_CONFIG_ROOT="$PWD"
+  PI_CONFIG_ROOT="${PI_CONFIG_ROOT%/}"
+elif [ -n "${HOME:-}" ] && [ -d "$HOME/.pi/agent/skills" ]; then
+  PI_CONFIG_ROOT="$HOME"
+elif [ -d "$SCRIPT_CONFIG_ROOT/.pi/agent/skills" ]; then
+  PI_CONFIG_ROOT="$SCRIPT_CONFIG_ROOT"
 else
-  git_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
-  if [ -d "$git_root/stowables/pi/.pi/agent/skills" ]; then
-    PI_CONFIG_ROOT="$git_root/stowables/pi"
-  else
-    PI_CONFIG_ROOT="$git_root"
-  fi
+  PI_CONFIG_ROOT="$SCRIPT_CONFIG_ROOT"
 fi
 
 PI_SKILLS_DIR="$PI_CONFIG_ROOT/.pi/agent/skills"
