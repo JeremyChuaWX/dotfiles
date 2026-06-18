@@ -14,7 +14,7 @@ local mason_tools = {
     opts = {
         ensure_installed = {
             -- lsp
-            "gopls",
+            "jdtls",
             "jsonls",
             "lua_ls",
             "ruff",
@@ -23,9 +23,6 @@ local mason_tools = {
             "ty",
 
             -- tools
-            "gofumpt",
-            "golangci-lint",
-            "golines",
             "markdownlint",
             "mdslw",
             "rustywind",

@@ -1,8 +1,39 @@
 # paths
-if [[ $OSTYPE == "darwin"* ]] then
+if [[ $OSTYPE == "darwin"* ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)" # homebrew
-    export FPATH="$FPATH:$(brew --prefix)/share/zsh/site-functions" # homebrew zsh completions
-    export PATH="$(brew --prefix)/opt/openjdk/bin:$PATH" # java
+    export FPATH="$FPATH:$HOMEBREW_PREFIX/share/zsh/site-functions" # homebrew zsh completions
+
+    # Homebrew OpenJDK is keg-only, so expose it explicitly.
+    if [[ -d "$HOMEBREW_PREFIX/opt/openjdk" ]]; then
+        export JAVA_HOME="$HOMEBREW_PREFIX/opt/openjdk/libexec/openjdk.jdk/Contents/Home"
+        export JDTLS_JAVA_HOME="$JAVA_HOME"
+        export PATH="$HOMEBREW_PREFIX/opt/openjdk/bin:$PATH"
+        export CPPFLAGS="-I$HOMEBREW_PREFIX/opt/openjdk/include${CPPFLAGS:+ $CPPFLAGS}"
+    fi
+fi
+
+# Maven defaults. The local repository remains Maven's default: ~/.m2/repository.
+# Override per shell if needed, e.g. MAVEN_BUILD_THREADS=2 mvn test.
+if (( $+commands[mvn] )); then
+    maven_cpu_count=$(sysctl -n hw.ncpu 2>/dev/null || echo 4)
+    : ${MAVEN_BUILD_THREADS:=1C}
+    : ${MAVEN_ARTIFACT_THREADS:=$(( maven_cpu_count > 8 ? maven_cpu_count : 8 ))}
+
+    [[ " $MAVEN_ARGS " != *" --no-transfer-progress "* ]] && \
+        export MAVEN_ARGS="--no-transfer-progress${MAVEN_ARGS:+ $MAVEN_ARGS}"
+    [[ " $MAVEN_ARGS " != *" -T "* && " $MAVEN_ARGS " != *" --threads "* ]] && \
+        export MAVEN_ARGS="-T $MAVEN_BUILD_THREADS${MAVEN_ARGS:+ $MAVEN_ARGS}"
+
+    [[ " $MAVEN_OPTS " != *" -Xmx"* ]] && \
+        export MAVEN_OPTS="-Xmx2g${MAVEN_OPTS:+ $MAVEN_OPTS}"
+    [[ " $MAVEN_OPTS " != *" -XX:+UseG1GC "* ]] && \
+        export MAVEN_OPTS="-XX:+UseG1GC${MAVEN_OPTS:+ $MAVEN_OPTS}"
+    [[ " $MAVEN_OPTS " != *" -Djava.awt.headless="* ]] && \
+        export MAVEN_OPTS="-Djava.awt.headless=true${MAVEN_OPTS:+ $MAVEN_OPTS}"
+    [[ " $MAVEN_OPTS " != *" -Dmaven.artifact.threads="* ]] && \
+        export MAVEN_OPTS="-Dmaven.artifact.threads=$MAVEN_ARTIFACT_THREADS${MAVEN_OPTS:+ $MAVEN_OPTS}"
+
+    unset maven_cpu_count
 fi
 
 export PATH="$HOME/.cargo/bin:$PATH" # rust
