@@ -26,7 +26,7 @@ Use these source-to-destination mappings:
 
 Protected local skills with no upstream source:
 
-- `implement` — do not overwrite from Matt skills.
+- `afk` — do not overwrite from Matt skills.
 - `sync-skills` — this skill; do not overwrite from Matt skills.
 
 ## Hard constraints
@@ -140,7 +140,7 @@ Also inspect the resulting diff manually. Verify:
 - No unapproved skill directories were added.
 - All touched `SKILL.md` files still include `disable-model-invocation: true`.
 - `to-prd` and `to-issues` remain local-first and use `.scratch/` local markdown tracker paths.
-- `implement` was not overwritten.
+- `afk` was not overwritten.
 - Support-file links resolve.
 
 ### 6. Commit only on request
