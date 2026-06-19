@@ -29,7 +29,7 @@ return {
             },
         },
         sources = {
-            default = { "lsp", "snippets", "path", "buffer" },
+            default = { "lsp", "path", "buffer", "snippets" },
             providers = {
                 buffer = {
                     min_keyword_length = 5,
