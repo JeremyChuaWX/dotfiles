@@ -25,7 +25,7 @@ vim.diagnostic.config({
 })
 
 vim.lsp.config("*", {
-    capabilities = require("blink.cmp").get_lsp_capabilities(),
+    capabilities = require("blink.cmp").get_lsp_capabilities(nil, true),
 })
 
 local show_virtual_lines = false
