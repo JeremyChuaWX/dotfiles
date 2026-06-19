@@ -7,24 +7,25 @@ trap 'rm -rf "$TMP_ROOT"' EXIT
 MATT_SKILLS_REPO="$TMP_ROOT/matt-skills"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-SCRIPT_CONFIG_ROOT="$(cd "$SCRIPT_DIR/../../../../.." && pwd -P)"
+SCRIPT_SKILLS_DIR="$(cd "$SCRIPT_DIR/../.." && pwd -P)"
 
-if [ -n "${PI_CONFIG_ROOT:-}" ]; then
-  PI_CONFIG_ROOT="${PI_CONFIG_ROOT%/}"
-elif [ -n "${HOME:-}" ] && [ -d "$HOME/.pi/agent/skills" ]; then
-  PI_CONFIG_ROOT="$HOME"
-elif [ -d "$SCRIPT_CONFIG_ROOT/.pi/agent/skills" ]; then
-  PI_CONFIG_ROOT="$SCRIPT_CONFIG_ROOT"
+if [ -n "${AGENT_SKILLS_DIR:-}" ]; then
+  SKILLS_DIR="${AGENT_SKILLS_DIR%/}"
+elif [ -n "${HOME:-}" ] && [ -d "$HOME/.agents/skills" ]; then
+  SKILLS_DIR="$HOME/.agents/skills"
+elif [ -d "$SCRIPT_SKILLS_DIR" ]; then
+  SKILLS_DIR="$SCRIPT_SKILLS_DIR"
 else
-  PI_CONFIG_ROOT="$SCRIPT_CONFIG_ROOT"
+  SKILLS_DIR="$SCRIPT_SKILLS_DIR"
 fi
 
-PI_SKILLS_DIR="$PI_CONFIG_ROOT/.pi/agent/skills"
-
-if [ ! -d "$PI_SKILLS_DIR" ]; then
-  echo "error: Pi skills dir not found at $PI_SKILLS_DIR" >&2
+if [ ! -d "$SKILLS_DIR" ]; then
+  echo "error: shared skills dir not found at $SKILLS_DIR" >&2
   exit 1
 fi
+
+cd "$SKILLS_DIR"
+SKILLS_DIR="$(pwd -P)"
 
 echo "== Cloning matt-skills into temporary directory ==" >&2
 git clone --depth 1 "$MATT_SKILLS_URL" "$MATT_SKILLS_REPO" >&2
@@ -32,7 +33,7 @@ git clone --depth 1 "$MATT_SKILLS_URL" "$MATT_SKILLS_REPO" >&2
 while IFS='|' read -r dest source note; do
   [ -n "$dest" ] || continue
   src_path="$MATT_SKILLS_REPO/$source"
-  dest_path="$PI_SKILLS_DIR/$dest"
+  dest_path="$SKILLS_DIR/$dest"
   echo
   echo "================================================================================"
   echo "$dest <- $source${note:+ ($note)}"

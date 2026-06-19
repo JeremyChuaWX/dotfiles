@@ -2,24 +2,25 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-SCRIPT_CONFIG_ROOT="$(cd "$SCRIPT_DIR/../../../../.." && pwd -P)"
+SCRIPT_SKILLS_DIR="$(cd "$SCRIPT_DIR/../.." && pwd -P)"
 
-if [ -n "${PI_CONFIG_ROOT:-}" ]; then
-  PI_CONFIG_ROOT="${PI_CONFIG_ROOT%/}"
-elif [ -n "${HOME:-}" ] && [ -d "$HOME/.pi/agent/skills" ]; then
-  PI_CONFIG_ROOT="$HOME"
-elif [ -d "$SCRIPT_CONFIG_ROOT/.pi/agent/skills" ]; then
-  PI_CONFIG_ROOT="$SCRIPT_CONFIG_ROOT"
+if [ -n "${AGENT_SKILLS_DIR:-}" ]; then
+  SKILLS_DIR="${AGENT_SKILLS_DIR%/}"
+elif [ -n "${HOME:-}" ] && [ -d "$HOME/.agents/skills" ]; then
+  SKILLS_DIR="$HOME/.agents/skills"
+elif [ -d "$SCRIPT_SKILLS_DIR" ]; then
+  SKILLS_DIR="$SCRIPT_SKILLS_DIR"
 else
-  PI_CONFIG_ROOT="$SCRIPT_CONFIG_ROOT"
+  SKILLS_DIR="$SCRIPT_SKILLS_DIR"
 fi
 
-PI_SKILLS_DIR="$PI_CONFIG_ROOT/.pi/agent/skills"
-
-if [ ! -d "$PI_SKILLS_DIR" ]; then
-  echo "error: Pi skills dir not found at $PI_SKILLS_DIR" >&2
+if [ ! -d "$SKILLS_DIR" ]; then
+  echo "error: shared skills dir not found at $SKILLS_DIR" >&2
   exit 1
 fi
+
+cd "$SKILLS_DIR"
+SKILLS_DIR="$(pwd -P)"
 
 echo "== Manual-only check =="
 failed=0
@@ -31,12 +32,12 @@ while IFS= read -r skill_md; do
     echo "missing disable-model-invocation: true: $skill_md" >&2
     failed=1
   fi
-done < <(find -H "$PI_SKILLS_DIR" -mindepth 2 -maxdepth 2 -name SKILL.md | sort)
+done < <(find -H "$SKILLS_DIR" -mindepth 2 -maxdepth 2 -name SKILL.md | sort)
 
 echo
 echo "== Local markdown tracker guardrail check =="
 for skill in to-prd to-issues; do
-  path="$PI_SKILLS_DIR/$skill/SKILL.md"
+  path="$SKILLS_DIR/$skill/SKILL.md"
   if [ ! -f "$path" ]; then
     echo "missing local tracker skill: $path" >&2
     failed=1
@@ -53,7 +54,7 @@ done
 echo
 echo "== Protected skill check =="
 for skill in implement sync-skills; do
-  if [ -f "$PI_SKILLS_DIR/$skill/SKILL.md" ]; then
+  if [ -f "$SKILLS_DIR/$skill/SKILL.md" ]; then
     echo "ok: protected skill exists: $skill"
   else
     echo "missing protected skill: $skill" >&2

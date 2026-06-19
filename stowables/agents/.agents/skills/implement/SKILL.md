@@ -40,8 +40,8 @@ If no path is provided, discover candidate issue directories under `.scratch/*/i
 Use the Node orchestrator unless the user explicitly asks for manual orchestration:
 
 ```bash
-/Users/jer/.dotfiles/stowables/pi/.pi/agent/skills/implement/scripts/implement.mjs --plan .scratch/<feature-slug>
-/Users/jer/.dotfiles/stowables/pi/.pi/agent/skills/implement/scripts/implement.mjs --run .scratch/<feature-slug>
+"$HOME/.agents/skills/implement/scripts/implement.mjs" --plan .scratch/<feature-slug>
+"$HOME/.agents/skills/implement/scripts/implement.mjs" --run .scratch/<feature-slug>
 ```
 
 The script runs serially by default. It prints the plan in `--plan` mode, and `--run` executes that plan with headless pi workers.
@@ -50,7 +50,7 @@ Optional worker controls:
 
 ```bash
 PI_WORKER_MODEL='openai/gpt-5.5' PI_WORKER_THINKING=medium \
-  /Users/jer/.dotfiles/stowables/pi/.pi/agent/skills/implement/scripts/implement.mjs --run .scratch/<feature-slug>
+  "$HOME/.agents/skills/implement/scripts/implement.mjs" --run .scratch/<feature-slug>
 ```
 
 Use the remaining process sections as the behavioral contract for the script and as the fallback procedure when running manually.
@@ -155,7 +155,7 @@ When using `scripts/implement.mjs`, it delegates worker execution to `scripts/ru
 Direct worker invocation, mostly for debugging:
 
 ```bash
-/Users/jer/.dotfiles/stowables/pi/.pi/agent/skills/implement/scripts/run-worker.mjs \
+"$HOME/.agents/skills/implement/scripts/run-worker.mjs" \
   .scratch/<feature-slug>/worker-packets/<NN>-<slug>.packet.md \
   .scratch/<feature-slug>/worker-reports/<NN>-<slug>.report.md \
   "$PWD"

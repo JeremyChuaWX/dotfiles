@@ -1,30 +1,30 @@
 ---
 name: sync-skills
-description: Temporarily clone latest matt-skills and patch selected Pi skills with upstream prompt improvements while following Matt's local markdown issue-tracker conventions and preserving manual-only invocation. Use manually when updating this Pi config's adapted skills.
+description: Temporarily clone latest matt-skills and patch selected shared Agent Skills with upstream prompt improvements while following Matt's local markdown issue-tracker conventions and preserving manual-only invocation. Use manually when updating this shared skills directory.
 disable-model-invocation: true
 ---
 
 # Sync Skills
 
-Update this Pi config's adapted Matt Pocock skills while following Matt's **local markdown issue tracker** convention only.
+Update this shared Agent Skills directory's adapted Matt Pocock skills while following Matt's **local markdown issue tracker** convention only.
 
-This is a **local-first local-tracker adaptation patch** workflow: temporarily clone upstream Matt skills, pull in phrasing and prompt improvements, then patch the corresponding Pi skills while preserving manual-only behavior and using Matt's `.scratch/` local issue tracker convention. Ignore GitHub, GitLab, Linear, Jira, and any other remote tracker workflow.
+This is a **local-first local-tracker adaptation patch** workflow: temporarily clone upstream Matt skills, pull in phrasing and prompt improvements, then patch the corresponding shared skills used by both Pi and OpenCode while preserving manual-only behavior and using Matt's `.scratch/` local issue tracker convention. Ignore GitHub, GitLab, Linear, Jira, and any other remote tracker workflow.
 
 ## Mapping
 
 Use these source-to-destination mappings:
 
-| Pi skill | Upstream Matt source | Adaptation rule |
+| Shared skill | Upstream Matt source | Adaptation rule |
 | --- | --- | --- |
-| `grill-me` | `skills/productivity/grill-me` | Preserve Pi manual-only frontmatter. |
-| `grill-with-docs` | `skills/engineering/grill-with-docs` | Preserve Pi manual-only frontmatter and no tracker assumptions. |
-| `handoff` | `skills/productivity/handoff` | Preserve Pi manual-only frontmatter and local/no-remote tracker guardrails. |
-| `improve-codebase-architecture` | `skills/engineering/improve-codebase-architecture` | Preserve Pi manual-only frontmatter and adapt any subagent/tool wording to available Pi tools. |
-| `prototype` | `skills/engineering/prototype` | Preserve Pi manual-only frontmatter, throwaway-code guardrails, and local/no-remote tracker guardrails. |
+| `grill-me` | `skills/productivity/grill-me` | Preserve manual-only frontmatter. |
+| `grill-with-docs` | `skills/engineering/grill-with-docs` | Preserve manual-only frontmatter and no tracker assumptions. |
+| `handoff` | `skills/productivity/handoff` | Preserve manual-only frontmatter and local/no-remote tracker guardrails. |
+| `improve-codebase-architecture` | `skills/engineering/improve-codebase-architecture` | Preserve manual-only frontmatter and adapt any subagent/tool wording to available Pi/OpenCode tools. |
+| `prototype` | `skills/engineering/prototype` | Preserve manual-only frontmatter, throwaway-code guardrails, and local/no-remote tracker guardrails. |
 | `to-prd` | `skills/engineering/to-prd` | Import phrasing and publish to Matt's local markdown issue tracker: `.scratch/<feature-slug>/PRD.md`. |
 | `to-issues` | `skills/engineering/to-issues` | Follow upstream terminology and publish local markdown issues to `.scratch/<feature-slug>/issues/*.md`. |
 
-Protected Pi-local skills with no upstream source:
+Protected local skills with no upstream source:
 
 - `implement` — do not overwrite from Matt skills.
 - `sync-skills` — this skill; do not overwrite from Matt skills.
@@ -34,7 +34,7 @@ Protected Pi-local skills with no upstream source:
 - Do not import new skills unless the user explicitly asks.
 - Do not couple the workflow to GitHub, GitLab, Linear, Jira, or any other remote issue tracker.
 - Do not create or publish remote issues.
-- Preserve `disable-model-invocation: true` in every Pi `SKILL.md` you touch.
+- Preserve `disable-model-invocation: true` in every `SKILL.md` you touch.
 - Follow Matt's local markdown issue tracker vocabulary:
   - **Local issue tracker**: markdown files under `.scratch/`.
   - **Feature directory**: `.scratch/<feature-slug>/`.
@@ -42,35 +42,33 @@ Protected Pi-local skills with no upstream source:
   - **Issue**: `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01`.
   - **Status**: a `Status:` line near the top of each issue file.
   - **Comments**: appended under a `## Comments` heading.
-  - **Remote issue tracker**: external services such as GitHub/GitLab/Linear/Jira; never the workflow for this Pi config.
+  - **Remote issue tracker**: external services such as GitHub/GitLab/Linear/Jira; never the workflow for this shared skills directory.
 - Preserve explicit "Do not create remote tracker items" / "Do not use remote tracker CLIs" language in `to-prd` and `to-issues`.
-- When running this skill's helper scripts, always use the absolute symlinked Pi config path under `$HOME/.pi/agent/skills/sync-skills/scripts/` with `PI_CONFIG_ROOT="$HOME"`; never use `.pi/...` relative to the current project root and never hard-code a dotfiles/stowable checkout path.
+- When running this skill's helper scripts, always use the absolute shared skills path under `$HOME/.agents/skills/sync-skills/scripts/`; never use `.pi/...`, `.opencode/...`, or `.agents/...` relative to the current project root and never hard-code a dotfiles/stowable checkout path.
 
 ## Process
 
 ### 1. Preflight
 
-Run the helper script through the absolute symlinked Pi config path, not a project-relative `.pi/...` path:
+Run the helper script through the absolute shared skills path, not a project-relative `.agents/...` path:
 
 ```bash
-PI_CONFIG_ROOT="$HOME" \
-  "$HOME/.pi/agent/skills/sync-skills/scripts/preflight.sh"
+"$HOME/.agents/skills/sync-skills/scripts/preflight.sh"
 ```
 
-This clones `https://github.com/mattpocock/skills.git` into a temporary directory, validates mapped files exist, and prints the source/destination mapping. The temporary clone is removed when the script exits. Always call the script under `$HOME/.pi`; do not call `.pi/agent/...` relative to the current project root, and do not hard-code a dotfiles/stowable checkout path.
+This clones `https://github.com/mattpocock/skills.git` into a temporary directory, validates mapped files exist, and prints the source/destination mapping. The temporary clone is removed when the script exits. Always call the script under `$HOME/.agents/skills`; do not call `.agents/skills/...` relative to the current project root, and do not hard-code a dotfiles/stowable checkout path.
 
 If the script reports missing paths or clone failures, stop and ask the user how to proceed.
 
 ### 2. Review upstream diffs
 
-Run the helper script through the absolute symlinked Pi config path:
+Run the helper script through the absolute shared skills path:
 
 ```bash
-PI_CONFIG_ROOT="$HOME" \
-  "$HOME/.pi/agent/skills/sync-skills/scripts/diff-targets.sh"
+"$HOME/.agents/skills/sync-skills/scripts/diff-targets.sh"
 ```
 
-This clones `https://github.com/mattpocock/skills.git` into a temporary directory and prints diffs against the mapped Pi skills. Read the diffs. Focus on upstream prompt improvements:
+This clones `https://github.com/mattpocock/skills.git` into a temporary directory and prints diffs against the mapped shared skills. Read the diffs. Focus on upstream prompt improvements:
 
 - clearer instructions
 - stronger process sequencing
@@ -85,7 +83,7 @@ Ignore or rewrite upstream changes that assume:
 - remote tracker labels
 - `gh`, `glab`, or other remote tracker CLIs
 - publishing PRDs/issues remotely
-- Claude-specific tools unavailable in Pi
+- Claude-specific tools unavailable in Pi/OpenCode
 
 Adopt upstream changes that assume a local markdown issue tracker, adapting paths to `.scratch/<feature-slug>/...` if needed.
 
@@ -108,8 +106,8 @@ Patch only approved mapped destination skills.
 For direct skills (`grill-me`, `grill-with-docs`, `handoff`, `improve-codebase-architecture`, `prototype`):
 
 - Merge upstream wording and support files.
-- Keep Pi frontmatter manual-only.
-- Adapt references to unavailable tools to Pi read/search/bash/edit workflows or current-session alternatives.
+- Keep frontmatter manual-only.
+- Adapt references to unavailable tools to current-session tools/workflows available in Pi or OpenCode.
 
 For `to-prd` from upstream `to-prd`:
 
@@ -131,11 +129,10 @@ For `to-issues` from upstream `to-issues`:
 
 ### 5. Verify
 
-Run the helper script through the absolute symlinked Pi config path:
+Run the helper script through the absolute shared skills path:
 
 ```bash
-PI_CONFIG_ROOT="$HOME" \
-  "$HOME/.pi/agent/skills/sync-skills/scripts/verify.sh"
+"$HOME/.agents/skills/sync-skills/scripts/verify.sh"
 ```
 
 Also inspect the resulting diff manually. Verify:

@@ -3,5 +3,6 @@
   "defaultModel": "gpt-5.5",
   "hideThinkingBlock": true,
   "quietStartup": true,
-  "theme": "dim-input"
+  "theme": "dim-input",
+  "skills": ["~/.agents/skills"]
 }

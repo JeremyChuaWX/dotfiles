@@ -35,7 +35,7 @@ This skill is _informed_ by the project's domain model. The domain language give
 
 Read the project's domain glossary and any ADRs in the area you're touching first. Look for `CONTEXT.md`, `CONTEXT-MAP.md`, and `docs/adr/` when present.
 
-Then explore the codebase directly with available Pi Coding Agent read/search tools. Don't follow rigid heuristics — explore organically and note where you experience friction:
+Then explore the codebase directly with the current agent's available read/search tools. Don't follow rigid heuristics — explore organically and note where you experience friction:
 
 - Where does understanding one concept require bouncing between many small modules?
 - Where are modules **shallow** — interface nearly as complex as the implementation?

@@ -7,25 +7,26 @@ trap 'rm -rf "$TMP_ROOT"' EXIT
 MATT_SKILLS_REPO="$TMP_ROOT/matt-skills"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-SCRIPT_CONFIG_ROOT="$(cd "$SCRIPT_DIR/../../../../.." && pwd -P)"
+SCRIPT_SKILLS_DIR="$(cd "$SCRIPT_DIR/../.." && pwd -P)"
 
-if [ -n "${PI_CONFIG_ROOT:-}" ]; then
-  PI_CONFIG_ROOT="${PI_CONFIG_ROOT%/}"
-elif [ -n "${HOME:-}" ] && [ -d "$HOME/.pi/agent/skills" ]; then
-  PI_CONFIG_ROOT="$HOME"
-elif [ -d "$SCRIPT_CONFIG_ROOT/.pi/agent/skills" ]; then
-  PI_CONFIG_ROOT="$SCRIPT_CONFIG_ROOT"
+if [ -n "${AGENT_SKILLS_DIR:-}" ]; then
+  SKILLS_DIR="${AGENT_SKILLS_DIR%/}"
+elif [ -n "${HOME:-}" ] && [ -d "$HOME/.agents/skills" ]; then
+  SKILLS_DIR="$HOME/.agents/skills"
+elif [ -d "$SCRIPT_SKILLS_DIR" ]; then
+  SKILLS_DIR="$SCRIPT_SKILLS_DIR"
 else
-  PI_CONFIG_ROOT="$SCRIPT_CONFIG_ROOT"
+  SKILLS_DIR="$SCRIPT_SKILLS_DIR"
 fi
 
-PI_SKILLS_DIR="$PI_CONFIG_ROOT/.pi/agent/skills"
-
-if [ ! -d "$PI_SKILLS_DIR" ]; then
-  echo "error: Pi skills dir not found at $PI_SKILLS_DIR" >&2
-  echo "Set PI_CONFIG_ROOT to the directory containing .pi/agent/skills, or run the symlinked script under \$HOME/.pi." >&2
+if [ ! -d "$SKILLS_DIR" ]; then
+  echo "error: shared skills dir not found at $SKILLS_DIR" >&2
+  echo "Set AGENT_SKILLS_DIR to the shared skills directory, or run the symlinked script under \$HOME/.agents/skills." >&2
   exit 1
 fi
+
+cd "$SKILLS_DIR"
+SKILLS_DIR="$(pwd -P)"
 
 echo "== Cloning matt-skills into temporary directory =="
 git clone --depth 1 "$MATT_SKILLS_URL" "$MATT_SKILLS_REPO" >&2
@@ -33,8 +34,7 @@ git clone --depth 1 "$MATT_SKILLS_URL" "$MATT_SKILLS_REPO" >&2
 echo
 echo "== Skill sync mapping =="
 cat <<MAP
-Pi config root:       $PI_CONFIG_ROOT
-Pi skills dir:        $PI_SKILLS_DIR
+Shared skills dir:    $SKILLS_DIR
 Temporary upstream:   $MATT_SKILLS_REPO
 Upstream URL:         $MATT_SKILLS_URL
 
@@ -53,7 +53,7 @@ missing=0
 while IFS='|' read -r dest source; do
   [ -n "$dest" ] || continue
   src_path="$MATT_SKILLS_REPO/$source"
-  dest_path="$PI_SKILLS_DIR/$dest"
+  dest_path="$SKILLS_DIR/$dest"
   if [ ! -f "$src_path/SKILL.md" ]; then
     echo "missing source: $src_path/SKILL.md" >&2
     missing=1
