@@ -1,6 +1,6 @@
 ---
 name: sync-skills
-description: Temporarily clone external skill/rule dependencies (matt-skills and ponytail), review upstream diffs, and patch this dotfiles setup while preserving local markdown tracker conventions, manual-only skills, and always-on global Ponytail. Use manually when updating shared agent skills or global agent rules.
+description: Temporarily clone external skill/rule dependencies (matt-skills and ponytail), review upstream diffs, and patch this dotfiles setup while preserving local markdown tracker conventions, manual-only skills, and always-on global Ponytail. Use manually when updating Pi agent skills or global agent rules.
 disable-model-invocation: true
 ---
 
@@ -14,17 +14,17 @@ This is a **clone, diff, plan, approve, patch** workflow. Helper scripts dynamic
 
 | Source | Upstream | Local integration |
 | --- | --- | --- |
-| Matt skills | `https://github.com/mattpocock/skills.git` | Adapt selected skills under `$HOME/.agents/skills/` for local markdown tracker usage. |
-| Ponytail | `https://github.com/DietrichGebert/ponytail.git` | Adapt upstream `AGENTS.md` into `$HOME/.pi/agent/AGENTS.md` as always-on full-mode global Pi rules, and update approved helper skills under `$HOME/.agents/skills/`. |
+| Matt skills | `https://github.com/mattpocock/skills.git` | Adapt selected skills under `$HOME/.pi/agent/skills/` for local markdown tracker usage. |
+| Ponytail | `https://github.com/DietrichGebert/ponytail.git` | Adapt upstream `AGENTS.md` into `$HOME/.pi/agent/AGENTS.md` as always-on full-mode global Pi rules, and update approved helper skills under `$HOME/.pi/agent/skills/`. |
 
 ## Matt skill mapping
 
-| Shared skill | Upstream Matt source | Adaptation rule |
+| Pi skill | Upstream Matt source | Adaptation rule |
 | --- | --- | --- |
 | `grill-me` | `skills/productivity/grill-me` | Preserve manual-only frontmatter. |
 | `grill-with-docs` | `skills/engineering/grill-with-docs` | Preserve manual-only frontmatter and no tracker assumptions. |
 | `handoff` | `skills/productivity/handoff` | Preserve manual-only frontmatter and local/no-remote tracker guardrails. |
-| `improve-codebase-architecture` | `skills/engineering/improve-codebase-architecture` | Preserve manual-only frontmatter and adapt unavailable tool/subagent wording to Pi/OpenCode. |
+| `improve-codebase-architecture` | `skills/engineering/improve-codebase-architecture` | Preserve manual-only frontmatter and adapt unavailable tool/subagent wording to Pi. |
 | `prototype` | `skills/engineering/prototype` | Preserve manual-only frontmatter, throwaway-code guardrails, and local/no-remote tracker guardrails. |
 | `to-prd` | `skills/engineering/to-prd` | Import phrasing and publish to local markdown tracker: `.scratch/<feature-slug>/PRD.md`. |
 | `to-issues` | `skills/engineering/to-issues` | Follow upstream terminology and publish local issues to `.scratch/<feature-slug>/issues/*.md`. |
@@ -33,7 +33,7 @@ This is a **clone, diff, plan, approve, patch** workflow. Helper scripts dynamic
 
 These are installed locally and should be updated from upstream while staying manual-only:
 
-| Shared skill | Upstream Ponytail source | Adaptation rule |
+| Pi skill | Upstream Ponytail source | Adaptation rule |
 | --- | --- | --- |
 | `ponytail-review` | `skills/ponytail-review` | Preserve manual-only frontmatter. |
 | `ponytail-audit` | `skills/ponytail-audit` | Preserve manual-only frontmatter. |
@@ -57,7 +57,7 @@ Protected local skills with no upstream source:
 - Do not install the Ponytail Pi package unless the user explicitly asks; global `AGENTS.md` is the always-on integration.
 - Do not couple the workflow to GitHub, GitLab, Linear, Jira, or any other remote issue tracker.
 - Do not create or publish remote issues.
-- Preserve `disable-model-invocation: true` in every shared `SKILL.md` touched or imported.
+- Preserve `disable-model-invocation: true` in every Pi `SKILL.md` touched or imported.
 - Preserve Ponytail as always-on full mode in `$HOME/.pi/agent/AGENTS.md`; do not turn it into an on-demand-only skill.
 - Preserve explicit `stop ponytail` / `normal mode` deactivation and `ponytail` / `lazy mode` resume language in global Ponytail rules.
 - Follow Matt's local markdown issue tracker vocabulary:
@@ -67,9 +67,9 @@ Protected local skills with no upstream source:
   - **Issue**: `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01`.
   - **Status**: a `Status:` line near the top of each issue file.
   - **Comments**: appended under a `## Comments` heading.
-  - **Remote issue tracker**: external services such as GitHub/GitLab/Linear/Jira; never the workflow for this shared skills directory.
+  - **Remote issue tracker**: external services such as GitHub/GitLab/Linear/Jira; never the workflow for this Pi skills directory.
 - Preserve explicit "Do not create remote tracker items" / "Do not use remote tracker CLIs" language in `to-prd`, `to-issues`, and `afk`.
-- Run helper scripts through `$HOME/.agents/skills/sync-skills/scripts/`; never use project-relative `.agents/...` paths.
+- Run helper scripts through `$HOME/.pi/agent/skills/sync-skills/scripts/`; never use project-relative `.agents/...` paths.
 
 ## Process
 
@@ -78,7 +78,7 @@ Protected local skills with no upstream source:
 Run:
 
 ```bash
-"$HOME/.agents/skills/sync-skills/scripts/preflight.sh"
+"$HOME/.pi/agent/skills/sync-skills/scripts/preflight.sh"
 ```
 
 This clones Matt skills and Ponytail into a temp dir and validates mapped upstream/local files, including installed Ponytail helper skills. If it reports missing paths or clone failures, stop and ask how to proceed.
@@ -88,7 +88,7 @@ This clones Matt skills and Ponytail into a temp dir and validates mapped upstre
 Run:
 
 ```bash
-"$HOME/.agents/skills/sync-skills/scripts/diff-targets.sh"
+"$HOME/.pi/agent/skills/sync-skills/scripts/diff-targets.sh"
 ```
 
 Read the diffs. Focus on upstream prompt improvements:
@@ -128,7 +128,7 @@ For Matt skills:
 
 - Merge upstream wording and support files.
 - Keep frontmatter manual-only.
-- Adapt tracker/tool wording to local markdown tracker and available Pi/OpenCode tools.
+- Adapt tracker/tool wording to local markdown tracker and available Pi tools.
 
 For Ponytail global rules:
 
@@ -149,13 +149,13 @@ For Ponytail helper skills:
 Run:
 
 ```bash
-"$HOME/.agents/skills/sync-skills/scripts/verify.sh"
+"$HOME/.pi/agent/skills/sync-skills/scripts/verify.sh"
 ```
 
 Also inspect the resulting diff manually. Verify:
 
 - No unapproved skill directories were added.
-- All shared `SKILL.md` files include `disable-model-invocation: true`.
+- All Pi `SKILL.md` files include `disable-model-invocation: true`.
 - `to-prd`, `to-issues`, and `afk` remain local-first and use `.scratch/` tracker paths.
 - `afk` was not overwritten.
 - Global Ponytail still exists at `$HOME/.pi/agent/AGENTS.md` and says Ponytail is always on in full mode.

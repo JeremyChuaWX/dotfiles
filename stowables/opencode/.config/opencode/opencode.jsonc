@@ -1,7 +1,4 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["opencode-websearch"],
-  "skills": {
-    "paths": ["~/.agents/skills"]
-  }
+  "plugin": ["opencode-websearch"]
 }

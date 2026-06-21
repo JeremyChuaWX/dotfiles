@@ -6,21 +6,21 @@ SCRIPT_SKILLS_DIR="$(cd "$SCRIPT_DIR/../.." && pwd -P)"
 
 if [ -n "${AGENT_SKILLS_DIR:-}" ]; then
   SKILLS_DIR="${AGENT_SKILLS_DIR%/}"
-elif [ -n "${HOME:-}" ] && [ -d "$HOME/.agents/skills" ]; then
-  SKILLS_DIR="$HOME/.agents/skills"
+elif [ -n "${HOME:-}" ] && [ -d "$HOME/.pi/agent/skills" ]; then
+  SKILLS_DIR="$HOME/.pi/agent/skills"
 else
   SKILLS_DIR="$SCRIPT_SKILLS_DIR"
 fi
 
 PI_AGENT_DIR="${PI_AGENT_DIR:-${HOME:-}/.pi/agent}"
 
-[ -d "$SKILLS_DIR" ] || { echo "error: shared skills dir not found at $SKILLS_DIR" >&2; exit 1; }
+[ -d "$SKILLS_DIR" ] || { echo "error: Pi skills dir not found at $SKILLS_DIR" >&2; exit 1; }
 
 cd "$SKILLS_DIR"
 SKILLS_DIR="$(pwd -P)"
 failed=0
 
-echo "== Manual-only shared skill check =="
+echo "== Manual-only Pi skill check =="
 while IFS= read -r skill_md; do
   skill_name="$(basename "$(dirname "$skill_md")")"
   if grep -q '^disable-model-invocation: true$' "$skill_md"; then

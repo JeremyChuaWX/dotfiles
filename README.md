@@ -12,4 +12,4 @@ cd ~/.dotfiles
 
 Dotfiles are installed from `stowables/` via `stowables/setup.sh`.
 
-Agent Skills shared by Pi and OpenCode live in `stowables/agents/.agents/skills/`, which stows to `~/.agents/skills/`.
+Pi skills live in `stowables/pi/.pi/agent/skills/`, which stows to `~/.pi/agent/skills/`. OpenCode stays skill-free for general use.
