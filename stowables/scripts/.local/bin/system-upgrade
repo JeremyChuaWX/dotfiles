@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+run() {
+    printf '\n==> %s\n' "$*"
+    "$@"
+}
+
+script=${BASH_SOURCE[0]}
+[[ $script == */* ]] || script=$(command -v -- "$script")
+while [[ -L $script ]]; do
+    dir=$(cd -P "$(dirname -- "$script")" && pwd)
+    target=$(readlink "$script")
+    [[ $target == /* ]] && script=$target || script=$dir/$target
+done
+script_dir=$(cd -P "$(dirname -- "$script")" && pwd)
+
+run brew update
+run brew upgrade
+run npm -g update
+run bob update nightly
+run "$script_dir/../../../nvim/.config/nvim/update"
+run brew autoremove
+run brew cleanup --prune=all
