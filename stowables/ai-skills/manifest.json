@@ -1,0 +1,100 @@
+{
+  "upstreams": {
+    "matt-skills": {
+      "url": "https://github.com/mattpocock/skills.git",
+      "skills": {
+        "teach": {
+          "sourcePath": "skills/productivity/teach",
+          "targets": {
+            "opencode": "stowables/opencode/.config/opencode/skills/teach"
+          },
+          "adaptation": "General-use OpenCode teaching skill. Keep OpenCode-compatible frontmatter; do not add Pi-only fields."
+        },
+        "grill-me": {
+          "sourcePath": "skills/productivity/grill-me",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/grill-me"
+          },
+          "adaptation": "Preserve manual-only Pi frontmatter."
+        },
+        "grill-with-docs": {
+          "sourcePath": "skills/engineering/grill-with-docs",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/grill-with-docs"
+          },
+          "adaptation": "Preserve manual-only Pi frontmatter and no tracker assumptions."
+        },
+        "handoff": {
+          "sourcePath": "skills/productivity/handoff",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/handoff"
+          },
+          "adaptation": "Preserve manual-only Pi frontmatter and local/no-remote tracker guardrails."
+        },
+        "improve-codebase-architecture": {
+          "sourcePath": "skills/engineering/improve-codebase-architecture",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/improve-codebase-architecture"
+          },
+          "adaptation": "Preserve manual-only Pi frontmatter and adapt unavailable tool/subagent wording to Pi."
+        },
+        "prototype": {
+          "sourcePath": "skills/engineering/prototype",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/prototype"
+          },
+          "adaptation": "Preserve manual-only Pi frontmatter, throwaway-code guardrails, and local/no-remote tracker guardrails."
+        },
+        "to-prd": {
+          "sourcePath": "skills/engineering/to-prd",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/to-prd"
+          },
+          "adaptation": "Publish to local markdown tracker at .scratch/<feature-slug>/PRD.md; never create remote tracker items."
+        },
+        "to-issues": {
+          "sourcePath": "skills/engineering/to-issues",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/to-issues"
+          },
+          "adaptation": "Publish to local markdown tracker at .scratch/<feature-slug>/issues/*.md; never create remote tracker items."
+        }
+      }
+    },
+    "ponytail": {
+      "url": "https://github.com/DietrichGebert/ponytail.git",
+      "files": {
+        "global-agents": {
+          "sourcePath": "AGENTS.md",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/AGENTS.md"
+          },
+          "adaptation": "Preserve local Ponytail/lazy policy, output style, safety exceptions, and runnable-check rule."
+        }
+      },
+      "skills": {
+        "ponytail-review": {
+          "sourcePath": "skills/ponytail-review",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/ponytail-review"
+          },
+          "adaptation": "Preserve manual-only Pi frontmatter."
+        },
+        "ponytail-audit": {
+          "sourcePath": "skills/ponytail-audit",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/ponytail-audit"
+          },
+          "adaptation": "Preserve manual-only Pi frontmatter."
+        },
+        "ponytail-debt": {
+          "sourcePath": "skills/ponytail-debt",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/ponytail-debt"
+          },
+          "adaptation": "Preserve manual-only Pi frontmatter."
+        }
+      }
+    }
+  }
+}

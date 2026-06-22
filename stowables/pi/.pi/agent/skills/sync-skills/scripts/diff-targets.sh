@@ -1,77 +1,38 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-MATT_SKILLS_URL="https://github.com/mattpocock/skills.git"
-PONYTAIL_URL="https://github.com/DietrichGebert/ponytail.git"
-TMP_ROOT="$(mktemp -d -t sync-skills-XXXXXX)"
-trap 'rm -rf "$TMP_ROOT"' EXIT
-MATT_SKILLS_REPO="$TMP_ROOT/matt-skills"
-PONYTAIL_REPO="$TMP_ROOT/ponytail"
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-SCRIPT_SKILLS_DIR="$(cd "$SCRIPT_DIR/../.." && pwd -P)"
+# shellcheck source=lib.sh
+. "$SCRIPT_DIR/lib.sh"
 
-if [ -n "${AGENT_SKILLS_DIR:-}" ]; then
-  SKILLS_DIR="${AGENT_SKILLS_DIR%/}"
-elif [ -n "${HOME:-}" ] && [ -d "$HOME/.pi/agent/skills" ]; then
-  SKILLS_DIR="$HOME/.pi/agent/skills"
-else
-  SKILLS_DIR="$SCRIPT_SKILLS_DIR"
-fi
+MANIFEST="$(sync_manifest_path)"
+DOTFILES_DIR="$(sync_dotfiles_dir)"
+SESSION_DIR="$(sync_session_dir "${1:-}")"
 
-PI_AGENT_DIR="${PI_AGENT_DIR:-${HOME:-}/.pi/agent}"
+[ -f "$MANIFEST" ] || { echo "error: manifest not found: $MANIFEST" >&2; exit 1; }
 
-[ -d "$SKILLS_DIR" ] || { echo "error: Pi skills dir not found at $SKILLS_DIR" >&2; exit 1; }
-[ -d "$PI_AGENT_DIR" ] || { echo "error: Pi agent dir not found at $PI_AGENT_DIR" >&2; exit 1; }
+while IFS=$'\t' read -r upstream _url kind name source target_name target adaptation; do
+  [ -n "$upstream" ] || continue
+  src_path="$SESSION_DIR/upstreams/$upstream/$source"
+  dest_path="$DOTFILES_DIR/$target"
 
-cd "$SKILLS_DIR"
-SKILLS_DIR="$(pwd -P)"
-
-printf '== Cloning external sources into temporary directory ==\n' >&2
-git clone --depth 1 "$MATT_SKILLS_URL" "$MATT_SKILLS_REPO" >&2
-git clone --depth 1 "$PONYTAIL_URL" "$PONYTAIL_REPO" >&2
-
-while IFS='|' read -r dest source note; do
-  [ -n "$dest" ] || continue
-  src_path="$MATT_SKILLS_REPO/$source"
-  dest_path="$SKILLS_DIR/$dest"
   echo
   echo "================================================================================"
-  echo "$dest <- $source${note:+ ($note)}"
+  echo "$upstream/$name -> $target_name:$target"
+  [ -z "$adaptation" ] || echo "Adaptation: $adaptation"
   echo "================================================================================"
-  if [ ! -d "$src_path" ] || [ ! -d "$dest_path" ]; then
-    echo "missing source or destination" >&2
-    continue
-  fi
-  diff -ru --exclude='.DS_Store' "$src_path" "$dest_path" || true
-done <<'MAPS'
-grill-me|skills/productivity/grill-me|
-grill-with-docs|skills/engineering/grill-with-docs|
-handoff|skills/productivity/handoff|preserve local/no-remote guardrails
-improve-codebase-architecture|skills/engineering/improve-codebase-architecture|
-prototype|skills/engineering/prototype|preserve throwaway-code and local/no-remote guardrails
-to-prd|skills/engineering/to-prd|adapt publishing to local markdown tracker .scratch PRD
-to-issues|skills/engineering/to-issues|adapt publishing to local markdown tracker issues
-MAPS
 
-echo
-echo "================================================================================"
-echo "global Ponytail AGENTS.md <- AGENTS.md (preserve always-on local policy)"
-echo "================================================================================"
-if [ -f "$PONYTAIL_REPO/AGENTS.md" ] && [ -f "$PI_AGENT_DIR/AGENTS.md" ]; then
-  diff -u "$PONYTAIL_REPO/AGENTS.md" "$PI_AGENT_DIR/AGENTS.md" || true
-else
-  echo "missing Ponytail upstream AGENTS.md or local $PI_AGENT_DIR/AGENTS.md" >&2
-fi
-
-for skill in ponytail-review ponytail-audit ponytail-debt ponytail-help; do
-  echo
-  echo "================================================================================"
-  echo "Ponytail helper skill: $skill <- skills/$skill (preserve manual-only frontmatter)"
-  echo "================================================================================"
-  if [ -d "$PONYTAIL_REPO/skills/$skill" ] && [ -d "$SKILLS_DIR/$skill" ]; then
-    diff -ru --exclude='.DS_Store' "$PONYTAIL_REPO/skills/$skill" "$SKILLS_DIR/$skill" || true
+  if [ "$kind" = "skill" ]; then
+    if [ -d "$src_path" ] && [ -d "$dest_path" ]; then
+      diff -ru --exclude='.DS_Store' "$src_path" "$dest_path" || true
+    else
+      echo "missing source or target skill dir" >&2
+    fi
   else
-    echo "missing upstream or local Ponytail skill: $skill" >&2
+    if [ -f "$src_path" ] && [ -f "$dest_path" ]; then
+      diff -u "$src_path" "$dest_path" || true
+    else
+      echo "missing source or target file" >&2
+    fi
   fi
-done
+done < <(python3 -c "$sync_manifest_entries_py" "$MANIFEST")

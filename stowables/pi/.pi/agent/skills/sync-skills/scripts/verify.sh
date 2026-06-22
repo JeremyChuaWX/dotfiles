@@ -2,7 +2,13 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+# shellcheck source=lib.sh
+. "$SCRIPT_DIR/lib.sh"
+
+MANIFEST="$(sync_manifest_path)"
+DOTFILES_DIR="$(sync_dotfiles_dir)"
 SCRIPT_SKILLS_DIR="$(cd "$SCRIPT_DIR/../.." && pwd -P)"
+SCRIPT_OPENCODE_SKILLS_DIR="$DOTFILES_DIR/stowables/opencode/.config/opencode/skills"
 
 if [ -n "${AGENT_SKILLS_DIR:-}" ]; then
   SKILLS_DIR="${AGENT_SKILLS_DIR%/}"
@@ -12,14 +18,42 @@ else
   SKILLS_DIR="$SCRIPT_SKILLS_DIR"
 fi
 
-PI_AGENT_DIR="${PI_AGENT_DIR:-${HOME:-}/.pi/agent}"
+if [ -n "${OPENCODE_SKILLS_DIR:-}" ]; then
+  OPENCODE_DIR="${OPENCODE_SKILLS_DIR%/}"
+elif [ -n "${HOME:-}" ] && [ -d "$HOME/.config/opencode/skills" ]; then
+  OPENCODE_DIR="$HOME/.config/opencode/skills"
+else
+  OPENCODE_DIR="$SCRIPT_OPENCODE_SKILLS_DIR"
+fi
 
+PI_AGENT_DIR="${PI_AGENT_DIR:-${HOME:-}/.pi/agent}"
 [ -d "$SKILLS_DIR" ] || { echo "error: Pi skills dir not found at $SKILLS_DIR" >&2; exit 1; }
+[ -d "$OPENCODE_DIR" ] || { echo "error: OpenCode skills dir not found at $OPENCODE_DIR" >&2; exit 1; }
+[ -f "$MANIFEST" ] || { echo "error: manifest not found: $MANIFEST" >&2; exit 1; }
 
 cd "$SKILLS_DIR"
 SKILLS_DIR="$(pwd -P)"
+OPENCODE_DIR="$(cd "$OPENCODE_DIR" && pwd -P)"
 failed=0
 
+echo "== Manifest target check =="
+while IFS=$'\t' read -r _upstream _url kind name _source target_name target _adaptation; do
+  [ -n "$name" ] || continue
+  dest_path="$DOTFILES_DIR/$target"
+  if [ "$kind" = "skill" ]; then
+    check_path="$dest_path/SKILL.md"
+  else
+    check_path="$dest_path"
+  fi
+  if [ -e "$check_path" ]; then
+    echo "ok: $name -> $target_name:$target"
+  else
+    echo "missing manifest target: $check_path" >&2
+    failed=1
+  fi
+done < <(python3 -c "$sync_manifest_entries_py" "$MANIFEST")
+
+echo
 echo "== Manual-only Pi skill check =="
 while IFS= read -r skill_md; do
   skill_name="$(basename "$(dirname "$skill_md")")"
@@ -30,6 +64,33 @@ while IFS= read -r skill_md; do
     failed=1
   fi
 done < <(find -H "$SKILLS_DIR" -mindepth 2 -maxdepth 2 -name SKILL.md | sort)
+
+echo
+echo "== OpenCode skill frontmatter check =="
+while IFS= read -r skill_md; do
+  skill_name="$(basename "$(dirname "$skill_md")")"
+  if grep -q '^disable-model-invocation:' "$skill_md"; then
+    echo "Pi-only frontmatter found in OpenCode skill: $skill_md" >&2
+    failed=1
+  else
+    echo "ok: $skill_name"
+  fi
+done < <(find -H "$OPENCODE_DIR" -mindepth 2 -maxdepth 2 -name SKILL.md | sort)
+
+echo
+echo "== Pi/OpenCode routing check =="
+if [ -e "$SKILLS_DIR/teach" ]; then
+  echo "Pi should not contain teach: $SKILLS_DIR/teach" >&2
+  failed=1
+else
+  echo "ok: Pi does not contain teach"
+fi
+if [ -f "$OPENCODE_DIR/teach/SKILL.md" ]; then
+  echo "ok: OpenCode contains teach"
+else
+  echo "missing OpenCode teach skill: $OPENCODE_DIR/teach/SKILL.md" >&2
+  failed=1
+fi
 
 echo
 echo "== Local markdown tracker guardrail check =="
@@ -62,10 +123,10 @@ done
 echo
 echo "== Global Ponytail check =="
 if [ -f "$PI_AGENT_DIR/AGENTS.md" ]; then
-  if grep -qi 'Ponytail is always on.*full' "$PI_AGENT_DIR/AGENTS.md" && grep -qi 'stop ponytail' "$PI_AGENT_DIR/AGENTS.md"; then
-    echo "ok: global Ponytail is always-on full mode with deactivation language"
+  if grep -qi 'lazy senior dev' "$PI_AGENT_DIR/AGENTS.md" && grep -qi 'Before writing any code' "$PI_AGENT_DIR/AGENTS.md"; then
+    echo "ok: global Ponytail/lazy rules exist"
   else
-    echo "warning: $PI_AGENT_DIR/AGENTS.md may be missing always-on full-mode Ponytail language" >&2
+    echo "warning: $PI_AGENT_DIR/AGENTS.md may be missing global Ponytail/lazy rules" >&2
     failed=1
   fi
 else
