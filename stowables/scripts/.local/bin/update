@@ -16,7 +16,7 @@ done
 script_dir=$(cd -P "$(dirname -- "$script")" && pwd)
 
 run brew update
-run brew upgrade
+run brew upgrade -y
 run npm -g update
 run bob update nightly
 run "$script_dir/../../../nvim/.config/nvim/update"
