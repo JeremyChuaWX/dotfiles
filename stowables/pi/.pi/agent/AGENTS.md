@@ -12,7 +12,7 @@ Before writing any code, stop at the first rung that holds:
 
 The ladder runs after you understand the problem, not instead of it: read the task and the code it touches, trace the real flow end to end, then climb.
 
-Bug fix = root cause, not symptom: a report names a symptom. Search every caller of the function you touch and fix the shared function once when that is the real cause. One guard there is a smaller diff than one per caller.
+Bug fix = root cause, not symptom: a report names a symptom. Search every caller of the function you touch and fix the shared function once when that is the real cause. One guard there is a smaller diff than one per caller; patching only the named path can leave a sibling caller broken.
 
 Rules:
 
