@@ -94,7 +94,7 @@ fi
 
 echo
 echo "== Local markdown tracker guardrail check =="
-for skill in to-prd to-issues afk; do
+for skill in to-spec to-tickets triage wayfinder afk; do
   path="$SKILLS_DIR/$skill/SKILL.md"
   if [ ! -f "$path" ]; then
     echo "missing local tracker skill: $path" >&2

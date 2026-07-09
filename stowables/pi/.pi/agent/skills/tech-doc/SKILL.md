@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Turn a converged grilling session into a technical design doc, then outline the PRDs that should be split from it. Do not restart the interview; ask only blocking questions.
 
-Use this after `/skill:grill-me` or `/skill:grill-with-docs` and before `/skill:to-prd` / `/skill:to-issues`.
+Use this after `/skill:grill-me` or `/skill:grill-with-docs` and before `/skill:to-spec` / `/skill:to-tickets`.
 
 ## Design-doc bar
 
@@ -20,7 +20,7 @@ Before drafting, decide whether a tech doc is worth it. It usually is when any o
 - Goals, requirements, or ownership boundaries are ambiguous.
 - A bad decision could create security, privacy, legal, data-loss, or operations risk.
 
-If none apply, say the tech doc is probably overkill and offer to go straight to `/skill:to-prd`. If the user insists, keep the doc to one page.
+If none apply, say the tech doc is probably overkill and offer to go straight to `/skill:to-spec`. If the user insists, keep the doc to one page.
 
 ## What belongs
 
@@ -43,7 +43,7 @@ Exclude cheap, reversible implementation details. Leave those for PRDs/issues.
 4. Add a **PRD Breakdown** section with PRD-sized scopes. Each row is a separate future PRD, not a section of one large PRD.
 5. Ask for approval before writing.
 6. After approval, publish the tech doc to `.scratch/<initiative-slug>/TECH-DOC.md`. Create directories as needed. Do not create remote tracker items or use remote tracker CLIs.
-7. To generate PRDs, call `/skill:to-prd <TECH-DOC.md path> <PRD name>` once per row in **PRD Breakdown**. The caller loops over rows; `to-prd` creates exactly one PRD per invocation.
+7. To generate specs, call `/skill:to-spec <TECH-DOC.md path> <PRD name>` once per row in **PRD Breakdown**. The caller loops over rows; `to-spec` creates exactly one spec per invocation.
 
 ## Tech doc template
 

@@ -75,7 +75,7 @@ Protected local skills with no upstream source:
   - **Status**: a `Status:` line near the top of each issue file.
   - **Comments**: appended under a `## Comments` heading.
   - **Remote issue tracker**: external services such as GitHub/GitLab/Linear/Jira; never the workflow for this Pi skills directory.
-- Preserve explicit "Do not create remote tracker items" / "Do not use remote tracker CLIs" language in `to-prd`, `to-issues`, and `afk`.
+- Preserve explicit "Do not create remote tracker items" / "Do not use remote tracker CLIs" language in `to-spec`, `to-tickets`, `triage`, `wayfinder`, and `afk`.
 - Run helper scripts through `$HOME/.pi/agent/skills/sync-skills/scripts/`; never use project-relative `.agents/...` paths.
 
 ## Process
@@ -176,7 +176,7 @@ Also inspect the resulting diff manually. Verify:
 - All Pi `SKILL.md` files include `disable-model-invocation: true`.
 - OpenCode skills do not include Pi-only frontmatter.
 - Pi does not contain `teach`, and OpenCode does contain `teach`.
-- `to-prd`, `to-issues`, and `afk` remain local-first and use `.scratch/` tracker paths.
+- `to-spec`, `to-tickets`, `triage`, `wayfinder`, and `afk` remain local-first and use `.scratch/` tracker paths.
 - `afk` was not overwritten.
 - Global Ponytail/lazy rules still exist at `$HOME/.pi/agent/AGENTS.md`.
 - Support-file links resolve.

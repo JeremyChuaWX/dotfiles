@@ -15,6 +15,13 @@
           "targets": {
             "pi": "stowables/pi/.pi/agent/skills/grill-me"
           },
+          "adaptation": "Preserve manual-only Pi frontmatter; inline grilling primitive and no-tracker guardrails."
+        },
+        "grilling": {
+          "sourcePath": "skills/productivity/grilling",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/grilling"
+          },
           "adaptation": "Preserve manual-only Pi frontmatter."
         },
         "grill-with-docs": {
@@ -31,12 +38,40 @@
           },
           "adaptation": "Preserve manual-only Pi frontmatter and local/no-remote tracker guardrails."
         },
-        "improve-codebase-architecture": {
-          "sourcePath": "skills/engineering/improve-codebase-architecture",
+        "triage": {
+          "sourcePath": "skills/engineering/triage",
           "targets": {
-            "pi": "stowables/pi/.pi/agent/skills/improve-codebase-architecture"
+            "pi": "stowables/pi/.pi/agent/skills/triage"
           },
-          "adaptation": "Preserve manual-only Pi frontmatter and adapt unavailable tool/subagent wording to Pi."
+          "adaptation": "Preserve manual-only Pi frontmatter; adapt tracker workflow to local markdown issues under .scratch/."
+        },
+        "to-spec": {
+          "sourcePath": "skills/engineering/to-spec",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/to-spec"
+          },
+          "adaptation": "Publish to local markdown tracker at .scratch/<feature-slug>/PRD.md for AFK compatibility; never create remote tracker items."
+        },
+        "to-tickets": {
+          "sourcePath": "skills/engineering/to-tickets",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/to-tickets"
+          },
+          "adaptation": "Publish local markdown tickets at .scratch/<feature-slug>/issues/*.md; never create remote tracker items."
+        },
+        "wayfinder": {
+          "sourcePath": "skills/engineering/wayfinder",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/wayfinder"
+          },
+          "adaptation": "Preserve manual-only Pi frontmatter; use local markdown map and tickets under .scratch/ instead of remote tracker issues."
+        },
+        "implement": {
+          "sourcePath": "skills/engineering/implement",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/implement"
+          },
+          "adaptation": "Preserve manual-only Pi frontmatter; do not commit unless the user explicitly asks."
         },
         "prototype": {
           "sourcePath": "skills/engineering/prototype",
@@ -45,19 +80,54 @@
           },
           "adaptation": "Preserve manual-only Pi frontmatter, throwaway-code guardrails, and local/no-remote tracker guardrails."
         },
-        "to-prd": {
-          "sourcePath": "skills/engineering/to-prd",
+        "research": {
+          "sourcePath": "skills/engineering/research",
           "targets": {
-            "pi": "stowables/pi/.pi/agent/skills/to-prd"
+            "pi": "stowables/pi/.pi/agent/skills/research"
           },
-          "adaptation": "Publish to local markdown tracker at .scratch/<feature-slug>/PRD.md; never create remote tracker items."
+          "adaptation": "Preserve manual-only Pi frontmatter and adapt background-agent wording to available Pi tools."
         },
-        "to-issues": {
-          "sourcePath": "skills/engineering/to-issues",
+        "diagnosing-bugs": {
+          "sourcePath": "skills/engineering/diagnosing-bugs",
           "targets": {
-            "pi": "stowables/pi/.pi/agent/skills/to-issues"
+            "pi": "stowables/pi/.pi/agent/skills/diagnosing-bugs"
           },
-          "adaptation": "Publish to local markdown tracker at .scratch/<feature-slug>/issues/*.md; never create remote tracker items."
+          "adaptation": "Preserve manual-only Pi frontmatter."
+        },
+        "tdd": {
+          "sourcePath": "skills/engineering/tdd",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/tdd"
+          },
+          "adaptation": "Preserve manual-only Pi frontmatter."
+        },
+        "domain-modeling": {
+          "sourcePath": "skills/engineering/domain-modeling",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/domain-modeling"
+          },
+          "adaptation": "Preserve manual-only Pi frontmatter."
+        },
+        "codebase-design": {
+          "sourcePath": "skills/engineering/codebase-design",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/codebase-design"
+          },
+          "adaptation": "Preserve manual-only Pi frontmatter and adapt subagent wording to Pi."
+        },
+        "code-review": {
+          "sourcePath": "skills/engineering/code-review",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/code-review"
+          },
+          "adaptation": "Preserve manual-only Pi frontmatter; use local specs/tickets and adapt subagent wording to Pi."
+        },
+        "improve-codebase-architecture": {
+          "sourcePath": "skills/engineering/improve-codebase-architecture",
+          "targets": {
+            "pi": "stowables/pi/.pi/agent/skills/improve-codebase-architecture"
+          },
+          "adaptation": "Preserve manual-only Pi frontmatter and adapt unavailable tool/subagent wording to Pi."
         }
       }
     },
