@@ -130,41 +130,6 @@
           "adaptation": "Preserve manual-only Pi frontmatter and adapt unavailable tool/subagent wording to Pi."
         }
       }
-    },
-    "ponytail": {
-      "url": "https://github.com/DietrichGebert/ponytail.git",
-      "files": {
-        "global-agents": {
-          "sourcePath": "AGENTS.md",
-          "targets": {
-            "pi": "stowables/pi/.pi/agent/AGENTS.md"
-          },
-          "adaptation": "Preserve local Ponytail/lazy policy, output style, safety exceptions, and runnable-check rule."
-        }
-      },
-      "skills": {
-        "ponytail-review": {
-          "sourcePath": "skills/ponytail-review",
-          "targets": {
-            "pi": "stowables/pi/.pi/agent/skills/ponytail-review"
-          },
-          "adaptation": "Preserve manual-only Pi frontmatter."
-        },
-        "ponytail-audit": {
-          "sourcePath": "skills/ponytail-audit",
-          "targets": {
-            "pi": "stowables/pi/.pi/agent/skills/ponytail-audit"
-          },
-          "adaptation": "Preserve manual-only Pi frontmatter."
-        },
-        "ponytail-debt": {
-          "sourcePath": "skills/ponytail-debt",
-          "targets": {
-            "pi": "stowables/pi/.pi/agent/skills/ponytail-debt"
-          },
-          "adaptation": "Preserve manual-only Pi frontmatter."
-        }
-      }
     }
   }
 }

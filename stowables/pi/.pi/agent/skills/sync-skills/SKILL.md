@@ -1,6 +1,6 @@
 ---
 name: sync-skills
-description: Temporarily clone external skill/rule dependencies, review upstream diffs, and patch this dotfiles setup while preserving local adaptations, Pi/OpenCode routing, manual-only Pi skills, and always-on global Ponytail. Use manually when updating vendored agent skills or global agent rules.
+description: Temporarily clone external skill dependencies, review upstream diffs, and patch this dotfiles setup while preserving local adaptations, Pi/OpenCode routing, and manual-only Pi skills. Use manually when updating vendored agent skills.
 disable-model-invocation: true
 ---
 
@@ -37,20 +37,13 @@ Live skill directories stay separate and vendored:
 | Source | Upstream | Local integration |
 | --- | --- | --- |
 | Matt skills | `https://github.com/mattpocock/skills.git` | Adapt selected skills into Pi or OpenCode target dirs from the manifest. |
-| Ponytail | `https://github.com/DietrichGebert/ponytail.git` | Adapt upstream `AGENTS.md` into `$HOME/.pi/agent/AGENTS.md` as global Pi rules, and update approved helper skills under `$HOME/.pi/agent/skills/`. |
 
 ## Current routing
 
 Read `stowables/ai-skills/manifest.json` before syncing. Current intent:
 
 - OpenCode owns general-use `teach`.
-- Pi owns coding/config-maintenance skills and Ponytail helper skills.
-- Global Ponytail remains always-on in Pi `AGENTS.md`, not a default imported skill.
-
-Do not import by default:
-
-- `ponytail` — redundant with global `$HOME/.pi/agent/AGENTS.md`.
-- `ponytail-gain` — benchmark card, not useful day-to-day.
+- Pi owns coding/config-maintenance skills.
 
 Protected local skills with no upstream source:
 
@@ -60,13 +53,10 @@ Protected local skills with no upstream source:
 ## Hard constraints
 
 - Do not import new skills unless the user explicitly asks.
-- Do update installed Ponytail helper skills listed in the manifest.
-- Do not install the Ponytail Pi package unless the user explicitly asks; global `AGENTS.md` is the always-on integration.
 - Do not couple the workflow to GitHub, GitLab, Linear, Jira, or any other remote issue tracker.
 - Do not create or publish remote issues.
 - Preserve `disable-model-invocation: true` in every Pi `SKILL.md` touched or imported.
 - Do not add Pi-only frontmatter such as `disable-model-invocation` to OpenCode skills.
-- Preserve Ponytail/lazy rules in `$HOME/.pi/agent/AGENTS.md`; do not turn them into an on-demand-only skill.
 - Follow Matt's local markdown issue tracker vocabulary:
   - **Local issue tracker**: markdown files under `.scratch/`.
   - **Feature directory**: `.scratch/<feature-slug>/`.
@@ -116,7 +106,6 @@ Read the diffs. Focus on upstream prompt improvements:
 - new support files referenced by updated skills
 - better examples/templates
 - new guardrails compatible with local-first workflow
-- Ponytail ladder/rule wording that improves the global always-on `AGENTS.md`
 
 Ignore or rewrite upstream changes that assume:
 
@@ -149,19 +138,6 @@ For Matt skills:
 - Keep OpenCode frontmatter OpenCode-compatible.
 - Adapt tracker/tool wording to local markdown tracker and available Pi/OpenCode tools.
 
-For Ponytail global rules:
-
-- Patch `$HOME/.pi/agent/AGENTS.md` or its symlink target.
-- Keep it compact enough for always-on context.
-- Preserve local additions: output style, safety exceptions, and runnable-check rule.
-
-For Ponytail helper skills:
-
-- Merge upstream changes for manifest-listed helper skills.
-- Preserve `disable-model-invocation: true`.
-- Do not import the core `ponytail` skill unless the user wants a manual `/skill:ponytail` command in addition to global `AGENTS.md`.
-- Do not import `ponytail-gain` unless the user explicitly asks for the benchmark card.
-
 ### 6. Verify
 
 Run:
@@ -178,7 +154,6 @@ Also inspect the resulting diff manually. Verify:
 - Pi does not contain `teach`, and OpenCode does contain `teach`.
 - `to-spec`, `to-tickets`, `triage`, `wayfinder`, and `afk` remain local-first and use `.scratch/` tracker paths.
 - `afk` was not overwritten.
-- Global Ponytail/lazy rules still exist at `$HOME/.pi/agent/AGENTS.md`.
 - Support-file links resolve.
 
 ### 7. Finish session and commit only on request

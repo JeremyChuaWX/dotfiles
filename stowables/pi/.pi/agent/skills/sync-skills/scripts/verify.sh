@@ -26,7 +26,6 @@ else
   OPENCODE_DIR="$SCRIPT_OPENCODE_SKILLS_DIR"
 fi
 
-PI_AGENT_DIR="${PI_AGENT_DIR:-${HOME:-}/.pi/agent}"
 [ -d "$SKILLS_DIR" ] || { echo "error: Pi skills dir not found at $SKILLS_DIR" >&2; exit 1; }
 [ -d "$OPENCODE_DIR" ] || { echo "error: OpenCode skills dir not found at $OPENCODE_DIR" >&2; exit 1; }
 [ -f "$MANIFEST" ] || { echo "error: manifest not found: $MANIFEST" >&2; exit 1; }
@@ -119,19 +118,5 @@ for skill in afk sync-skills; do
     failed=1
   fi
 done
-
-echo
-echo "== Global Ponytail check =="
-if [ -f "$PI_AGENT_DIR/AGENTS.md" ]; then
-  if grep -qi 'lazy senior dev' "$PI_AGENT_DIR/AGENTS.md" && grep -qi 'Before writing any code' "$PI_AGENT_DIR/AGENTS.md"; then
-    echo "ok: global Ponytail/lazy rules exist"
-  else
-    echo "warning: $PI_AGENT_DIR/AGENTS.md may be missing global Ponytail/lazy rules" >&2
-    failed=1
-  fi
-else
-  echo "missing global AGENTS.md: $PI_AGENT_DIR/AGENTS.md" >&2
-  failed=1
-fi
 
 exit "$failed"
