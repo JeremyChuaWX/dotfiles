@@ -20,12 +20,13 @@ stowables/ai-skills/manifest.json
 
 It is organized by upstream and records only:
 
+- manifest schema version
 - upstream URL
 - upstream source path
 - local vendored target path(s)
 - short adaptation notes
 
-Do not encode universal policy in the manifest. Keep harness rules here and in `verify.sh`.
+It is an upstream sync manifest, not a complete inventory of local skills. Do not encode universal policy in the manifest. Keep harness rules here and in the verification tooling.
 
 Live skill directories stay separate and vendored:
 
@@ -45,10 +46,13 @@ Read `stowables/ai-skills/manifest.json` before syncing. Current intent:
 - OpenCode owns general-use `teach`.
 - Pi owns coding/config-maintenance skills.
 
-Protected local skills with no upstream source:
+Local skills with no upstream source are not listed in the manifest:
 
-- `afk` — do not overwrite from Matt skills.
-- `sync-skills` — this skill; do not overwrite from any upstream.
+- `afk`
+- `sync-skills`
+- `tech-doc`
+
+`afk` and `sync-skills` are protected during upstream syncs. Do not overwrite them from any upstream.
 
 ## Hard constraints
 
@@ -78,7 +82,7 @@ Run:
 "$HOME/.pi/agent/skills/sync-skills/scripts/start-session.sh"
 ```
 
-This clones latest upstreams into a temp dir and prints `SYNC_SKILLS_SESSION`. Keep that session dir for the whole agent conversation. Do not cache upstreams between sessions.
+This validates the manifest, snapshots the current Git-visible repository files, clones the latest upstream default branches into a temp dir, records their resolved commits for the session, and prints `SYNC_SKILLS_SESSION`. Keep that session dir for the whole agent conversation. Do not cache or pin upstreams between sessions.
 
 ### 2. Validate mappings
 
@@ -88,7 +92,7 @@ Run the command printed by `start-session.sh`, or:
 "$HOME/.pi/agent/skills/sync-skills/scripts/preflight.sh" "$SYNC_SKILLS_SESSION"
 ```
 
-This validates cloned upstreams, manifest source paths, and local vendored target paths. If it reports missing paths or clone failures, stop and ask how to proceed.
+This validates the manifest schema, cloned upstreams, manifest source paths, and local vendored target paths. If it reports invalid mappings, missing paths, or clone failures, stop and ask how to proceed.
 
 ### 3. Review upstream diffs
 
@@ -146,15 +150,7 @@ Run:
 "$HOME/.pi/agent/skills/sync-skills/scripts/verify.sh"
 ```
 
-Also inspect the resulting diff manually. Verify:
-
-- No unapproved skill directories were added.
-- All Pi `SKILL.md` files include `disable-model-invocation: true`.
-- OpenCode skills do not include Pi-only frontmatter.
-- Pi does not contain `teach`, and OpenCode does contain `teach`.
-- `to-spec`, `to-tickets`, `triage`, `wayfinder`, and `afk` remain local-first and use `.scratch/` tracker paths.
-- `afk` was not overwritten.
-- Support-file links resolve.
+The verifier checks manifest targets and routing, every Pi-discoverable skill's frontmatter, OpenCode frontmatter, duplicate skill names, local tracker guardrails, protected-skill presence, and relative support-file links. Also inspect the resulting diff manually. Verify that the wording changes and local adaptations are the ones the user approved.
 
 ### 7. Finish session and commit only on request
 
@@ -164,6 +160,12 @@ After approved updates pass verification, run:
 "$HOME/.pi/agent/skills/sync-skills/scripts/finish-session.sh" "$SYNC_SKILLS_SESSION"
 ```
 
-This runs `verify.sh`, shows `git status --short`, and deletes the temp session dir.
+This runs `verify.sh`, reports files changed since the session started, rejects changes outside the manifest and mapped targets, rejects protected-skill changes, shows `git status --short`, and deletes the temp session dir. A failed check leaves the session in place for investigation.
+
+To abandon a session, run:
+
+```bash
+"$HOME/.pi/agent/skills/sync-skills/scripts/abort-session.sh" "$SYNC_SKILLS_SESSION"
+```
 
 Ask whether to commit. If the user asks to commit, stage only approved sync changes. Do not stage unrelated files unless explicitly asked.

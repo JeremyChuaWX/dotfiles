@@ -10,6 +10,9 @@ DOTFILES_DIR="$(sync_dotfiles_dir)"
 SESSION_DIR="$(sync_session_dir "${1:-}")"
 
 [ -f "$MANIFEST" ] || { echo "error: manifest not found: $MANIFEST" >&2; exit 1; }
+sync_validate_manifest "$MANIFEST"
+UPSTREAM_RECORDS="$(sync_manifest_upstreams "$MANIFEST")"
+ENTRY_RECORDS="$(sync_manifest_entries "$MANIFEST")"
 
 cat <<MAP
 == External sync mapping ==
@@ -26,12 +29,13 @@ printf '== Validating upstream clones ==\n'
 while IFS=$'\t' read -r upstream url; do
   [ -n "$upstream" ] || continue
   if [ -d "$SESSION_DIR/upstreams/$upstream/.git" ]; then
-    echo "ok: $upstream <- $url"
+    revision="$(git -C "$SESSION_DIR/upstreams/$upstream" rev-parse HEAD)"
+    echo "ok: $upstream@$revision <- $url"
   else
     echo "missing upstream clone: $SESSION_DIR/upstreams/$upstream" >&2
     missing=1
   fi
-done < <(python3 -c "$sync_upstreams_py" "$MANIFEST")
+done <<< "$UPSTREAM_RECORDS"
 
 echo
 printf '== Validating mapped source and target paths ==\n'
@@ -67,7 +71,7 @@ while IFS=$'\t' read -r upstream _url kind name source target_name target adapta
   printf 'ok: %s/%s -> %s:%s' "$upstream" "$name" "$target_name" "$target"
   [ -z "$adaptation" ] || printf ' (%s)' "$adaptation"
   printf '\n'
-done < <(python3 -c "$sync_manifest_entries_py" "$MANIFEST")
+done <<< "$ENTRY_RECORDS"
 
 [ "$missing" -eq 0 ] || exit 1
 

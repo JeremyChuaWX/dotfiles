@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 1,
   "upstreams": {
     "matt-skills": {
       "url": "https://github.com/mattpocock/skills.git",
