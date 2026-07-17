@@ -1,12 +1,12 @@
 ---
 name: wayfinder
-description: Plan a huge chunk of work — more than one agent session can hold — as a local markdown map of investigation tickets, then resolve them one at a time until the way to the destination is clear.
+description: Plan a huge chunk of work — more than one agent session can hold — as a local markdown map of decision and investigation tickets, then resolve them one at a time until the way to the destination is clear.
 disable-model-invocation: true
 ---
 
 # Wayfinder
 
-A loose idea has arrived — too big for one agent session, and wrapped in fog: the way from here to the **destination** isn't visible yet. Wayfinding is about finding that way, not charging at the destination. This skill charts the way as a **local markdown map**, then works its tickets one at a time until the route is clear.
+A loose idea has arrived — too big for one agent session, and wrapped in fog: the way from here to the **destination** isn't visible yet. Wayfinding is about finding that way, not charging at the destination. This skill charts the way as a **local markdown map**, then works its **decision and investigation tickets** — questions whose resolution is a decision or a finding needed to make one, not slices of a build to execute — one at a time until the route is clear.
 
 Use the local markdown tracker only:
 
@@ -20,7 +20,7 @@ Do not create remote tracker items. Do not use remote tracker CLIs. Ignore GitHu
 
 ## Plan, don't do
 
-Wayfinder is **planning** by default: each ticket resolves a decision, and the map is done when the way is clear — nothing left to decide before someone goes and does the thing. An effort can override this in **Notes**, but absent that, produce decisions, not deliverables.
+Wayfinder is **planning** by default: each ticket resolves a decision or an investigation needed to make one, and the map is done when the way is clear — nothing left to decide before someone goes and does the thing. An effort can override this in **Notes**, but absent that, produce decisions and findings, not implementation deliverables.
 
 ## The map
 

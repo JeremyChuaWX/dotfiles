@@ -33,6 +33,11 @@ This skill is _informed_ by the project's domain model. The domain language give
 
 ### 1. Explore
 
+**Scope before you scan — YAGNI.** Deepening a module pays off by making future changes to it easier, so put extra weight on the parts of the codebase that have recently changed. Decide where to look before you look:
+
+- If the user named a direction — a module, subsystem, or pain point — take it and skip the inference below.
+- Otherwise, walk back a useful stretch of commit history (`git log --oneline`) to find the codebase's hot spots — files and areas that keep changing — and let those paths pull your attention first. If changes are scattered with no clear hot spot, widen the net.
+
 Read the project's domain glossary and any ADRs in the area you're touching first. Look for `CONTEXT.md`, `CONTEXT-MAP.md`, and `docs/adr/` when present.
 
 Then explore the codebase directly with the current agent's available read/search tools. Don't follow rigid heuristics — explore organically and note where you experience friction:
@@ -72,7 +77,7 @@ Do NOT propose interfaces yet. After the file is written, ask the user: "Which o
 
 ### 3. Grilling loop
 
-Once the user picks a candidate, drop into a grilling conversation. Walk the design tree with them — constraints, dependencies, the shape of the deepened module, what sits behind the seam, what tests survive.
+Once the user picks a candidate, drop into a grilling conversation. Walk the decision tree with them — constraints, dependencies, the shape of the deepened module, what sits behind the seam, what tests survive.
 
 Side effects happen inline as decisions crystallize:
 
