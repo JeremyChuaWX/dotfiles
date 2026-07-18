@@ -40,7 +40,6 @@ export PATH="$HOME/.cargo/bin:$PATH" # rust
 export PATH="$HOME/go/bin:$PATH" # go
 export PATH="$HOME/.local/share/bob/nvim-bin:$PATH" # bob (neovim version manager)
 export PATH="$HOME/.local/bin:$PATH" # local/bin
-export PATH="$HOME/.opencode/bin:$PATH" # opencode
 export FPATH="$FPATH:$HOME/.config/zsh/plugins/zsh-completions/src" # from zsh-completions
 export FPATH="$FPATH:$HOME/.config/zsh/completions" # own completions
 
