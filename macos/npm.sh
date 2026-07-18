@@ -1,3 +1,6 @@
 #!/bin/sh
 
-npm install -g typescript neovim @earendil-works/pi-coding-agent
+npm install -g --ignore-scripts \
+  typescript \
+  neovim \
+  @earendil-works/pi-coding-agent

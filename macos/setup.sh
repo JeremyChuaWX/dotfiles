@@ -25,11 +25,25 @@ else
     echo "github CLI already authenticated"
 fi
 
+echo "initializing fnm and Node.js"
+eval "$(fnm env --shell bash)"
+fnm install --use 22.19.0
+
 echo "installing npm packages"
 source "$SCRIPT_DIR/npm.sh"
 
 echo "stowing configs"
 "$DOTFILES_DIR/stowables/setup.sh"
+
+PI_AGENT_DIR="$HOME/.pi/agent"
+PI_SETTINGS="$PI_AGENT_DIR/settings.json"
+if [ ! -e "$PI_SETTINGS" ]; then
+    echo "initializing Pi settings"
+    mkdir -p "$PI_AGENT_DIR"
+    (umask 077 && cp "$PI_AGENT_DIR/settings.template.json" "$PI_SETTINGS")
+else
+    echo "preserving existing Pi settings"
+fi
 
 echo "install tmux terminfo"
 TMPDIR="$(mktemp -d)"
