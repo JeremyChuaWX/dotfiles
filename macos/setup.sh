@@ -27,7 +27,7 @@ fi
 
 echo "initializing fnm and Node.js"
 eval "$(fnm env --shell bash)"
-fnm install --use 22.19.0
+fnm install --latest --use
 
 echo "installing npm packages"
 source "$SCRIPT_DIR/npm.sh"
