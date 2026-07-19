@@ -1,9 +1,8 @@
-import { spawn } from "node:child_process";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type { Message } from "@earendil-works/pi-ai";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { DEFAULT_MAX_BYTES, truncateHead } from "@earendil-works/pi-coding-agent";
+import { DEFAULT_MAX_BYTES, DEFAULT_MAX_LINES, truncateHead } from "@earendil-works/pi-coding-agent";
 import { Text } from "@earendil-works/pi-tui";
 import { Type, type Static } from "typebox";
 
@@ -24,7 +23,7 @@ type ExploreDetails = {
   model: string;
   timeoutSeconds: number;
   tools: string;
-  exitCode: number | null;
+  exitCode: number;
   timedOut: boolean;
   aborted: boolean;
   progress: string[];
@@ -83,20 +82,49 @@ function finalAssistantText(messages: Message[]): string {
   return "";
 }
 
-function compactToolCall(toolName: string, input: any): string {
-  if (toolName === "read") return `read ${input?.path ?? input?.file_path ?? "..."}`;
-  if (toolName === "grep") return `grep ${input?.pattern ?? "..."} in ${input?.path ?? "."}`;
-  if (toolName === "find") return `find ${input?.pattern ?? "*"} in ${input?.path ?? "."}`;
-  if (toolName === "ls") return `ls ${input?.path ?? "."}`;
+function compactToolCall(toolName: string, input: unknown): string {
+  const args = typeof input === "object" && input !== null ? (input as Record<string, unknown>) : {};
+  if (toolName === "read") return `read ${String(args.path ?? args.file_path ?? "...")}`;
+  if (toolName === "grep") return `grep ${String(args.pattern ?? "...")} in ${String(args.path ?? ".")}`;
+  if (toolName === "find") return `find ${String(args.pattern ?? "*")} in ${String(args.path ?? ".")}`;
+  if (toolName === "ls") return `ls ${String(args.path ?? ".")}`;
   return toolName;
 }
 
-function parseJsonLine(line: string): any | undefined {
-  try {
-    return JSON.parse(line);
-  } catch {
-    return undefined;
+type PiJsonEvent = {
+  type?: string;
+  message?: Message;
+  toolName?: string;
+  tool_name?: string;
+  name?: string;
+  args?: unknown;
+  input?: unknown;
+  arguments?: unknown;
+};
+
+function parsePiOutput(stdout: string): { messages: Message[]; progress: string[] } {
+  const messages: Message[] = [];
+  const progress: string[] = [];
+
+  for (const line of stdout.split("\n")) {
+    if (!line.trim()) continue;
+
+    let event: PiJsonEvent;
+    try {
+      event = JSON.parse(line) as PiJsonEvent;
+    } catch {
+      continue;
+    }
+
+    if (event.type === "message_end" && event.message) messages.push(event.message);
+
+    const toolName = event.toolName ?? event.tool_name ?? event.name;
+    if ((event.type === "tool_execution_start" || event.type === "tool_call") && toolName) {
+      progress.push(compactToolCall(toolName, event.args ?? event.input ?? event.arguments));
+    }
   }
+
+  return { messages, progress };
 }
 
 export default function exploreExtension(pi: ExtensionAPI) {
@@ -115,12 +143,6 @@ export default function exploreExtension(pi: ExtensionAPI) {
     async execute(_toolCallId, params, signal, onUpdate, ctx) {
       const model = getModel(params);
       const timeoutSeconds = clampTimeout(params.timeout_seconds);
-      const messages: Message[] = [];
-      const progress: string[] = [];
-      let stderr = "";
-      let timedOut = false;
-      let aborted = false;
-
       const args = [
         "--mode", "json",
         "-p",
@@ -135,67 +157,25 @@ export default function exploreExtension(pi: ExtensionAPI) {
         `Explore this codebase from cwd ${ctx.cwd}.\n\nPrompt:\n${params.prompt}`,
       ];
 
-      const exitCode = await new Promise<number | null>((resolve) => {
-        const invocation = getPiInvocation(args);
-        const proc = spawn(invocation.command, invocation.args, { cwd: ctx.cwd, shell: false, stdio: ["ignore", "pipe", "pipe"] });
-        let stdoutBuffer = "";
-        let settled = false;
-
-        const finish = (code: number | null) => {
-          if (settled) return;
-          settled = true;
-          clearTimeout(timeoutId);
-          resolve(code);
-        };
-
-        const kill = () => {
-          proc.kill("SIGTERM");
-          setTimeout(() => {
-            if (!proc.killed) proc.kill("SIGKILL");
-          }, 2000).unref?.();
-        };
-
-        const processLine = (line: string) => {
-          if (!line.trim()) return;
-          const event = parseJsonLine(line);
-          if (!event) return;
-
-          if (event.type === "message_end" && event.message) messages.push(event.message as Message);
-
-          const toolName = event.toolName ?? event.tool_name ?? event.name;
-          const input = event.args ?? event.input ?? event.arguments;
-          if ((event.type === "tool_execution_start" || event.type === "tool_call") && toolName) {
-            progress.push(compactToolCall(toolName, input));
-            onUpdate?.({ content: [{ type: "text", text: progress.slice(-8).join("\n") }], details: { model, timeoutSeconds, tools: TOOLS, progress } });
-          }
-        };
-
-        const timeoutId = setTimeout(() => {
-          timedOut = true;
-          kill();
-        }, timeoutSeconds * 1000);
-
-        signal?.addEventListener("abort", () => {
-          aborted = true;
-          kill();
-        }, { once: true });
-
-        proc.stdout.on("data", (data) => {
-          stdoutBuffer += data.toString();
-          const lines = stdoutBuffer.split("\n");
-          stdoutBuffer = lines.pop() ?? "";
-          for (const line of lines) processLine(line);
-        });
-        proc.stderr.on("data", (data) => { stderr += data.toString(); });
-        proc.on("error", (error) => { stderr += `${error.message}\n`; finish(1); });
-        proc.on("close", (code) => {
-          if (stdoutBuffer.trim()) processLine(stdoutBuffer);
-          finish(code);
-        });
+      onUpdate?.({
+        content: [{ type: "text", text: "Exploring codebase..." }],
+        details: { model, timeoutSeconds, tools: TOOLS, progress: [] },
       });
 
+      const invocation = getPiInvocation(args);
+      const execution = await pi.exec(invocation.command, invocation.args, {
+        cwd: ctx.cwd,
+        signal,
+        timeout: timeoutSeconds * 1000,
+      });
+      const { messages, progress } = parsePiOutput(execution.stdout);
+      const aborted = signal?.aborted ?? false;
+      const timedOut = execution.killed && !aborted;
+      const exitCode = execution.code;
+      const stderr = execution.stderr;
+
       const fullOutput = finalAssistantText(messages) || stderr.trim() || "(no output)";
-      const truncation = truncateHead(fullOutput, { maxBytes: DEFAULT_MAX_BYTES });
+      const truncation = truncateHead(fullOutput, { maxLines: DEFAULT_MAX_LINES, maxBytes: DEFAULT_MAX_BYTES });
       const status = timedOut ? `explore timed out after ${timeoutSeconds}s` : aborted ? "explore aborted" : exitCode ? `explore failed with exit code ${exitCode}` : undefined;
       const visibleOutput = status ? `${status}\n\n${truncation.content}` : truncation.content;
       const details: ExploreDetails = { model, timeoutSeconds, tools: TOOLS, exitCode, timedOut, aborted, progress, messages, stderr, fullOutput, truncated: truncation.truncated };
@@ -203,7 +183,6 @@ export default function exploreExtension(pi: ExtensionAPI) {
       return {
         content: [{ type: "text", text: truncation.truncated ? `${visibleOutput}\n\n[Output truncated to 50KB. Full output preserved in tool details.]` : visibleOutput }],
         details,
-        isError: Boolean(status),
       };
     },
 
@@ -217,7 +196,8 @@ export default function exploreExtension(pi: ExtensionAPI) {
       const details = result.details as Partial<ExploreDetails> | undefined;
       if (isPartial) return new Text(theme.fg("warning", "exploring...\n") + theme.fg("dim", (details?.progress ?? []).slice(-8).join("\n")), 0, 0);
 
-      const icon = result.isError ? theme.fg("error", "✗") : theme.fg("success", "✓");
+      const failed = details?.timedOut || details?.aborted || (typeof details?.exitCode === "number" && details.exitCode !== 0);
+      const icon = failed ? theme.fg("error", "✗") : theme.fg("success", "✓");
       let text = `${icon} ${theme.fg("toolTitle", "explore")}`;
       if (details?.model) text += theme.fg("dim", ` ${details.model}`);
       if (details?.progress?.length) text += `\n${theme.fg("dim", details.progress.slice(-8).join("\n"))}`;

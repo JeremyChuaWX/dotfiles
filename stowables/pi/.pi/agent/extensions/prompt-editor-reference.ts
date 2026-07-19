@@ -1,14 +1,13 @@
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
+import { getAgentDir, type ExtensionAPI, type ExtensionContext } from "@earendil-works/pi-coding-agent";
 
-const WRAPPER_PATH = path.resolve(
-  process.env.HOME ?? os.homedir(),
-  ".pi/agent/bin/pi-prompt-editor-wrapper.mjs",
-);
+const WRAPPER_PATH = path.join(getAgentDir(), "bin", "pi-prompt-editor-wrapper.mjs");
 const STATE_DIR = path.join(os.tmpdir(), "pi-prompt-editor-reference");
 const STATE_FILE = path.join(STATE_DIR, `last-assistant-${process.pid}.md`);
+
+let editorEnvironment: Record<string, string | undefined> | undefined;
 
 function textFromContent(content: unknown): string {
   if (typeof content === "string") return content;
@@ -48,9 +47,17 @@ function writeLastAssistantText(ctx: ExtensionContext): void {
 }
 
 function installEditorWrapper(): boolean {
+  if (editorEnvironment) return true;
+
   const realEditor = process.env.PI_PROMPT_EDITOR_REAL_EDITOR || process.env.VISUAL || process.env.EDITOR;
   if (!realEditor) return false;
 
+  editorEnvironment = {
+    PI_PROMPT_EDITOR_REAL_EDITOR: process.env.PI_PROMPT_EDITOR_REAL_EDITOR,
+    PI_PROMPT_EDITOR_LAST_ASSISTANT_FILE: process.env.PI_PROMPT_EDITOR_LAST_ASSISTANT_FILE,
+    VISUAL: process.env.VISUAL,
+    EDITOR: process.env.EDITOR,
+  };
   process.env.PI_PROMPT_EDITOR_REAL_EDITOR = realEditor;
   process.env.PI_PROMPT_EDITOR_LAST_ASSISTANT_FILE = STATE_FILE;
 
@@ -59,6 +66,16 @@ function installEditorWrapper(): boolean {
   process.env.VISUAL = WRAPPER_PATH;
   process.env.EDITOR = WRAPPER_PATH;
   return true;
+}
+
+function restoreEditorEnvironment(): void {
+  if (!editorEnvironment) return;
+
+  for (const [name, value] of Object.entries(editorEnvironment)) {
+    if (value === undefined) delete process.env[name];
+    else process.env[name] = value;
+  }
+  editorEnvironment = undefined;
 }
 
 export default function promptEditorReference(pi: ExtensionAPI) {
@@ -84,10 +101,7 @@ export default function promptEditorReference(pi: ExtensionAPI) {
   });
 
   pi.on("session_shutdown", () => {
-    try {
-      fs.unlinkSync(STATE_FILE);
-    } catch {
-      // Ignore cleanup errors.
-    }
+    restoreEditorEnvironment();
+    fs.rmSync(STATE_FILE, { force: true });
   });
 }
