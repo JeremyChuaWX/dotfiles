@@ -1,64 +1,82 @@
-import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import { mkdtemp, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import type { Api, Model } from "@earendil-works/pi-ai";
+import {
+  DEFAULT_MAX_BYTES,
+  DEFAULT_MAX_LINES,
+  formatSize,
+  truncateHead,
+  type ExtensionAPI,
+  type ExtensionContext,
+} from "@earendil-works/pi-coding-agent";
 import { Type, type Static } from "typebox";
 
 const SEARCH_PARAMS = Type.Object({
-  query: Type.String({ description: "Search query using OpenAI/ChatGPT built-in web search." }),
-  max_results: Type.Optional(Type.Number({ description: "Maximum number of source URLs to return. Defaults to 5; capped at 10." })),
-  source: Type.Optional(
-    Type.Union([Type.Literal("web"), Type.Literal("news")], {
-      description: "Search vertical hint. Defaults to web.",
-    }),
-  ),
+  query: Type.String({ minLength: 1, description: "Natural-language web search query." }),
 });
 
 type SearchParams = Static<typeof SEARCH_PARAMS>;
-type OpenAISearchProvider = "openai" | "chatgpt";
+type SearchProvider = "openai" | "chatgpt";
+type SearchModel = Model<"openai-responses" | "openai-codex-responses">;
 
-type ModelLike = {
-  id: string;
-  api: string;
-  provider: string;
-  baseUrl: string;
-  headers?: Record<string, string>;
-};
-
-type SearchHit = {
+type SearchSource = {
   title: string;
   url: string;
 };
 
 type SearchResult = {
-  provider: OpenAISearchProvider;
+  provider: SearchProvider;
   model: string;
-  query: string;
   answer: string;
-  sources: SearchHit[];
+  sources: SearchSource[];
 };
 
-const SEARCH_SYSTEM_PROMPT =
-  "You are an assistant for performing web search. Return concise, useful findings and preserve source URLs.";
-const MAX_OUTPUT_TOKENS = 16000;
+type SearchDetails =
+  | { status: "searching" }
+  | {
+      status: "complete";
+      provider: SearchProvider;
+      model: string;
+      query: string;
+      sources: SearchSource[];
+      truncated: boolean;
+      fullOutputPath?: string;
+    };
+
+type ResponseOutputItem = {
+  type?: string;
+  action?: {
+    type?: string;
+    sources?: Array<{ title?: unknown; url?: unknown }>;
+  };
+  content?: Array<{
+    type?: string;
+    text?: unknown;
+    annotations?: Array<{ type?: string; title?: unknown; url?: unknown }>;
+  }>;
+};
+
+type ResponsePayload = {
+  output_text?: unknown;
+  output?: ResponseOutputItem[];
+};
+
+type SseData = {
+  type?: unknown;
+  delta?: unknown;
+  item?: ResponseOutputItem;
+  response?: ResponsePayload;
+};
+
+const SEARCH_INSTRUCTIONS =
+  "Use web search to answer the query. Return concise, useful findings grounded in current sources. Do not invent facts or URLs.";
+const MAX_OUTPUT_TOKENS = 8000;
+const MAX_SOURCES = 10;
 const CHATGPT_USER_AGENT = "pi-web-search";
 
-function clampResultCount(value: unknown): number {
-  const n = typeof value === "number" && Number.isFinite(value) ? Math.floor(value) : 5;
-  return Math.max(1, Math.min(10, n));
-}
-
-function maybeString(value: unknown): string | undefined {
+function nonEmptyString(value: unknown): string | undefined {
   return typeof value === "string" && value.trim() ? value.trim() : undefined;
-}
-
-function buildSearchInput(params: SearchParams): string {
-  const prefix = params.source === "news" ? "Perform a web/news search for the query: " : "Perform a web search for the query: ";
-  return `${prefix}${params.query}`;
-}
-
-function uniquePushHit(results: SearchHit[], seen: Set<string>, title: unknown, url: unknown) {
-  const resolvedUrl = maybeString(url);
-  if (!resolvedUrl || seen.has(resolvedUrl)) return;
-  seen.add(resolvedUrl);
-  results.push({ title: maybeString(title) ?? resolvedUrl, url: resolvedUrl });
 }
 
 function normalizeEndpoint(baseUrl: string, suffix: string): string {
@@ -66,8 +84,8 @@ function normalizeEndpoint(baseUrl: string, suffix: string): string {
   return normalized.endsWith(suffix) ? normalized : `${normalized}${suffix}`;
 }
 
-function resolveCodexResponsesUrl(model: ModelLike): string {
-  const normalized = model.baseUrl.replace(/\/+$/, "");
+function resolveCodexResponsesUrl(baseUrl: string): string {
+  const normalized = baseUrl.replace(/\/+$/, "");
   if (normalized.endsWith("/codex/responses")) return normalized;
   if (normalized.endsWith("/codex")) return `${normalized}/responses`;
   return `${normalized}/codex/responses`;
@@ -75,115 +93,151 @@ function resolveCodexResponsesUrl(model: ModelLike): string {
 
 function extractChatGptAccountId(token: string): string | undefined {
   try {
-    const [, payload] = token.split(".");
+    const payload = token.split(".")[1];
     if (!payload) return undefined;
     const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
     const decoded = JSON.parse(Buffer.from(normalized, "base64").toString("utf8"));
-    return maybeString(decoded?.["https://api.openai.com/auth"]?.chatgpt_account_id);
+    return nonEmptyString(decoded?.["https://api.openai.com/auth"]?.chatgpt_account_id);
   } catch {
     return undefined;
   }
 }
 
-function detectOpenAISearchProvider(model: ModelLike): OpenAISearchProvider | undefined {
+function searchProvider(model: Model<Api>): SearchProvider | undefined {
   if (model.provider === "openai" && model.api === "openai-responses") return "openai";
   if (model.provider === "openai-codex" && model.api === "openai-codex-responses") return "chatgpt";
   return undefined;
 }
 
-function resolveSearchModel(ctx: any): ModelLike | undefined {
+function resolveSearchModel(ctx: ExtensionContext): SearchModel {
   const configured = process.env.WEB_SEARCH_MODEL?.trim();
+  let model: Model<Api> | undefined;
+
   if (configured) {
     const slash = configured.indexOf("/");
-    const provider = slash === -1 ? ctx.model?.provider : configured.slice(0, slash);
-    const modelId = slash === -1 ? configured : configured.slice(slash + 1);
-    const found = ctx.modelRegistry?.find?.(provider, modelId);
-    if (found) return found;
+    if (slash < 1 || slash === configured.length - 1) {
+      throw new Error("WEB_SEARCH_MODEL must use provider/model format.");
+    }
+    model = ctx.modelRegistry.find(configured.slice(0, slash), configured.slice(slash + 1));
+    if (!model) throw new Error(`WEB_SEARCH_MODEL ${configured} is not registered in pi.`);
+  } else {
+    model = ctx.model;
   }
-  return ctx.model;
+
+  if (!model) throw new Error("No active pi model is available for web_search.");
+  if (!searchProvider(model)) {
+    throw new Error(
+      `${model.provider}/${model.id} does not support GPT built-in web search. Select an OpenAI Responses or ChatGPT/Codex model, or set WEB_SEARCH_MODEL=provider/model.`,
+    );
+  }
+  return model as SearchModel;
 }
 
-async function getModelAuth(ctx: any, model: ModelLike): Promise<{ apiKey?: string; headers: Record<string, string> }> {
-  const auth = await ctx.modelRegistry.getApiKeyAndHeaders(model);
-  if (!auth.ok) throw new Error(auth.error);
-  return { apiKey: auth.apiKey, headers: auth.headers ?? {} };
+function addSource(sources: SearchSource[], seen: Set<string>, title: unknown, url: unknown): void {
+  const resolvedUrl = nonEmptyString(url);
+  if (!resolvedUrl || seen.has(resolvedUrl)) return;
+  seen.add(resolvedUrl);
+  sources.push({ title: nonEmptyString(title) ?? resolvedUrl, url: resolvedUrl });
 }
 
-function collectResponseText(payload: any): string {
-  const direct = maybeString(payload?.output_text);
+function collectResponseText(payload: ResponsePayload | undefined): string {
+  const direct = nonEmptyString(payload?.output_text);
   if (direct) return direct;
 
   const parts: string[] = [];
-  for (const item of Array.isArray(payload?.output) ? payload.output : []) {
-    if (item?.type !== "message" || !Array.isArray(item.content)) continue;
-    for (const part of item.content) {
-      const text = maybeString(part?.text);
-      if (part?.type === "output_text" && text) parts.push(text);
+  for (const item of payload?.output ?? []) {
+    if (item.type !== "message") continue;
+    for (const part of item.content ?? []) {
+      const text = nonEmptyString(part.text);
+      if (part.type === "output_text" && text) parts.push(text);
     }
   }
   return parts.join("\n\n");
 }
 
-function collectResponseHits(output: any): SearchHit[] {
-  const hits: SearchHit[] = [];
+function collectResponseSources(output: ResponseOutputItem[] | undefined): SearchSource[] {
+  const sources: SearchSource[] = [];
   const seen = new Set<string>();
-  for (const item of Array.isArray(output) ? output : []) {
-    if (item?.type === "web_search_call" && item.action?.type === "search" && Array.isArray(item.action.sources)) {
-      for (const source of item.action.sources) uniquePushHit(hits, seen, source.title ?? source.url, source.url);
-    }
-    if (item?.type !== "message" || !Array.isArray(item.content)) continue;
-    for (const part of item.content) {
-      if (part?.type !== "output_text" || !Array.isArray(part.annotations)) continue;
-      for (const annotation of part.annotations) {
-        if (annotation.type === "url_citation") uniquePushHit(hits, seen, annotation.title, annotation.url);
+
+  // Put explicit citations first so the bounded source list preserves links used by the answer.
+  for (const item of output ?? []) {
+    if (item.type !== "message") continue;
+    for (const part of item.content ?? []) {
+      for (const annotation of part.annotations ?? []) {
+        if (annotation.type === "url_citation") addSource(sources, seen, annotation.title, annotation.url);
       }
     }
   }
-  return hits;
+
+  for (const item of output ?? []) {
+    if (item.type !== "web_search_call" || item.action?.type !== "search") continue;
+    for (const source of item.action.sources ?? []) addSource(sources, seen, source.title, source.url);
+  }
+
+  return sources;
 }
 
-function parseSseEvents(text: string): Array<{ event: string; data: any }> {
-  const events: Array<{ event: string; data: any }> = [];
-  for (const block of text.split(/\n\n+/)) {
+function parseJsonResponse(text: string): ResponsePayload {
+  try {
+    return text ? (JSON.parse(text) as ResponsePayload) : {};
+  } catch {
+    throw new Error(`GPT web search returned invalid JSON: ${text.slice(0, 700)}`);
+  }
+}
+
+function parseSseEvents(text: string): Array<{ event: string; data: SseData }> {
+  const events: Array<{ event: string; data: SseData }> = [];
+  for (const block of text.replace(/\r\n/g, "\n").split(/\n\n+/)) {
     const lines = block.split("\n");
-    const event = lines.find((line) => line.startsWith("event: "))?.slice(7).trim();
-    const data = lines.filter((line) => line.startsWith("data: ")).map((line) => line.slice(6)).join("");
-    if (!event || !data || data === "[DONE]") continue;
+    const eventHeader = lines.find((line) => line.startsWith("event:"))?.slice(6).trim();
+    const dataText = lines
+      .filter((line) => line.startsWith("data:"))
+      .map((line) => line.slice(5).trimStart())
+      .join("\n");
+    if (!dataText || dataText === "[DONE]") continue;
     try {
-      events.push({ event, data: JSON.parse(data) });
+      const data = JSON.parse(dataText) as SseData;
+      const event = eventHeader || nonEmptyString(data.type);
+      if (event) events.push({ event, data });
     } catch {
-      // Ignore malformed SSE fragments.
+      // Ignore malformed or incomplete event fragments.
     }
   }
   return events;
 }
 
-function parseChatGptSseResponse(text: string): { answer: string; sources: SearchHit[] } {
-  let answer = "";
-  const sources: SearchHit[] = [];
-  const seen = new Set<string>();
+function parseChatGptResponse(text: string): { answer: string; sources: SearchSource[] } {
+  let streamedAnswer = "";
+  let finalResponse: ResponsePayload | undefined;
+  const streamedSources: SearchSource[] = [];
+  const streamedSeen = new Set<string>();
 
   for (const { event, data } of parseSseEvents(text)) {
-    if (event === "response.output_text.delta" && typeof data.delta === "string") answer += data.delta;
-    const item = data.item ?? data.response?.output?.find?.((entry: any) => entry?.type === "web_search_call");
-    if (item?.type === "web_search_call" && item.action?.type === "search" && Array.isArray(item.action.sources)) {
-      for (const source of item.action.sources) uniquePushHit(sources, seen, source.title ?? source.url, source.url);
+    if (event === "response.output_text.delta" && typeof data.delta === "string") streamedAnswer += data.delta;
+    if (data.response?.output) finalResponse = data.response;
+    if (data.item?.type === "web_search_call" && data.item.action?.type === "search") {
+      for (const source of data.item.action.sources ?? []) {
+        addSource(streamedSources, streamedSeen, source.title, source.url);
+      }
     }
-    for (const hit of collectResponseHits(data.response?.output)) uniquePushHit(sources, seen, hit.title, hit.url);
   }
 
-  return { answer: answer.trim(), sources };
+  const sources = collectResponseSources(finalResponse?.output);
+  const seen = new Set(sources.map((source) => source.url));
+  for (const source of streamedSources) addSource(sources, seen, source.title, source.url);
+
+  return {
+    answer: streamedAnswer.trim() || collectResponseText(finalResponse),
+    sources,
+  };
 }
 
-async function executeOpenAISearch(
-  model: ModelLike,
-  provider: OpenAISearchProvider,
-  params: SearchParams,
-  ctx: any,
-  signal?: AbortSignal,
-): Promise<SearchResult> {
-  const auth = await getModelAuth(ctx, model);
-  if (!auth.apiKey) throw new Error(`No API key for ${model.provider}/${model.id}`);
+async function runSearch(params: SearchParams, ctx: ExtensionContext, signal?: AbortSignal): Promise<SearchResult> {
+  const model = resolveSearchModel(ctx);
+  const provider = searchProvider(model)!;
+  const auth = await ctx.modelRegistry.getApiKeyAndHeaders(model);
+  if (!auth.ok) throw new Error(auth.error);
+  if (!auth.apiKey) throw new Error(`No API key is available for ${model.provider}/${model.id}.`);
 
   const headers: Record<string, string> = {
     ...model.headers,
@@ -191,136 +245,120 @@ async function executeOpenAISearch(
     Authorization: `Bearer ${auth.apiKey}`,
     "Content-Type": "application/json",
   };
-
-  const body: Record<string, any> = {
+  const body: Record<string, unknown> = {
     include: ["web_search_call.action.sources"],
-    input: buildSearchInput(params),
-    instructions: SEARCH_SYSTEM_PROMPT,
+    input: params.query,
+    instructions: SEARCH_INSTRUCTIONS,
     max_output_tokens: MAX_OUTPUT_TOKENS,
     model: model.id,
     store: false,
-    tool_choice: "auto",
+    tool_choice: "required",
     tools: [{ type: "web_search" }],
   };
-
-  let url = normalizeEndpoint(model.baseUrl, "/responses");
+  let endpoint = normalizeEndpoint(model.baseUrl, "/responses");
 
   if (provider === "chatgpt") {
-    url = resolveCodexResponsesUrl(model);
+    endpoint = resolveCodexResponsesUrl(model.baseUrl);
     const accountId = extractChatGptAccountId(auth.apiKey);
     if (accountId) headers["chatgpt-account-id"] = accountId;
     headers.Accept = headers.Accept ?? headers.accept ?? "text/event-stream";
     headers["User-Agent"] = headers["User-Agent"] ?? CHATGPT_USER_AGENT;
     delete headers.accept;
-    // ChatGPT's Codex Responses endpoint is not the public OpenAI Responses API;
-    // keep the request body to the smaller parameter set it accepts.
     delete body.max_output_tokens;
-    body.input = [{ role: "user", content: [{ type: "input_text", text: buildSearchInput(params) }] }];
+    body.input = [{ role: "user", content: [{ type: "input_text", text: params.query }] }];
     body.stream = true;
   }
 
-  const response = await fetch(url, { method: "POST", headers, body: JSON.stringify(body), signal });
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+    signal,
+  });
   const text = await response.text();
-  if (!response.ok) throw new Error(`${provider} built-in search returned HTTP ${response.status}: ${text.slice(0, 700)}`);
+  if (!response.ok) throw new Error(`${provider} web search returned HTTP ${response.status}: ${text.slice(0, 700)}`);
 
-  if (provider === "chatgpt") {
-    const parsed = parseChatGptSseResponse(text);
-    return { provider, model: `${model.provider}/${model.id}`, query: params.query, answer: parsed.answer, sources: parsed.sources };
-  }
+  const parsed = provider === "chatgpt"
+    ? parseChatGptResponse(text)
+    : (() => {
+        const payload = parseJsonResponse(text);
+        return { answer: collectResponseText(payload), sources: collectResponseSources(payload.output) };
+      })();
 
-  const payload = text ? JSON.parse(text) : {};
+  if (!parsed.answer) throw new Error("GPT web search returned an empty answer.");
   return {
     provider,
     model: `${model.provider}/${model.id}`,
-    query: params.query,
-    answer: collectResponseText(payload),
-    sources: collectResponseHits(payload.output),
+    answer: parsed.answer,
+    sources: parsed.sources.slice(0, MAX_SOURCES),
   };
 }
 
-async function searchOpenAI(params: SearchParams, ctx: any, signal?: AbortSignal): Promise<SearchResult> {
-  const model = resolveSearchModel(ctx);
-  if (!model) throw new Error("No active pi model is available for web_search.");
-
-  const provider = detectOpenAISearchProvider(model);
-  if (!provider) {
-    throw new Error(
-      `Active model ${model.provider}/${model.id} is not an OpenAI/ChatGPT built-in-search model. Use provider openai/openai-responses or openai-codex/openai-codex-responses, or set WEB_SEARCH_MODEL=provider/model.`,
-    );
-  }
-
-  return executeOpenAISearch(model, provider, params, ctx, signal);
-}
-
-function formatSearchResult(result: SearchResult, maxResults: number): string {
-  const sources = result.sources.slice(0, maxResults);
-  return [
-    `Web search results for ${JSON.stringify(result.query)}:`,
-    `Search provider: ${result.provider}; model: ${result.model}`,
+async function formatSearchResult(
+  query: string,
+  result: SearchResult,
+): Promise<{ text: string; truncated: boolean; fullOutputPath?: string }> {
+  const fullText = [
+    `Web search findings for ${JSON.stringify(query)}:`,
+    `Provider: ${result.provider}; model: ${result.model}`,
     "",
-    result.answer ? `Model-generated search answer:\n${result.answer}` : "Model-generated search answer: (empty)",
+    result.answer,
     "",
-    sources.length > 0 ? "Sources returned by provider:" : "Sources returned by provider: none",
-    ...sources.map((source, index) => `${index + 1}. ${source.title}\n   URL: ${source.url}`),
+    result.sources.length ? "Sources:" : "Sources: none returned by provider",
+    ...result.sources.map((source, index) => `${index + 1}. ${source.title}\n   ${source.url}`),
   ].join("\n");
-}
+  const truncation = truncateHead(fullText, { maxLines: DEFAULT_MAX_LINES, maxBytes: DEFAULT_MAX_BYTES });
+  if (!truncation.truncated) return { text: truncation.content, truncated: false };
 
-function configuredProviderText(ctx: any): string {
-  const model = resolveSearchModel(ctx);
-  const provider = model ? detectOpenAISearchProvider(model) : undefined;
-  return provider && model ? `${provider} (${model.provider}/${model.id})` : "none";
+  const directory = await mkdtemp(join(tmpdir(), "pi-web-search-"));
+  const fullOutputPath = join(directory, "result.md");
+  await writeFile(fullOutputPath, fullText, "utf8");
+  return {
+    text: `${truncation.content}\n\n[Output truncated: ${truncation.outputLines} of ${truncation.totalLines} lines (${formatSize(truncation.outputBytes)} of ${formatSize(truncation.totalBytes)}). Full output saved to: ${fullOutputPath}]`,
+    truncated: true,
+    fullOutputPath,
+  };
 }
 
 export default function webSearchExtension(pi: ExtensionAPI) {
-  pi.registerTool({
+  pi.registerTool<typeof SEARCH_PARAMS, SearchDetails>({
     name: "web_search",
     label: "Web Search",
-    description:
-      "Google-for-agents web search powered only by OpenAI/ChatGPT built-in web search. No Tavily, Firecrawl, Anthropic, Copilot, or Moonshot adapters are used.",
-    promptSnippet:
-      "Search the web using OpenAI/ChatGPT built-in search. Returns model-generated findings and provider source URLs.",
+    description: "Search the live web with GPT's built-in web search using a natural-language query. Returns a concise answer and provider source URLs. Output is capped at 50KB.",
+    promptSnippet: "Search the web with GPT built-in web search using a natural-language query.",
     promptGuidelines: [
-      "Use web_search when the answer may depend on current, external, or recently changed information.",
-      "web_search only supports OpenAI API models and ChatGPT/Codex subscription models with built-in web search support.",
-      "When using web_search, cite returned URLs in the final answer and make clear they are provider-returned sources.",
-      "Use WEB_SEARCH_MODEL=provider/model to pin a dedicated OpenAI/ChatGPT search-capable model.",
+      "Use web_search when an answer depends on current, external, or recently changed information.",
+      "Use web_search for discovery; use web_crawl when a specific URL must be extracted.",
+      "When using web_search, cite the returned source URLs in the final answer.",
+      "Set WEB_SEARCH_MODEL=provider/model when the active model is not an OpenAI Responses or ChatGPT/Codex model.",
     ],
     parameters: SEARCH_PARAMS,
-    async execute(
-      _toolCallId: string,
-      params: SearchParams,
-      signal?: AbortSignal,
-      onUpdate?: (update: any) => void,
-      ctx?: any,
-    ) {
+    async execute(_toolCallId, params, signal, onUpdate, ctx) {
+      onUpdate?.({
+        content: [{ type: "text", text: `Searching the web for: ${params.query}` }],
+        details: { status: "searching" },
+      });
+
       try {
-        if (!ctx) throw new Error("Extension context is required for OpenAI/ChatGPT web search.");
-        const maxResults = clampResultCount(params.max_results);
-        onUpdate?.({ content: [{ type: "text", text: `Searching with OpenAI/ChatGPT built-in web search: ${params.query}` }] });
-        const result = await searchOpenAI(params, ctx, signal);
-        if (signal?.aborted) throw new Error("Search cancelled");
+        const result = await runSearch(params, ctx, signal);
+        if (signal?.aborted) throw new Error("Search cancelled.");
+        const formatted = await formatSearchResult(params.query, result);
         return {
-          content: [{ type: "text", text: formatSearchResult(result, maxResults) }],
-          details: { mode: "builtin", ...result, maxResults },
+          content: [{ type: "text", text: formatted.text }],
+          details: {
+            status: "complete",
+            provider: result.provider,
+            model: result.model,
+            query: params.query,
+            sources: result.sources,
+            truncated: formatted.truncated,
+            fullOutputPath: formatted.fullOutputPath,
+          },
         };
       } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        return { content: [{ type: "text", text: `web_search failed: ${message}` }], details: { error: message }, isError: true };
+        const message = signal?.aborted ? "Search cancelled." : error instanceof Error ? error.message : String(error);
+        throw new Error(`web_search failed: ${message}`, { cause: error });
       }
-    },
-  });
-
-  pi.registerCommand("web-search-status", {
-    description: "Show OpenAI/ChatGPT web_search configuration status.",
-    handler: async (_args: string, ctx: any) => {
-      const provider = configuredProviderText(ctx);
-      const ok = provider !== "none";
-      ctx.ui.notify(
-        ok
-          ? `web_search provider configured: ${provider}`
-          : "web_search provider unavailable: use an OpenAI/ChatGPT built-in-search-capable model or set WEB_SEARCH_MODEL=provider/model.",
-        ok ? "info" : "warning",
-      );
     },
   });
 }
