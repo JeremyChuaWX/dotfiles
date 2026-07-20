@@ -27,6 +27,11 @@ return {
             documentation = {
                 auto_show = true,
             },
+            menu = {
+                auto_show = function()
+                    return vim.bo.filetype ~= "markdown"
+                end,
+            },
         },
         sources = {
             default = { "lsp", "path", "buffer", "snippets" },
