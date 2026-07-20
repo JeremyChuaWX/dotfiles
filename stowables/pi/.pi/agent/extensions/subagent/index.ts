@@ -86,14 +86,28 @@ type PiJsonEvent = {
   arguments?: unknown;
 };
 
-function getPiInvocation(args: string[]): { command: string; args: string[] } {
-  const currentScript = process.argv[1];
+export function getPiInvocation(
+  args: string[],
+  currentScript = process.argv[1],
+  execPath = process.execPath,
+): { command: string; args: string[] } {
+  // Reuse the current script only when it is Pi's actual CLI entrypoint. SDK hosts
+  // (such as pi-tui) have their own process.argv[1] and cannot parse Pi CLI flags.
+  let resolvedScript: string | undefined;
   if (currentScript && !currentScript.startsWith("/$bunfs/root/") && fs.existsSync(currentScript)) {
-    return { command: process.execPath, args: [currentScript, ...args] };
+    try {
+      resolvedScript = fs.realpathSync(currentScript);
+    } catch {
+      resolvedScript = currentScript;
+    }
   }
+  const packageSegment = `${path.sep}@earendil-works${path.sep}pi-coding-agent${path.sep}`;
+  const isPiCli =
+    resolvedScript?.includes(packageSegment) === true && path.basename(resolvedScript).toLowerCase() === "cli.js";
+  if (isPiCli && currentScript) return { command: execPath, args: [currentScript, ...args] };
 
-  const execName = path.basename(process.execPath).toLowerCase();
-  return /^(node|bun)(\.exe)?$/.test(execName) ? { command: "pi", args } : { command: process.execPath, args };
+  const execName = path.basename(execPath).toLowerCase();
+  return /^(node|bun)(\.exe)?$/.test(execName) ? { command: "pi", args } : { command: execPath, args };
 }
 
 function compactToolCall(toolName: string, input: unknown): string {

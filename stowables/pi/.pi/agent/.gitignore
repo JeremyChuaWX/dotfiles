@@ -1,2 +1,8 @@
 node_modules/
 *.tsbuildinfo
+
+# Mutable Pi runtime state (kept outside the dotfiles checkout when stowed)
+auth.json
+models.json
+settings.json
+sessions/

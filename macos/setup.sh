@@ -37,6 +37,10 @@ echo "stowing configs"
 
 PI_AGENT_DIR="$HOME/.pi/agent"
 PI_SETTINGS="$PI_AGENT_DIR/settings.json"
+
+echo "installing Pi extension dependencies"
+(cd "$PI_AGENT_DIR" && npm ci --include=dev --ignore-scripts)
+
 if [ ! -e "$PI_SETTINGS" ]; then
     echo "initializing Pi settings"
     mkdir -p "$PI_AGENT_DIR"

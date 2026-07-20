@@ -21,7 +21,7 @@ for pkg in */; do
     for dir in "$pkg"*/; do
         [ -d "$dir" ] && mkdir -p "$TARGET_DIR/${dir#"$pkg"}"
     done
-    stow --ignore='\.stow-package' "$pkg" -t "$TARGET_DIR"
+    stow --ignore='\.stow-package' --ignore='node_modules' "$pkg" -t "$TARGET_DIR"
 done
 
 echo
