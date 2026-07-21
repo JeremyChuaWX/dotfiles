@@ -2,9 +2,9 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Message } from "@earendil-works/pi-ai";
+import type { AssistantMessage } from "@earendil-works/pi-ai";
 import { StringEnum } from "@earendil-works/pi-ai";
-import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import type { AgentSessionEvent, ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { DEFAULT_MAX_BYTES, DEFAULT_MAX_LINES, formatSize, truncateHead } from "@earendil-works/pi-coding-agent";
 import { Text } from "@earendil-works/pi-tui";
 import { Type } from "typebox";
@@ -12,24 +12,31 @@ import { Type } from "typebox";
 const AGENT_NAMES = ["explore"] as const;
 type AgentName = (typeof AGENT_NAMES)[number];
 
-type AgentConfig = {
-  tools: string[];
-  defaultModel?: string;
+type AgentPreset = {
+  description: string;
+  tools: readonly string[];
+  defaultModel: string;
   modelEnv?: string;
   promptPath: string;
-  timeoutSeconds: number;
+  timeoutMs: number;
 };
 
 const extensionDir = path.dirname(fileURLToPath(import.meta.url));
-const AGENTS: Record<AgentName, AgentConfig> = {
+const AGENTS: Record<AgentName, AgentPreset> = {
   explore: {
+    description: "read-only codebase exploration",
     tools: ["read", "grep", "find", "ls"],
     defaultModel: "openai-codex/gpt-5.4-mini:off",
     modelEnv: "PI_EXPLORE_MODEL",
     promptPath: path.join(extensionDir, "agents", "explore.md"),
-    timeoutSeconds: 120,
+    timeoutMs: 120_000,
   },
 };
+
+const AGENT_SUMMARY = AGENT_NAMES.map((name) => {
+  const agent = AGENTS[name];
+  return `${name} (${agent.description}; tools: ${agent.tools.join(", ")}; default model: ${agent.defaultModel})`;
+}).join("; ");
 
 const SubagentParams = Type.Object({
   agent: StringEnum(AGENT_NAMES, {
@@ -59,31 +66,10 @@ type UsageDetails = {
 
 type SubagentDetails = {
   agent: AgentName;
-  prompt: string;
-  cwd: string;
-  model: string | undefined;
-  tools: string[];
-  timeoutSeconds: number;
-  exitCode: number;
-  timedOut: boolean;
-  aborted: boolean;
-  progress: string[];
-  usage?: UsageDetails;
-  truncated: boolean;
+  model?: string;
+  toolCalls: string[];
+  usage: UsageDetails;
   fullOutputPath?: string;
-};
-
-type PiJsonEvent = {
-  type?: string;
-  message?: Message;
-  toolCallId?: string;
-  tool_call_id?: string;
-  toolName?: string;
-  tool_name?: string;
-  name?: string;
-  args?: unknown;
-  input?: unknown;
-  arguments?: unknown;
 };
 
 export function getPiInvocation(
@@ -120,45 +106,51 @@ function compactToolCall(toolName: string, input: unknown): string {
   return toolName;
 }
 
-function parsePiOutput(stdout: string): { messages: Message[]; progress: string[] } {
-  const messages: Message[] = [];
-  const progress: string[] = [];
-  const seenToolCalls = new Set<string>();
+type ParsedRun = {
+  finalMessage?: AssistantMessage;
+  toolCalls: string[];
+  usage: UsageDetails;
+};
+
+function parseRun(stdout: string): ParsedRun {
+  let finalMessage: AssistantMessage | undefined;
+  const toolCalls: string[] = [];
+  const usage: UsageDetails = {
+    input: 0,
+    output: 0,
+    cacheRead: 0,
+    cacheWrite: 0,
+    totalTokens: 0,
+    cost: 0,
+  };
 
   for (const line of stdout.split("\n")) {
     if (!line.trim()) continue;
 
-    let event: PiJsonEvent;
+    let event: AgentSessionEvent;
     try {
-      event = JSON.parse(line) as PiJsonEvent;
+      event = JSON.parse(line) as AgentSessionEvent;
     } catch {
       continue;
     }
 
-    if (event.type === "message_end" && event.message) messages.push(event.message);
-
-    const toolName = event.toolName ?? event.tool_name ?? event.name;
-    if ((event.type === "tool_execution_start" || event.type === "tool_call") && toolName) {
-      const callId = event.toolCallId ?? event.tool_call_id;
-      if (callId && seenToolCalls.has(callId)) continue;
-      if (callId) seenToolCalls.add(callId);
-      progress.push(compactToolCall(toolName, event.args ?? event.input ?? event.arguments));
+    if (event.type === "message_end" && event.message?.role === "assistant") {
+      finalMessage = event.message;
+      usage.input += event.message.usage.input || 0;
+      usage.output += event.message.usage.output || 0;
+      usage.cacheRead += event.message.usage.cacheRead || 0;
+      usage.cacheWrite += event.message.usage.cacheWrite || 0;
+      usage.totalTokens += event.message.usage.totalTokens || 0;
+      usage.cost += event.message.usage.cost?.total || 0;
+    } else if (event.type === "tool_execution_start" && event.toolName) {
+      toolCalls.push(compactToolCall(event.toolName, event.args));
     }
   }
 
-  return { messages, progress };
+  return { finalMessage, toolCalls, usage };
 }
 
-function finalAssistantMessage(messages: Message[]) {
-  for (let index = messages.length - 1; index >= 0; index--) {
-    const message = messages[index];
-    if (message.role === "assistant") return message;
-  }
-  return undefined;
-}
-
-function assistantText(message: ReturnType<typeof finalAssistantMessage>): string {
-  if (!message) return "";
+function assistantText(message: AssistantMessage): string {
   return message.content
     .filter((part): part is { type: "text"; text: string } => part.type === "text")
     .map((part) => part.text)
@@ -166,20 +158,7 @@ function assistantText(message: ReturnType<typeof finalAssistantMessage>): strin
     .trim();
 }
 
-function getUsage(message: ReturnType<typeof finalAssistantMessage>): UsageDetails | undefined {
-  const usage = message?.usage;
-  if (!usage) return undefined;
-  return {
-    input: usage.input || 0,
-    output: usage.output || 0,
-    cacheRead: usage.cacheRead || 0,
-    cacheWrite: usage.cacheWrite || 0,
-    totalTokens: usage.totalTokens || 0,
-    cost: usage.cost?.total || 0,
-  };
-}
-
-function resolveModel(agent: AgentConfig, override: string | undefined): string | undefined {
+function resolveModel(agent: AgentPreset, override: string | undefined): string {
   const explicit = override?.trim();
   if (explicit) return explicit;
   const fromEnvironment = agent.modelEnv ? process.env[agent.modelEnv]?.trim() : undefined;
@@ -224,9 +203,9 @@ export default function subagentExtension(pi: ExtensionAPI) {
     name: "subagent",
     label: "Subagent",
     description:
-      "Spawn an isolated Pi subagent using a fixed agent configuration, task prompt, and working directory. " +
-      'The "explore" agent is read-only and uses read, grep, find, and ls. Its default model is openai-codex/gpt-5.4-mini:off. ' +
-      "An optional model argument overrides the agent default. Output is capped at 50KB or 2000 lines.",
+      "Spawn an isolated Pi subagent using an agent preset, task prompt, and working directory. " +
+      `Available presets: ${AGENT_SUMMARY}. ` +
+      "An optional model argument overrides the preset default. Output is capped at 50KB or 2000 lines.",
     promptSnippet: "Spawn an isolated Pi subagent for a task in a specified working directory.",
     promptGuidelines: [
       'Use subagent with agent "explore" for isolated, read-only codebase reconnaissance.',
@@ -247,7 +226,6 @@ export default function subagentExtension(pi: ExtensionAPI) {
       const args = [
         "--mode",
         "json",
-        "-p",
         "--no-session",
         "--no-extensions",
         "--no-skills",
@@ -255,46 +233,44 @@ export default function subagentExtension(pi: ExtensionAPI) {
         "--no-context-files",
         "--tools",
         tools,
+        "--model",
+        model,
+        "--system-prompt",
+        systemPrompt,
+        params.prompt,
       ];
-      if (model) args.push("--model", model);
-      args.push("--system-prompt", systemPrompt, params.prompt);
 
       onUpdate?.({
         content: [{ type: "text", text: `${agentName} subagent is running...` }],
-        details: {
-          agent: agentName,
-          prompt: params.prompt,
-          cwd,
-          model,
-          tools: agent.tools,
-          timeoutSeconds: agent.timeoutSeconds,
-          progress: [],
-        },
+        details: { agent: agentName, model },
       });
 
       const invocation = getPiInvocation(args);
       const execution = await pi.exec(invocation.command, invocation.args, {
         cwd,
         signal,
-        timeout: agent.timeoutSeconds * 1000,
+        timeout: agent.timeoutMs,
       });
-      const { messages, progress } = parsePiOutput(execution.stdout);
-      const finalMessage = finalAssistantMessage(messages);
-      const output = assistantText(finalMessage) || execution.stderr.trim();
+      const run = parseRun(execution.stdout);
+      const output = run.finalMessage ? assistantText(run.finalMessage) : "";
+      const diagnostic = output || execution.stderr.trim();
       const aborted = signal?.aborted ?? false;
       const timedOut = execution.killed && !aborted;
 
-      if (aborted || finalMessage?.stopReason === "aborted") {
-        throw new Error(formatFailure("Subagent was aborted.", output));
+      if (aborted || run.finalMessage?.stopReason === "aborted") {
+        throw new Error(formatFailure("Subagent was aborted.", diagnostic));
       }
       if (timedOut) {
-        throw new Error(formatFailure(`Subagent timed out after ${agent.timeoutSeconds} seconds.`, output));
+        throw new Error(formatFailure(`Subagent timed out after ${agent.timeoutMs / 1000} seconds.`, diagnostic));
       }
       if (execution.code !== 0) {
-        throw new Error(formatFailure(`Subagent failed with exit code ${execution.code}.`, output));
+        throw new Error(formatFailure(`Subagent failed with exit code ${execution.code}.`, diagnostic));
       }
-      if (finalMessage?.stopReason === "error") {
-        throw new Error(formatFailure(finalMessage.errorMessage || "Subagent model request failed.", output));
+      if (!run.finalMessage) {
+        throw new Error(formatFailure("Subagent exited without a final assistant message.", execution.stderr));
+      }
+      if (run.finalMessage.stopReason === "error") {
+        throw new Error(formatFailure(run.finalMessage.errorMessage || "Subagent model request failed.", diagnostic));
       }
 
       const visibleOutput = output || "(no output)";
@@ -312,17 +288,9 @@ export default function subagentExtension(pi: ExtensionAPI) {
 
       const details: SubagentDetails = {
         agent: agentName,
-        prompt: params.prompt,
-        cwd,
-        model: finalMessage?.model || model,
-        tools: agent.tools,
-        timeoutSeconds: agent.timeoutSeconds,
-        exitCode: execution.code,
-        timedOut,
-        aborted,
-        progress,
-        usage: getUsage(finalMessage),
-        truncated: truncation.truncated,
+        model: run.finalMessage.model || model,
+        toolCalls: run.toolCalls,
+        usage: run.usage,
         fullOutputPath,
       };
 
@@ -342,25 +310,24 @@ export default function subagentExtension(pi: ExtensionAPI) {
       return new Text(text, 0, 0);
     },
 
-    renderResult(result, { expanded, isPartial }, theme) {
+    renderResult(result, { expanded, isPartial }, theme, context) {
       const details = result.details as Partial<SubagentDetails> | undefined;
       if (isPartial) {
-        let text = theme.fg("warning", `${details?.agent ?? "subagent"} is running...`);
-        if (details?.progress?.length) text += `\n${theme.fg("dim", details.progress.slice(-8).join("\n"))}`;
-        return new Text(text, 0, 0);
+        return new Text(theme.fg("warning", `${details?.agent ?? "subagent"} is running...`), 0, 0);
       }
 
-      const icon = theme.fg("success", "✓");
+      const content = result.content.find((item) => item.type === "text");
+      const icon = context.isError ? theme.fg("error", "✗") : theme.fg("success", "✓");
       let text = `${icon} ${theme.fg("toolTitle", details?.agent ?? "subagent")}`;
       if (details?.model) text += theme.fg("dim", ` ${details.model}`);
-      if (details?.progress?.length) text += `\n${theme.fg("dim", details.progress.slice(-8).join("\n"))}`;
+      if (details?.toolCalls?.length) text += `\n${theme.fg("dim", details.toolCalls.slice(-8).join("\n"))}`;
       if (details?.usage) {
         const usage = details.usage;
         text += theme.fg("dim", `\n↑${usage.input} ↓${usage.output} total:${usage.totalTokens} $${usage.cost.toFixed(4)}`);
       }
-      if (expanded) {
-        const content = result.content[0];
-        if (content?.type === "text") text += `\n\n${theme.fg("toolOutput", content.text)}`;
+      if (content?.type === "text" && (context.isError || expanded)) {
+        const color = context.isError ? "error" : "toolOutput";
+        text += `\n\n${theme.fg(color, content.text)}`;
       }
       return new Text(text, 0, 0);
     },
