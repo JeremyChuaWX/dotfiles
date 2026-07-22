@@ -28,7 +28,7 @@ local mason_tools = {
             "golangci-lint",
             "golines",
             "markdownlint",
-            "mdslw",
+            -- "mdslw",
             "rustywind",
             "stylua",
             "xmlformatter",
