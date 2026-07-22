@@ -25,7 +25,7 @@
   "oil-git-status.nvim": { "branch": "main", "commit": "a3e2ccb00cb8822115e28a9a1791eda051d940c9" },
   "oil.nvim": { "branch": "master", "commit": "b73018b75affd13fa38e2fc94ef753b465f770d7" },
   "plenary.nvim": { "branch": "master", "commit": "74b06c6c75e4eeb3108ec01852001636d85a932b" },
-  "schemastore.nvim": { "branch": "main", "commit": "37dc30ebebd899905f98deccd8c29fcb62531cbf" },
+  "schemastore.nvim": { "branch": "main", "commit": "77fb1b0aa0c7528680bed48687f3dd2c2a6ed111" },
   "snacks.nvim": { "branch": "main", "commit": "882c996cf28183f4d63640de0b4c02ec886d01f2" },
   "todo-comments.nvim": { "branch": "main", "commit": "31e3c38ce9b29781e4422fc0322eb0a21f4e8668" },
   "tree-sitter-manager.nvim": { "branch": "main", "commit": "09e3a321eea8100cacd2e759c3a6c9d350295fab" },
