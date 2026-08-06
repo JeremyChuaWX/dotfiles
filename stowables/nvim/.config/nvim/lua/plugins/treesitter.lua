@@ -6,7 +6,6 @@ return {
                 "diff",
                 "dockerfile",
                 "go",
-                "java",
                 "javascript",
                 "json",
                 "jsx",

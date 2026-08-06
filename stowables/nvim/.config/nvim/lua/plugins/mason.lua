@@ -1,12 +1,6 @@
 local mason_lspconfig = {
     "mason-org/mason-lspconfig.nvim",
-    opts = {
-        automatic_enable = {
-            exclude = {
-                "jdtls",
-            },
-        },
-    },
+    config = true,
 }
 
 local mason_tools = {
@@ -15,7 +9,6 @@ local mason_tools = {
         ensure_installed = {
             -- lsp
             "gopls",
-            "jdtls",
             "jsonls",
             "lua_ls",
             "ruff",
