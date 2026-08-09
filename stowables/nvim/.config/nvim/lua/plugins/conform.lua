@@ -80,7 +80,6 @@ return {
             solidity = { "forge_fmt" },
             typescript = { "biome-check", "prettier", "rustywind" },
             typescriptreact = { "biome-check", "prettier", "rustywind" },
-            xml = { "xmlformatter" },
         },
     },
 }
