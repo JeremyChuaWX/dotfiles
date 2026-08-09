@@ -1,8 +1,14 @@
 local function biome_config_available(ctx)
-    local res = vim.fs.find(
-        { ".biomerc.json", "biome.json", "biome.config.js", "biome.config.ts", "biome.toml" },
-        { path = ctx.dirname, upward = true }
-    )
+    local res = vim.fs.find({
+        "biome.config.js",
+        "biome.config.ts",
+        "biome.toml",
+        ".biomerc.json",
+        "biome.json",
+        "biome.jsonc",
+        ".biome.json",
+        ".biome.jsonc",
+    }, { path = ctx.dirname, upward = true })
     return #res > 0
 end
 

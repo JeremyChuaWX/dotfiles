@@ -12,6 +12,7 @@ return {
                 "lua",
                 "markdown",
                 "python",
+                "regex",
                 "tsx",
                 "typescript",
             },

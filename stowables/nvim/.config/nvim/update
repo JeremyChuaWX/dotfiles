@@ -1,5 +1,7 @@
 #!/bin/zsh
 
+set -euo pipefail
+
 # Colors for better readability
 BOLD='\033[1m'
 GREEN='\033[0;32m'
@@ -18,14 +20,30 @@ REPO_LOCK_FILE="$(git rev-parse --show-prefix)$LOCK_FILE"
 DATA_PATH=$(nvim --headless -E -u NONE '+lua print(vim.fn.stdpath("data"))' +q 2>&1)
 LAZY_PATH="$DATA_PATH/lazy"
 
-echo "${BLUE}${BOLD}==> Updating Mason tools & registries...${NC}"
-nvim --headless "+MasonToolsUpdateSync" +qa > /dev/null 2>&1
+run_nvim() {
+    local log_file
+    log_file=$(mktemp "${TMPDIR:-/tmp}/nvim-update.XXXXXX")
+
+    if ! nvim --headless "$@" +qa > "$log_file" 2>&1; then
+        cat "$log_file" >&2
+        rm -f "$log_file"
+        return 1
+    fi
+
+    rm -f "$log_file"
+}
 
 echo "${BLUE}${BOLD}==> Starting Neovim plugin update...${NC}"
-nvim --headless "+Lazy! sync" +qa > /dev/null 2>&1
+run_nvim "+Lazy! sync"
 
-if git diff --quiet -- "$LOCK_FILE"; then
-    echo "${GREEN}No changes detected. All plugins are up to date.${NC}"
+echo "${BLUE}${BOLD}==> Updating Mason tools & registries...${NC}"
+run_nvim "+MasonToolsUpdateSync"
+
+echo "${BLUE}${BOLD}==> Updating Tree-sitter parsers...${NC}"
+run_nvim "+TSUpdate!" '+lua local installer = require("tree-sitter-manager.installer"); local completed = vim.wait(600000, function() return vim.tbl_isempty(installer.installing) end, 100); local failed = {}; for lang, status in pairs(installer.status) do if status.ok == false then failed[#failed + 1] = lang .. ": " .. (status.error or "unknown error") end end; if not completed or #failed > 0 then local message = not completed and "Timed out while updating Tree-sitter parsers" or ("Tree-sitter parser update failed:\n" .. table.concat(failed, "\n")); vim.api.nvim_echo({ { message, "ErrorMsg" } }, true, { err = true }); vim.cmd("cquit 1") end'
+
+if git diff --quiet HEAD -- "$LOCK_FILE"; then
+    echo "${GREEN}No plugin lock changes detected.${NC}"
 else
     echo "\n${YELLOW}${BOLD}Plugin Update Summary:${NC}"
     echo "========================================"
@@ -85,12 +103,11 @@ PY
 
     echo "========================================"
 
-    # Commit the changes
-    git add "$LOCK_FILE"
-    if git commit -m "chore: update lazy lock"; then
+    # Commit only the lock file so unrelated staged changes are never included.
+    if git commit --only -m "chore: update lazy lock" -- "$LOCK_FILE"; then
         echo "${GREEN}${BOLD}✔ $LOCK_FILE updated and committed successfully.${NC}"
     else
-        echo "${YELLOW}${BOLD}Commit failed. $LOCK_FILE changes are staged.${NC}"
+        echo "${YELLOW}${BOLD}Commit failed. $LOCK_FILE changes remain uncommitted.${NC}"
         exit 1
     fi
 fi

@@ -24,7 +24,6 @@ local mason_tools = {
             -- "mdslw",
             "rustywind",
             "stylua",
-            "xmlformatter",
         },
     },
 }

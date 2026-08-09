@@ -7,6 +7,11 @@ return {
     },
     {
         "brianhuster/live-preview.nvim",
-        config = true,
+        opts = {
+            picker = "snacks.picker",
+        },
+        config = function(_, opts)
+            require("livepreview.config").set(opts)
+        end,
     },
 }
