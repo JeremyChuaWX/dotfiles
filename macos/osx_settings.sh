@@ -148,8 +148,12 @@ defaults write com.apple.dock static-only -bool true
 # Trackpad scaling
 defaults write -g com.apple.trackpad.scaling -float 1.5
 
+# Enable Handoff (required for Universal Clipboard)
+defaults -currentHost write com.apple.coreservices.useractivityd ActivityAdvertisingAllowed -bool true
+defaults -currentHost write com.apple.coreservices.useractivityd ActivityReceivingAllowed -bool true
+
 # Restart affected apps
-for app in "cfprefsd" "Dock" "Finder" "Mail" "SystemUIServer"; do
+for app in "cfprefsd" "Dock" "Finder" "Mail" "SystemUIServer" "useractivityd"; do
     echo "Restarting ${app}..."
     killall "${app}" >/dev/null 2>&1 || true
 done
