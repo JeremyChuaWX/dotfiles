@@ -1,0 +1,11 @@
+# Keep plugins grouped by when they must be loaded in .zshrc.
+typeset -ga ZSH_PLUGINS_BEFORE_COMPINIT=(
+    "zsh-users/zsh-completions"
+)
+
+typeset -ga ZSH_PLUGINS_AFTER_COMPINIT=(
+    "Aloxaf/fzf-tab"
+    "hlissner/zsh-autopair"
+    "zsh-users/zsh-autosuggestions"
+    "zsh-users/zsh-syntax-highlighting"
+)

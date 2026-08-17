@@ -1,0 +1,57 @@
+#!/usr/bin/env zsh
+set -euo pipefail
+
+script_dir="${0:A:h}"
+source "$script_dir/zsh-plugins"
+
+if (( ! $+commands[git] )); then
+    print -u2 "error: git not found"
+    exit 1
+fi
+
+plugins_dir="${ZDOTDIR:-$HOME/.config/zsh}/plugins"
+mkdir -p "$plugins_dir"
+
+plugins=(
+    "${ZSH_PLUGINS_BEFORE_COMPINIT[@]}"
+    "${ZSH_PLUGINS_AFTER_COMPINIT[@]}"
+)
+
+integer installed=0
+integer failed=0
+
+for repository in "${plugins[@]}"; do
+    plugin_name="${repository:t}"
+    plugin_dir="$plugins_dir/$plugin_name"
+
+    if [[ -d "$plugin_dir/.git" ]] && \
+        git -C "$plugin_dir" rev-parse --verify HEAD >/dev/null 2>&1; then
+        print "already installed: $repository"
+        continue
+    fi
+
+    if [[ -e "$plugin_dir" ]]; then
+        print -u2 "cannot install $repository: $plugin_dir is not a valid git checkout"
+        (( failed += 1 ))
+        continue
+    fi
+
+    print "installing: $repository"
+    if git clone "https://github.com/$repository.git" "$plugin_dir"; then
+        (( installed += 1 ))
+    else
+        print -u2 "failed to install: $repository"
+        (( failed += 1 ))
+    fi
+done
+
+if (( failed > 0 )); then
+    print -u2 "failed to install $failed zsh plugin(s)"
+    exit 1
+fi
+
+if (( installed == 0 )); then
+    print "all zsh plugins are already installed"
+else
+    print "installed $installed zsh plugin(s)"
+fi

@@ -14,6 +14,7 @@ Run from the repository root:
 - Authenticate GitHub CLI
 - Install npm packages from `npm.sh`
 - Stow dotfiles via `../stowables/setup.sh`
+- Install missing Zsh plugins
 - Install tmux terminfo
 - Link `.env` from iCloud Drive
 

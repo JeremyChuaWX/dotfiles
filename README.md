@@ -11,5 +11,10 @@ cd ~/.dotfiles
 ```
 
 Dotfiles are installed from `stowables/` via `stowables/setup.sh`.
+Missing Zsh plugins are installed automatically by the macOS setup, or independently with:
+
+```sh
+~/.config/zsh/install-plugins
+```
 
 Pi is the sole AI harness. Its static configuration is managed from `stowables/pi/.pi/agent/`; mutable runtime files remain local to `~/.pi/agent/`. Global skills are not managed by these dotfiles.

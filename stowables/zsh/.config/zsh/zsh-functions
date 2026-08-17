@@ -3,16 +3,20 @@ function zsh_add_file() {
 }
 
 function zsh_add_plugin() {
-    local plugin_name=${1:t}
-    local plugin_dir="$ZDOTDIR/plugins/$plugin_name"
+    local plugin plugin_name plugin_dir
 
-    if [[ ! -d "$plugin_dir" ]]; then
-        print -u2 "missing zsh plugin: $1"
-        return 1
-    fi
+    for plugin in "$@"; do
+        plugin_name=${plugin:t}
+        plugin_dir="$ZDOTDIR/plugins/$plugin_name"
 
-    zsh_add_file "plugins/$plugin_name/$plugin_name.plugin.zsh" || \
-        zsh_add_file "plugins/$plugin_name/$plugin_name.zsh"
+        if [[ ! -d "$plugin_dir" ]]; then
+            print -u2 "missing zsh plugin: $plugin"
+            continue
+        fi
+
+        zsh_add_file "plugins/$plugin_name/$plugin_name.plugin.zsh" || \
+            zsh_add_file "plugins/$plugin_name/$plugin_name.zsh"
+    done
 }
 
 function zsh_add_completion() {

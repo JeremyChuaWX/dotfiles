@@ -21,9 +21,10 @@ export CLICOLOR=1
 export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 
 source "$ZDOTDIR/zsh-functions"
+source "$ZDOTDIR/zsh-plugins"
 
-# plugins
-zsh_add_plugin "zsh-users/zsh-completions"
+# plugins needed before completion initialization
+zsh_add_plugin "${ZSH_PLUGINS_BEFORE_COMPINIT[@]}"
 
 # configs
 zsh_add_file "zsh-exports"
@@ -39,11 +40,8 @@ ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZSH_AUTOSUGGEST_HISTORY_IGNORE='(cd *|ls|ll|la)'
 
-# plugins
-zsh_add_plugin "Aloxaf/fzf-tab"
-zsh_add_plugin "hlissner/zsh-autopair"
-zsh_add_plugin "zsh-users/zsh-autosuggestions"
-zsh_add_plugin "zsh-users/zsh-syntax-highlighting"
+# plugins loaded after completion initialization
+zsh_add_plugin "${ZSH_PLUGINS_AFTER_COMPINIT[@]}"
 
 # adhoc stuff (kept outside this dotfiles repo for secrets/dotenv vars)
 ZSH_ADHOC_ENV_FILE="$HOME/.env"

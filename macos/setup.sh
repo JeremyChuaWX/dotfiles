@@ -35,6 +35,9 @@ source "$SCRIPT_DIR/npm.sh"
 echo "stowing configs"
 "$DOTFILES_DIR/stowables/setup.sh"
 
+echo "installing zsh plugins"
+"$HOME/.config/zsh/install-plugins"
+
 PI_AGENT_DIR="$HOME/.pi/agent"
 PI_SETTINGS="$PI_AGENT_DIR/settings.json"
 
