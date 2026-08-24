@@ -26,8 +26,6 @@ window-padding-color = background
 
 confirm-close-surface = false
 
-title = " "
-
 quit-after-last-window-closed = true
 
 mouse-scroll-multiplier = 2
