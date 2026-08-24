@@ -1,5 +1,6 @@
 {
   "hideThinkingBlock": true,
   "quietStartup": true,
-  "theme": "dim-input"
+  "theme": "dim-input",
+  "tuiMode": "fullscreen"
 }
