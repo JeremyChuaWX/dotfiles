@@ -31,6 +31,8 @@ Rules:
 
 Complete the delegated task using the available tools, edit files directly, and run focused validation. Do not launch another Pi process or delegate recursively.
 
+Keep reconnaissance proportional to the task and batch independent reads or commands. Once the requested work and focused validation are complete, stop. Do not continue searching for optional improvements.
+
 Return a concise handoff with:
 
 - work completed;

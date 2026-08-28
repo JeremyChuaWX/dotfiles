@@ -1,9 +1,9 @@
 import { DEFAULT_MAX_BYTES, truncateHead } from "@earendil-works/pi-coding-agent";
-import type { getPiInvocation } from "../_shared/agent-runtime/child-agent.ts";
-import { type AgentPreset, childArgs } from "../_shared/agent-runtime/presets.ts";
-import { truncateUtf8 } from "../_shared/lib/retained-output.ts";
-import type { AbortableSemaphore, SemaphoreRelease } from "../_shared/lib/semaphore.ts";
-import { errorMessage } from "../_shared/lib/validate.ts";
+import type { getPiInvocation } from "./child-agent.ts";
+import { childArgs, type SubagentProfile } from "./profile.ts";
+import { truncateUtf8 } from "../lib/retained-output.ts";
+import type { AbortableSemaphore, SemaphoreRelease } from "../lib/semaphore.ts";
+import { errorMessage } from "../lib/validate.ts";
 import {
     appendSubagentActivity,
     createTerminalSubagentDetails,
@@ -42,8 +42,7 @@ export interface SubagentJobSpillPolicy {
 export interface SubagentJobRequest {
     /** Queued protocol snapshot whose cwd has already been resolved. */
     details: SubagentDetailsV1;
-    agent: AgentPreset;
-    model: string | undefined;
+    profile: SubagentProfile;
     prompt: string;
     cwd: string;
     signal: AbortSignal;
@@ -137,13 +136,13 @@ export async function runSubagentJob(
         );
         publish(details);
 
-        const child = invocation(childArgs(request.agent, request.model, request.prompt));
+        const child = invocation(childArgs(request.profile, request.prompt));
         const execution = await run({
             details,
             command: child.command,
             args: child.args,
             cwd: request.cwd,
-            timeoutMs: request.agent.timeoutMs,
+            timeoutMs: request.profile.timeoutMs,
             signal: request.signal,
             onSnapshot: (next) => {
                 details = next;

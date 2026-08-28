@@ -1,4 +1,4 @@
-import { isRecord } from "../_shared/lib/validate.ts";
+import { isRecord } from "../lib/validate.ts";
 
 export const SUBAGENT_SCHEMA = "pi.subagent" as const;
 export const SUBAGENT_PROTOCOL_VERSION = 1 as const;

@@ -1,15 +1,9 @@
 import { randomUUID } from "node:crypto";
 import { DEFAULT_MAX_LINES } from "@earendil-works/pi-coding-agent";
-import { getPiInvocation } from "../_shared/agent-runtime/child-agent.ts";
-import {
-    AGENTS,
-    type AgentName,
-    type ResolvedAgentName,
-    resolveModel,
-    resolveWorkingDirectory,
-} from "../_shared/agent-runtime/presets.ts";
-import { composeBoundedOutput, RetainedOutputStore, truncateUtf8 } from "../_shared/lib/retained-output.ts";
-import type { AbortableSemaphore } from "../_shared/lib/semaphore.ts";
+import { getPiInvocation } from "./child-agent.ts";
+import { resolveWorkingDirectory, type SubagentProfile } from "./profile.ts";
+import { composeBoundedOutput, RetainedOutputStore, truncateUtf8 } from "../lib/retained-output.ts";
+import type { AbortableSemaphore } from "../lib/semaphore.ts";
 import type { BackgroundSubagentJobV1 } from "./background-protocol.ts";
 import {
     createInitialSubagentDetails,
@@ -30,17 +24,15 @@ const WAIT_TOTAL_BYTES = 48 * 1024;
 const DELIVERY_MAX_LINES = DEFAULT_MAX_LINES - 8;
 
 interface SpawnInput {
+    profile: SubagentProfile;
     prompt: string;
     cwd: string;
-    agent?: AgentName;
-    model?: string;
     name?: string;
 }
 interface BackgroundManagerOptions {
     semaphore: AbortableSemaphore;
     run?: (options: RunSubagentOptions) => Promise<SubagentRunResult>;
     invocation?: typeof getPiInvocation;
-    environment?: NodeJS.ProcessEnv;
     now?: () => number;
     emit: (job: BackgroundSubagentJobV1, type?: "upsert" | "remove") => void;
     deliver: (result: BackgroundTerminalResult) => void;
@@ -101,7 +93,6 @@ export class BackgroundSubagentManager {
             ...options,
             run: options.run ?? runSubagent,
             invocation: options.invocation ?? getPiInvocation,
-            environment: options.environment ?? process.env,
             now: options.now ?? Date.now,
             isIdle: options.isIdle ?? (() => false),
         };
@@ -119,12 +110,15 @@ export class BackgroundSubagentManager {
         if (this.jobs.size >= MAX_JOBS) {
             throw new Error(`Cannot track more than ${MAX_JOBS} active background subagents.`);
         }
-        const agentName: ResolvedAgentName = input.agent ?? "generic";
-        const agent = AGENTS[agentName];
-        const model = resolveModel(agent, input.model, this.options.environment);
         const id = randomUUID();
         const now = this.options.now();
-        const details = createInitialSubagentDetails({ id, agent: agentName, model: model ?? "default", cwd, now });
+        const details = createInitialSubagentDetails({
+            id,
+            agent: input.profile.name,
+            model: input.profile.model,
+            cwd,
+            now,
+        });
         const controller = new AbortController();
         const job: Job = {
             snapshot: {
@@ -142,7 +136,7 @@ export class BackgroundSubagentManager {
         this.emit(job);
         this.prune();
         // Deliberately detach only after all synchronous/async validation succeeds.
-        job.settlement = this.execute(job, input.prompt, agentName, model, cwd);
+        job.settlement = this.execute(job, input.profile, input.prompt, cwd);
         return copyJob(job);
     }
 
@@ -272,13 +266,7 @@ export class BackgroundSubagentManager {
         job.snapshot = { ...job.snapshot, run: details.run };
         this.emit(job);
     }
-    private async execute(
-        job: Job,
-        prompt: string,
-        agentName: ResolvedAgentName,
-        model: string | undefined,
-        cwd: string,
-    ): Promise<void> {
+    private async execute(job: Job, profile: SubagentProfile, prompt: string, cwd: string): Promise<void> {
         const details: SubagentDetailsV1 = {
             schema: SUBAGENT_SCHEMA,
             version: SUBAGENT_PROTOCOL_VERSION,
@@ -293,8 +281,7 @@ export class BackgroundSubagentManager {
             },
             {
                 details,
-                agent: AGENTS[agentName],
-                model,
+                profile,
                 prompt,
                 cwd,
                 signal: job.controller.signal,

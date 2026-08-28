@@ -4,7 +4,7 @@ import {
     type RetainedOutputFileSystem,
     RetainedOutputStore,
     type RetentionFailure,
-} from "../_shared/lib/retained-output.ts";
+} from "../subagents/lib/retained-output.ts";
 
 /** A bounded tool result and, when retained successfully, its complete-output file. */
 interface RetainedWebOutput {

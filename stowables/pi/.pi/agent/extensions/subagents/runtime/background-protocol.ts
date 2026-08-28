@@ -1,4 +1,4 @@
-import { isRecord } from "../_shared/lib/validate.ts";
+import { isRecord } from "../lib/validate.ts";
 import { isSubagentDetailsV1, type SubagentRunV1 } from "./protocol.ts";
 
 export const BACKGROUND_SUBAGENT_CHANNEL = "pui.subagent.background" as const;

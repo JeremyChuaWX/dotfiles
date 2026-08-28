@@ -3,8 +3,8 @@ import {
     type ChildAgentState,
     runChildAgent,
     type SpawnChildAgent,
-} from "../_shared/agent-runtime/child-agent.ts";
-import { truncateUtf8 } from "../_shared/lib/retained-output.ts";
+} from "./child-agent.ts";
+import { truncateUtf8 } from "../lib/retained-output.ts";
 import {
     appendSubagentActivity,
     createTerminalSubagentDetails,
