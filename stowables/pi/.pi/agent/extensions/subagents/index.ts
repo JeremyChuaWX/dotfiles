@@ -1,55 +1,17 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { createBackgroundChannel } from "./lib/background-channel.ts";
-import { RetainedOutputStore } from "./lib/retained-output.ts";
-import {
-    registerSubagentRuntimeBroker,
-    SUBAGENT_RUNTIME_SCHEMA,
-    SUBAGENT_RUNTIME_VERSION,
-    type SubagentRuntimeService,
-} from "./interface/broker.ts";
-import { registerSubagentCancelTool } from "./interface/cancel.ts";
-import { registerSubagentCheckTool } from "./interface/check.ts";
-import { registerSubagentDashboard } from "./interface/dashboard.ts";
-import { registerSubagentWaitTool } from "./interface/wait.ts";
-import { BackgroundSubagentManager, type BackgroundTerminalResult } from "./runtime/background-manager.ts";
-import {
-    BACKGROUND_SUBAGENT_CHANNEL,
-    BACKGROUND_SUBAGENT_CONTROL_CHANNEL,
-    BACKGROUND_SUBAGENT_SCHEMA,
-    BACKGROUND_SUBAGENT_VERSION,
-    type BackgroundSubagentJobV1,
-    parseBackgroundSubagentControl,
-} from "./runtime/background-protocol.ts";
-import { getPiInvocation, PROCESS_CHILD_AGENT_SEMAPHORE } from "./runtime/child-agent.ts";
+import { registerSubagentDashboard } from "./dashboard.ts";
+import { SUBAGENT_JOBS_CHANNEL, type SubagentJobEvent } from "./jobs.ts";
+import { SubagentManager } from "./manager.ts";
+import { registerSubagentTools } from "./tools.ts";
 
 export default function subagentsExtension(pi: ExtensionAPI): void {
-    let shuttingDown = false;
     let sessionId = "unbound";
-    const instanceId = crypto.randomUUID();
-    let idle = true;
-    let background: BackgroundSubagentManager;
-    const route = () => ({ sessionId, instanceId });
-    const channel = createBackgroundChannel({
-        events: pi.events,
-        eventChannel: BACKGROUND_SUBAGENT_CHANNEL,
-        controlChannel: BACKGROUND_SUBAGENT_CONTROL_CHANNEL,
-        parseControl: parseBackgroundSubagentControl,
-        controlRoute: (control) => ({ sessionId: control.sessionId, instanceId: control.instanceId }),
-        envelope: (type, target, extra) => ({
-            schema: BACKGROUND_SUBAGENT_SCHEMA,
-            version: BACKGROUND_SUBAGENT_VERSION,
-            ...target,
-            type,
-            ...extra,
-        }),
-        onControl: (control) => {
-            if (!shuttingDown) void background.cancel([control.jobId]).catch(() => {});
-        },
-    });
-    const emit = (job: BackgroundSubagentJobV1, type: "upsert" | "remove" = "upsert") =>
-        channel.emit(type, { job }, route());
-    const deliver = (result: BackgroundTerminalResult) => {
-        if (shuttingDown) return;
+    const emit = (event: Omit<SubagentJobEvent, "sessionId">) =>
+        pi.events.emit(SUBAGENT_JOBS_CHANNEL, { sessionId, ...event });
+
+    // followUp queues behind the current turn and triggerTurn starts one when idle, so the
+    // manager never needs to know whether the agent is busy.
+    const manager = new SubagentManager((result) => {
         const pathNote = result.fullOutputPath ? `\n\nFull output: ${result.fullOutputPath}` : "";
         pi.sendMessage(
             {
@@ -60,62 +22,20 @@ export default function subagentsExtension(pi: ExtensionAPI): void {
             },
             { deliverAs: "followUp", triggerTurn: true },
         );
-    };
-
-    background = new BackgroundSubagentManager({
-        semaphore: PROCESS_CHILD_AGENT_SEMAPHORE,
-        invocation: getPiInvocation,
-        now: Date.now,
-        emit,
-        deliver,
-        isIdle: () => idle,
-        outputStore: new RetainedOutputStore({ prefix: "pi-subagent-", fileName: "output.md" }),
     });
+    manager.subscribe((job, type) => emit({ type, job }));
 
-    const runtime: SubagentRuntimeService = {
-        schema: SUBAGENT_RUNTIME_SCHEMA,
-        version: SUBAGENT_RUNTIME_VERSION,
-        spawn: (request) =>
-            background.spawn(
-                {
-                    profile: request.profile,
-                    prompt: request.prompt,
-                    cwd: request.cwd,
-                    ...(request.name ? { name: request.name } : {}),
-                },
-                request.parentCwd,
-                request.signal,
-            ),
-        list: () => background.list(),
-        check: (id) => background.check(id),
-        wait: (ids, signal) => background.wait(ids, signal),
-        cancel: (ids) => background.cancel(ids),
-    };
-    Object.freeze(runtime);
-
-    registerSubagentRuntimeBroker(pi, runtime);
-    registerSubagentCheckTool(pi, runtime);
-    registerSubagentWaitTool(pi, runtime);
-    registerSubagentCancelTool(pi, runtime);
-    registerSubagentDashboard(pi, runtime);
+    registerSubagentTools(pi, manager);
+    registerSubagentDashboard(pi, manager);
 
     pi.on("session_start", (_event, ctx) => {
-        shuttingDown = false;
-        background.startSession();
+        manager.startSession();
         sessionId = ctx.sessionManager.getSessionId();
-        idle = ctx.isIdle();
-        channel.bind(route());
-        channel.ready();
-    });
-    pi.on("agent_start", () => {
-        idle = false;
-    });
-    pi.on("agent_settled", () => {
-        idle = true;
-        background.flushDeferred();
+        emit({ type: "ready" });
     });
     pi.on("session_shutdown", async () => {
-        shuttingDown = true;
-        await channel.shutdown(() => background.shutdown());
+        const closing = sessionId;
+        await manager.shutdown();
+        pi.events.emit(SUBAGENT_JOBS_CHANNEL, { sessionId: closing, type: "reset" });
     });
 }

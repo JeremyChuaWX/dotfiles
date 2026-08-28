@@ -1,6 +1,7 @@
 import type { AgentToolResult, AgentToolUpdateCallback } from "@earendil-works/pi-coding-agent";
-import { errorMessage } from "../subagents/lib/validate.ts";
 import type { WebOutputRetention } from "./output-retention.ts";
+
+const errorMessage = (error: unknown): string => (error instanceof Error ? error.message : String(error));
 
 /** Provider dependencies shared by the web search and crawl tools. */
 export type WebToolDependencies = {

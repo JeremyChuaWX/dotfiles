@@ -1,5 +1,5 @@
 import { StringDecoder } from "node:string_decoder";
-import { truncateUtf8 } from "./retained-output.ts";
+import { truncateUtf8 } from "../lib/retained-output.ts";
 
 interface JsonLineParserOptions {
     onValue: (value: unknown) => void;

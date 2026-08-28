@@ -1,6 +1,6 @@
 # subagents
 
-Shared runtime and management extension for the `explorer` and `worker` profile extensions. It owns the job queue, child Pi processes, output retention, cancellation, and session lifecycle. Profile extensions only register their model-visible spawn tools and provide immutable child configuration.
+Runs child Pi processes as background jobs. One extension registers the `explorer` and `worker` spawn tools, the three management tools, and the `/subagents` dashboard.
 
 ## Tools
 
@@ -9,56 +9,52 @@ Shared runtime and management extension for the `explorer` and `worker` profile 
 | `explorer` | Start a read-only exploration job and return its id |
 | `worker` | Start a write-capable coding job and return its id |
 | `subagent_check` | Inspect one job without waiting or consuming its result |
-| `subagent_wait` | Wait for one or more jobs, including mixed profile jobs |
+| `subagent_wait` | Wait for one or more jobs and return their results |
 | `subagent_cancel` | Cancel queued or running jobs and await terminal state |
 
-`subagents/index.ts` registers the three shared management tools and the `/subagents` dashboard. `explorer/index.ts` and `worker/index.ts` register the profile tools through `interface/spawn.ts`.
+## Files
 
-## Module layout
-
-- `runtime/` owns child process supervision, jobs, protocols, and profile execution.
-- `interface/` contains profile registration, the runtime broker, shared tool adapters, and the dashboard overlay.
-- `lib/` contains process, retention, semaphore, event, and validation support. The web extension imports its retention and validation helpers from here.
+- `profiles/` declares each agent: each agent is a directory with an `index.ts` declaration and its `prompt.md`, `profile.ts` has the shared type, default limits, and `childArgs`, and `index.ts` lists what gets registered. To add an agent, declare it and append it to that list.
+- `child-agent.ts` spawns one `pi --mode json` process, folds its event stream into a running state, and owns the wall clock, the progress watchdog, and SIGTERM/SIGKILL escalation.
+- `manager.ts` owns the job map: queueing behind the process-wide semaphore, running the child, spilling large output to disk, and delivering results.
+- `jobs.ts` is the job type, the event channel the statusline consumes, and the display helpers.
+- `tools.ts` and `dashboard.ts` are the model-facing and user-facing interfaces.
+- `json-events.ts`, `process.ts`, and `semaphore.ts` are the JSONL parser, process-tree signalling, and the process-wide concurrency limit.
+- `../lib/retained-output.ts` is the only shared module: the spill-to-disk output store that the web extension also uses.
 
 ## Profiles
 
-| Profile | Child tools | Prompt behavior | Model | Timeout |
-| --- | --- | --- | --- | --- |
-| `explorer` | `read`, `grep`, `find`, `ls` | replaces the normal coding prompt with `explorer/prompt.md` | `openrouter/z-ai/glm-5.3-flash:low` | none |
-| `worker` | `read`, `bash`, `edit`, `write`, `grep`, `find`, `ls` | appends `worker/prompt.md` to the normal coding prompt | `openrouter/z-ai/glm-5.3-flash:max` | none |
+| Profile | Child tools | Prompt | Model |
+| --- | --- | --- | --- |
+| `explorer` | `read`, `grep`, `find`, `ls` | replaces the system prompt with `profiles/explorer/prompt.md` | `openrouter/z-ai/glm-5.3-flash:low` |
+| `worker` | `read`, `bash`, `edit`, `write`, `grep`, `find`, `ls` | appends `profiles/worker/prompt.md` | `openrouter/z-ai/glm-5.3-flash:high` |
 
-Both profiles disable child sessions, extensions, skills, prompt templates, and context-file loading. Relative `cwd` values resolve from the parent session's working directory. `~`, `~/...`, and a stray leading `@` are normalized first.
+Both profiles disable child sessions, extensions, skills, prompt templates, and context files. Relative `cwd` values resolve from the parent working directory; `~` and a stray leading `@` are normalized first. The worker is not sandboxed.
 
-Instead of a wall-clock job timeout, both profiles run a progress watchdog: `stallTimeoutMs` (10 min) aborts a running job whose child Pi has produced no events at all between turns, and `toolStallTimeoutMs` (30 min) does the same while one tool call is active. Any event resets the timer, so jobs that are genuinely making progress run as long as they need; only a hung model stream or a wedged command trips the watchdog. Watchdog stops report status `timed_out` with the reason, and setting either value to 0 disables it.
+## Limits
 
-The worker is not sandboxed. It can edit files, run arbitrary shell commands, and inherits the parent environment.
+Three limits apply to every job, defaulted in `profiles/profile.ts` and overridable per agent:
 
-## Background behavior
+- `timeoutMs` (60 min) is a whole-job wall clock. It catches a child that keeps making tool calls but never finishes.
+- `stallTimeoutMs` (10 min) stops a job whose child has produced no events while no tool is active, which means a hung model stream.
+- `toolStallTimeoutMs` (15 min) does the same while a tool call is active, which means a wedged command. Streaming bash output resets it.
 
-Profile tools return a job id immediately and share one process-wide FIFO concurrency limit. Completion is delivered exactly once as a `subagent-result` custom message unless `subagent_wait` consumes it first. One wait can consume explorer and worker jobs together. Aborting a wait does not cancel its jobs.
+Any child event resets the stall clocks. All three report status `timed_out` with the reason in the job's error and activity log. Setting a value to 0 disables that limit.
 
-Reload, session replacement, fork, and quit abort all queued and running jobs. `subagent_cancel` provides explicit cancellation during a session. Explorer and worker jobs have no wall-clock deadline. They run until completion, failure, explicit cancellation, watchdog stop, or session shutdown.
+## Delivery
 
-Model-visible output is capped at pi's 50 KB and 2000-line limits. Complete output beyond that is written to a mode-`0600` file in a private temp directory. The result includes its path, and session shutdown removes it.
+Spawn tools return immediately. When a job finishes, its result arrives as a `subagent-result` message queued with `deliverAs: "followUp"`, so pi delivers it after the current turn or starts a turn if the agent is idle. If a `subagent_wait` is in flight for that job, the wait consumes the result instead and no message is sent. Aborting a wait leaves its jobs running.
+
+Result text is capped at pi's 50 KB and 2000-line limits, and auto-delivered results at 12 KB. Anything beyond that is written to a mode-0600 file in a private temp directory whose path is included in the result. Session shutdown removes those files and aborts every job.
 
 ## Dashboard
 
-`/subagents` opens a live overlay listing every tracked job with status, age, title, current tool or last activity, and time since the child last produced an event. Enter toggles a detail view with prompt, model, cwd, usage, the recent activity timeline, error, and retained full-output path. `c` cancels the selected job after an inline y/n confirmation; Esc closes. The overlay follows job upserts as they happen, so there is no manual refresh.
+`/subagents` opens a live overlay listing every job with status, age, title, current activity, and time since the last child event. Enter toggles a detail view with prompt, model, cwd, usage, the activity timeline, error, and retained output path. `c` cancels the selected job after a y/n confirmation. Esc closes.
 
-Quiet and stalled are display states, not actions. A running job with no events for two minutes shows `idle Nm` in warning color, and past ten minutes in error color. The dashboard never cancels anything on its own; the progress watchdog is the only automatic stop.
-
-The statusline extension adds a `sub N run` segment to the footer while jobs are active and shows the oldest quiet time once it passes two minutes.
-
-## Runtime boundary
-
-Pi loads extension entry points independently, so profile extensions do not share an imported manager singleton. `interface/broker.ts` uses `pi.events` to resolve the current runtime owner when a profile tool executes. The runtime owns the only job map and registers `check`, `wait`, and `cancel` once.
+A running job with no events for 2 minutes shows `idle Nm` in warning color, and past 5 minutes in error color. These are display states only. The statusline extension shows the same `sub N run` segment and the oldest idle time.
 
 ## Configuration
 
 | Setting | Default | Purpose |
 | --- | --- | --- |
 | `PI_SUBAGENT_MAX_CONCURRENCY` | `4` | Process-wide child limit, from 1 to 64 |
-
-The profiles pin their model. Callers cannot override it.
-
-Progress snapshots continue to use the `pui.subagent.background` event channel for compatibility with pui consumers. Regular pi falls back to generic tool rendering.

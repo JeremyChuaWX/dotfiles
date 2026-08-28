@@ -7,7 +7,7 @@ interface Waiter {
     onAbort?: () => void;
 }
 
-export function createAbortError(message = "Operation cancelled while queued."): Error {
+function createAbortError(message = "Operation cancelled while queued."): Error {
     const error = new Error(message);
     error.name = "AbortError";
     return error;
