@@ -9,6 +9,7 @@ import {
 } from "./interface/broker.ts";
 import { registerSubagentCancelTool } from "./interface/cancel.ts";
 import { registerSubagentCheckTool } from "./interface/check.ts";
+import { registerSubagentDashboard } from "./interface/dashboard.ts";
 import { registerSubagentWaitTool } from "./interface/wait.ts";
 import { BackgroundSubagentManager, type BackgroundTerminalResult } from "./runtime/background-manager.ts";
 import {
@@ -85,6 +86,7 @@ export default function subagentsExtension(pi: ExtensionAPI): void {
                 request.parentCwd,
                 request.signal,
             ),
+        list: () => background.list(),
         check: (id) => background.check(id),
         wait: (ids, signal) => background.wait(ids, signal),
         cancel: (ids) => background.cancel(ids),
@@ -95,6 +97,7 @@ export default function subagentsExtension(pi: ExtensionAPI): void {
     registerSubagentCheckTool(pi, runtime);
     registerSubagentWaitTool(pi, runtime);
     registerSubagentCancelTool(pi, runtime);
+    registerSubagentDashboard(pi, runtime);
 
     pi.on("session_start", (_event, ctx) => {
         shuttingDown = false;

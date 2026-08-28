@@ -14,7 +14,9 @@ export default function explorerExtension(pi: ExtensionAPI): void {
             model: "openrouter/z-ai/glm-5.3-flash:low",
             prompt,
             promptFlag: "--system-prompt",
-            timeoutMs: 300_000,
+            timeoutMs: 0,
+            stallTimeoutMs: 600_000,
+            toolStallTimeoutMs: 1_800_000,
         },
         label: "Explorer",
         description:

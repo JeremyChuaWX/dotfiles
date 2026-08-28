@@ -14,6 +14,8 @@ import {
 } from "./protocol.ts";
 
 const ACTIVITY_TITLE_BYTES = 512;
+const STALL_CHECK_INTERVAL_MS = 5_000;
+const TOOL_STALL_MULTIPLIER = 3;
 
 export interface RunSubagentOptions {
     details: SubagentDetailsV1;
@@ -21,6 +23,10 @@ export interface RunSubagentOptions {
     args: string[];
     cwd: string;
     timeoutMs: number;
+    /** Abort when the child shows no activity between turns for this long. 0 disables. */
+    stallTimeoutMs?: number;
+    /** Abort when an active tool call shows no activity for this long. Defaults to 3x stallTimeoutMs. */
+    toolStallTimeoutMs?: number;
     signal?: AbortSignal;
     onSnapshot?: (details: SubagentDetailsV1) => void;
     throttleMs?: number;
@@ -47,6 +53,38 @@ export async function runSubagent(options: RunSubagentOptions): Promise<Subagent
 
     const now = options.now ?? Date.now;
     let details = structuredClone(options.details);
+
+    // Progress watchdog: unlike timeoutMs (whole-job wall clock), this only fires when the child
+    // produces no events at all for a while, so long-lived tool calls and slow turns are safe.
+    const stallTimeoutMs = Math.max(0, options.stallTimeoutMs ?? 0);
+    const toolStallTimeoutMs = Math.max(
+        0,
+        options.toolStallTimeoutMs ?? stallTimeoutMs * TOOL_STALL_MULTIPLIER,
+    );
+    let lastActivityAt = now();
+    let lastPhase: "thinking" | "tool" = "thinking";
+    let stallKind: "turn" | "tool" | undefined;
+    let stallLimitMs = 0;
+    let stallTimer: ReturnType<typeof setInterval> | undefined;
+    const stallController = new AbortController();
+    const checkStall = () => {
+        if (stallKind) return;
+        const limit = lastPhase === "tool" ? toolStallTimeoutMs : stallTimeoutMs;
+        if (limit <= 0) return;
+        const idle = now() - lastActivityAt;
+        if (idle < limit) return;
+        stallKind = lastPhase === "tool" ? "tool" : "turn";
+        stallLimitMs = limit;
+        stallController.abort();
+    };
+    if (stallTimeoutMs > 0 || toolStallTimeoutMs > 0) {
+        stallTimer = setInterval(checkStall, STALL_CHECK_INTERVAL_MS);
+        stallTimer.unref();
+    }
+    const signal = options.signal
+        ? AbortSignal.any([options.signal, stallController.signal])
+        : stallController.signal;
+
     const publish = () => {
         if (!options.onSnapshot) return;
         try {
@@ -56,6 +94,8 @@ export async function runSubagent(options: RunSubagentOptions): Promise<Subagent
         }
     };
     const fold = (events: ChildAgentEvent[], state: ChildAgentState) => {
+        lastActivityAt = now();
+        lastPhase = state.phase === "tool" ? "tool" : "thinking";
         for (const event of events) {
             if (event.kind === "spawned") {
                 details = updateSubagentDetails(
@@ -102,13 +142,20 @@ export async function runSubagent(options: RunSubagentOptions): Promise<Subagent
         timeoutMs: options.timeoutMs,
         model: details.run.model,
         usage: details.run.usage,
-        signal: options.signal,
+        signal,
         onFlush: fold,
         throttleMs: options.throttleMs,
         killGraceMs: options.killGraceMs,
         now: options.now,
         spawn: options.spawn,
     });
+    if (stallTimer) clearInterval(stallTimer);
+    if (stallKind) {
+        const minutes = Math.max(1, Math.round(stallLimitMs / 60_000));
+        const scope = stallKind === "tool" ? "tool output" : "model output";
+        result.status = "timed_out";
+        result.error = `No ${scope} for ${minutes} minutes; stopped by the progress watchdog.`;
+    }
 
     const succeeded = result.status === "succeeded";
     const endedAt = now();

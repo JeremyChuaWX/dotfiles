@@ -11,10 +11,12 @@ export default function workerExtension(pi: ExtensionAPI): void {
         profile: {
             name: "worker",
             tools: ["read", "bash", "edit", "write", "grep", "find", "ls"],
-            model: "openrouter/z-ai/glm-5.3-flash:max",
+            model: "openrouter/z-ai/glm-5.3-flash:high",
             prompt,
             promptFlag: "--append-system-prompt",
             timeoutMs: 0,
+            stallTimeoutMs: 600_000,
+            toolStallTimeoutMs: 1_800_000,
         },
         label: "Worker",
         description:

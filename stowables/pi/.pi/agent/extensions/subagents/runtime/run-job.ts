@@ -143,6 +143,8 @@ export async function runSubagentJob(
             args: child.args,
             cwd: request.cwd,
             timeoutMs: request.profile.timeoutMs,
+            stallTimeoutMs: request.profile.stallTimeoutMs,
+            toolStallTimeoutMs: request.profile.toolStallTimeoutMs,
             signal: request.signal,
             onSnapshot: (next) => {
                 details = next;

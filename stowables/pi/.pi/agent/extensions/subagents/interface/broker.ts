@@ -20,6 +20,7 @@ export interface SubagentRuntimeService {
     schema: typeof SUBAGENT_RUNTIME_SCHEMA;
     version: typeof SUBAGENT_RUNTIME_VERSION;
     spawn(request: SubagentSpawnRequest): Promise<BackgroundSubagentJobV1>;
+    list(): BackgroundSubagentJobV1[];
     check(id: string): BackgroundSubagentJobV1;
     wait(ids: string[], signal?: AbortSignal): Promise<BackgroundTerminalResult[]>;
     cancel(ids: string[]): Promise<BackgroundSubagentJobV1[]>;
@@ -38,6 +39,7 @@ function isRuntimeService(value: unknown): value is SubagentRuntimeService {
         service.schema === SUBAGENT_RUNTIME_SCHEMA &&
         service.version === SUBAGENT_RUNTIME_VERSION &&
         typeof service.spawn === "function" &&
+        typeof service.list === "function" &&
         typeof service.check === "function" &&
         typeof service.wait === "function" &&
         typeof service.cancel === "function"

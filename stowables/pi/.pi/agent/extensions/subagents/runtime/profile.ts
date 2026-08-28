@@ -9,6 +9,10 @@ export interface SubagentProfile {
     prompt?: string;
     promptFlag?: "--system-prompt" | "--append-system-prompt";
     timeoutMs: number;
+    /** Abort when a running child produces no events between turns for this long. 0 disables. */
+    stallTimeoutMs?: number;
+    /** Abort when an active tool call produces no events for this long. Defaults to 3x stallTimeoutMs. */
+    toolStallTimeoutMs?: number;
 }
 
 export function workingDirectoryCandidate(input: string, parentCwd: string): string {
