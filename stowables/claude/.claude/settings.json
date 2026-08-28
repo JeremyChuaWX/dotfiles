@@ -28,9 +28,26 @@
         "CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION": "false"
     },
     "permissions": {
+        "deny": [
+            "EnterPlanMode",
+            "ExitPlanMode",
+            "DesignSync",
+            "NotebookEdit",
+            "SendMessage",
+            "PushNotification",
+            "RemoteTrigger",
+            "ReportFindings",
+            "ScheduleWakeup",
+            "AskUserQuestion",
+            "CronCreate",
+            "CronDelete",
+            "CronList"
+        ],
         "defaultMode": "bypassPermissions"
     },
+    "skipDangerousModePermissionPrompt": true,
     "model": "claude-fable-5",
+    "effortLevel": "high",
     "spinnerTipsEnabled": false,
     "spinnerVerbs": {
         "mode": "replace",
@@ -39,5 +56,14 @@
         ]
     },
     "tui": "fullscreen",
-    "theme": "dark"
+    "theme": "dark",
+    "enabledPlugins": {
+        "mattpocock-skills@claude-plugins-official": true
+    },
+    "disableClaudeAiConnectors": true,
+    "disableRemoteControl": true,
+    "awaySummaryEnabled": false,
+    "disableAutoMode": "disable",
+    "disableDeepLinkRegistration": "disable",
+    "disableMobileSimulatorTools": true
 }
