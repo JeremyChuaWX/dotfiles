@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
 import { Manager, seconds } from "./manager.ts";
 import { profiles } from "./profiles/index.ts";
@@ -43,9 +43,9 @@ function render(result: JobResult, dir: string): string {
 export default function subagents(pi: ExtensionAPI) {
     let manager: Manager | undefined;
 
-    /** Built on first use from the tool context; torn down on session shutdown. */
-    const getManager = (ctx: ExtensionContext): Manager => {
-        if (manager) return manager;
+    /** One manager per session. `session_start` also fires on reload, /new, and /fork, so tear down the previous one first. */
+    pi.on("session_start", async (_event, ctx) => {
+        await manager?.shutdown();
         const dir = path.join(os.tmpdir(), "pi-subagents", ctx.sessionManager.getSessionId());
         manager = new Manager({
             maxActive: MAX_ACTIVE,
@@ -58,14 +58,18 @@ export default function subagents(pi: ExtensionAPI) {
                 );
             },
         });
-        return manager;
-    };
+    });
 
     pi.on("session_shutdown", async () => {
         const current = manager;
         manager = undefined;
         await current?.shutdown();
     });
+
+    const getManager = (): Manager => {
+        if (!manager) throw new Error("Subagents are not ready: no session has started.");
+        return manager;
+    };
 
     for (const profile of profiles) {
         pi.registerTool({
@@ -79,7 +83,7 @@ export default function subagents(pi: ExtensionAPI) {
                 cwd: Type.Optional(Type.String({ description: "Working directory. Defaults to the current one." })),
             }),
             async execute(_id, params, _signal, _update, ctx) {
-                const job = getManager(ctx).spawn({
+                const job = getManager().spawn({
                     ...profile.config,
                     profile: profile.name,
                     task: params.task,
@@ -96,8 +100,8 @@ export default function subagents(pi: ExtensionAPI) {
         description: "Cancel queued or running subagent jobs and return their final state. Cancelled jobs send no follow-up.",
         promptSnippet: "Cancel background subagent jobs",
         parameters: Type.Object({ ids: Type.Array(Type.String(), { minItems: 1, maxItems: 64 }) }),
-        async execute(_id, params, _signal, _update, ctx) {
-            const jobs = await getManager(ctx).cancel(params.ids);
+        async execute(_id, params) {
+            const jobs = await getManager().cancel(params.ids);
             return { content: [{ type: "text", text: jobs.map((job) => `[${job.id}] ${job.state}`).join("\n") }], details: { jobs } };
         },
     });
@@ -108,8 +112,8 @@ export default function subagents(pi: ExtensionAPI) {
         description: "List queued and running subagent jobs.",
         promptSnippet: "List active background subagent jobs",
         parameters: Type.Object({}),
-        async execute(_id, _params, _signal, _update, ctx) {
-            const jobs = getManager(ctx).list();
+        async execute() {
+            const jobs = getManager().list();
             const now = Date.now();
             const text = jobs.length
                 ? jobs.map((job) => `[${job.id}] ${job.state} ${seconds(now - (job.startedAt ?? job.createdAt))}: ${job.task.slice(0, 80)}`).join("\n")
