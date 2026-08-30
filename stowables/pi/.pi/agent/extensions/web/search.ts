@@ -148,7 +148,10 @@ async function resolveCodexAuth(
             accessToken: auth.apiKey,
             accountId: extractChatGptAccountId(auth.apiKey),
             endpoint: resolveCodexSearchUrl(model.baseUrl),
-            headers: { ...model.headers, ...auth.headers },
+            headers: {
+                ...model.headers,
+                ...Object.fromEntries(Object.entries(auth.headers ?? {}).filter((e): e is [string, string] => e[1] != null)),
+            },
         };
     }
 
