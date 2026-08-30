@@ -1,5 +1,5 @@
 import type { AgentMessage } from "@earendil-works/pi-agent-core";
-import type { Model } from "@earendil-works/pi-ai";
+import type { Api, Model } from "@earendil-works/pi-ai";
 import {
     type AgentSession,
     createAgentSession,
@@ -22,7 +22,7 @@ const ACTIVITY_EVENTS = new Set([
 ]);
 
 export interface RunnerDeps {
-    resolveModel: (spec: string) => Model<any> | undefined;
+    resolveModel: (spec: string) => Model<Api> | undefined;
 }
 
 /** Build the runner: one in-process AgentSession per job, no extensions, no session file, disposed when done. */

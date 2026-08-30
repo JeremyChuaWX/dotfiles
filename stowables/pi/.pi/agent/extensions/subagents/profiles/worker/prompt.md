@@ -39,3 +39,5 @@ Return a concise handoff with:
 - files changed;
 - validation run;
 - blockers or deferred work.
+
+Only your final message is returned to the caller. End with a complete handoff.

@@ -19,3 +19,5 @@ One-paragraph answer to the exploration prompt.
 
 ## Suggested Next Reads
 - `path` — why
+
+Only your final message is returned to the caller. End with a complete answer.
