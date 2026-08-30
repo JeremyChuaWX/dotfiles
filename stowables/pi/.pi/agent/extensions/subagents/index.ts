@@ -1,17 +1,14 @@
-import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
 import { Manager, seconds } from "./manager.ts";
 import { profiles } from "./profiles/index.ts";
-import type { JobResult } from "./protocol.ts";
+import { prepareResultMessage, renderResultMessage } from "./result-message.ts";
 import { createRunner } from "./subagent.ts";
 
 const MAX_ACTIVE = clamp(Number(process.env.PI_SUBAGENT_MAX_ACTIVE) || 4, 1, 64);
 const MAX_QUEUED = 16;
-/** Inline text beyond this is cut; the full text is always on disk. */
-const INLINE_LIMIT = 16 * 1024;
 
 function clamp(n: number, lo: number, hi: number): number {
     return Math.min(hi, Math.max(lo, n));
@@ -23,25 +20,14 @@ function splitModel(spec: string): [string, string] {
     return [spec.slice(0, slash), spec.slice(slash + 1)];
 }
 
-/** Write the full result to disk and return the follow-up message text. A failed write is reported in the header, never thrown. */
-function render(result: JobResult, dir: string): string {
-    const { job } = result;
-    let location = path.join(dir, `${job.id}.md`);
-    try {
-        fs.mkdirSync(dir, { recursive: true });
-        fs.writeFileSync(location, result.text || (result.error ?? ""), "utf8");
-    } catch (error) {
-        location = `not written (${error instanceof Error ? error.message : String(error)})`;
-    }
-    const tokens = result.usage ? `, ${Math.round(result.usage.totalTokens / 1000)}k tokens` : "";
-    const header = `[${job.id}] ${result.status} in ${seconds(result.runtimeMs)}${tokens}${result.partial ? ", partial output" : ""}\nTask: ${job.task}\nFull output: ${location}`;
-    const body = result.error ? `Error: ${result.error}\n\n${result.text}` : result.text;
-    const cut = body.length > INLINE_LIMIT ? `${body.slice(0, INLINE_LIMIT)}\n\n[truncated; read the full output file]` : body;
-    return `${header}\n\n${cut}`.trimEnd();
+export interface SubagentExtensionDeps {
+    createRunner: typeof createRunner;
 }
 
-export default function subagents(pi: ExtensionAPI) {
+export default function subagents(pi: ExtensionAPI, deps: SubagentExtensionDeps = { createRunner }) {
     let manager: Manager | undefined;
+
+    pi.registerMessageRenderer("subagent-result", renderResultMessage);
 
     /** One manager per session. `session_start` also fires on reload, /new, and /fork, so tear down the previous one first. */
     pi.on("session_start", async (_event, ctx) => {
@@ -50,12 +36,10 @@ export default function subagents(pi: ExtensionAPI) {
         manager = new Manager({
             maxActive: MAX_ACTIVE,
             maxQueued: MAX_QUEUED,
-            run: createRunner({ resolveModel: (spec) => ctx.modelRegistry.find(...splitModel(spec)) }),
+            run: deps.createRunner({ resolveModel: (spec) => ctx.modelRegistry.find(...splitModel(spec)) }),
             deliver: (result) => {
-                pi.sendMessage(
-                    { customType: "subagent-result", content: render(result, dir), display: true, details: result },
-                    { deliverAs: "followUp", triggerTurn: true },
-                );
+                const message = prepareResultMessage(result, dir);
+                pi.sendMessage({ customType: "subagent-result", ...message, display: true }, { deliverAs: "steer", triggerTurn: true });
             },
         });
     });
@@ -89,7 +73,10 @@ export default function subagents(pi: ExtensionAPI) {
                     task: params.task,
                     cwd: params.cwd ? path.resolve(ctx.cwd, params.cwd) : ctx.cwd,
                 });
-                return { content: [{ type: "text", text: `Started ${job.id} (${job.state}). Its result will arrive as a follow-up message.` }], details: job };
+                return {
+                    content: [{ type: "text", text: `Started ${job.id} (${job.state}). Its result will be injected when ready; do not wait or poll.` }],
+                    details: job,
+                };
             },
         });
     }
@@ -97,20 +84,24 @@ export default function subagents(pi: ExtensionAPI) {
     pi.registerTool({
         name: "subagent_cancel",
         label: "Cancel Subagents",
-        description: "Cancel queued or running subagent jobs and return their final state. Cancelled jobs send no follow-up.",
+        description: "Cancel queued or running subagent jobs and return their final state. Cancelled jobs emit no result message.",
         promptSnippet: "Cancel background subagent jobs",
         parameters: Type.Object({ ids: Type.Array(Type.String(), { minItems: 1, maxItems: 64 }) }),
         async execute(_id, params) {
             const jobs = await getManager().cancel(params.ids);
-            return { content: [{ type: "text", text: jobs.map((job) => `[${job.id}] ${job.state}`).join("\n") }], details: { jobs } };
+            return {
+                content: [{ type: "text", text: jobs.map((job) => `[${job.id}] ${job.state}`).join("\n") }],
+                details: { jobs },
+            };
         },
     });
 
     pi.registerTool({
         name: "subagent_list",
         label: "List Subagents",
-        description: "List queued and running subagent jobs.",
-        promptSnippet: "List active background subagent jobs",
+        description: "Return an immediate snapshot of queued and running subagent jobs. Never use this tool to wait or poll for completion.",
+        promptSnippet: "List active background subagent jobs without waiting",
+        promptGuidelines: ["Use subagent_list only for a requested status snapshot; never poll it while waiting for subagents."],
         parameters: Type.Object({}),
         async execute() {
             const jobs = getManager().list();
@@ -118,7 +109,7 @@ export default function subagents(pi: ExtensionAPI) {
             const text = jobs.length
                 ? jobs.map((job) => `[${job.id}] ${job.state} ${seconds(now - (job.startedAt ?? job.createdAt))}: ${job.task.slice(0, 80)}`).join("\n")
                 : "No active subagent jobs.";
-            return { content: [{ type: "text", text }], details: { jobs } };
+            return { content: [{ type: "text", text }], details: { jobs }, terminate: true };
         },
     });
 }
