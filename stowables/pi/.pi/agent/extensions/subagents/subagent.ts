@@ -56,10 +56,17 @@ export function createRunner(deps: RunnerDeps): Runner {
             settingsManager: SettingsManager.create(config.cwd, agentDir),
         });
 
+        // Cancel or timeout may have fired while the session was being built; the abort event is already gone.
+        if (signal.aborted) {
+            session.dispose();
+            throw new Error("Cancelled before start.");
+        }
         const unsubscribe = session.subscribe((event) => {
             if (ACTIVITY_EVENTS.has(event.type)) onActivity();
         });
-        const onAbort = () => void session.abort();
+        const onAbort = () => {
+            session.abort().catch(() => {});
+        };
         signal.addEventListener("abort", onAbort, { once: true });
         try {
             await session.prompt(config.task, { expandPromptTemplates: false, source: "extension" });
@@ -72,7 +79,7 @@ export function createRunner(deps: RunnerDeps): Runner {
     };
 }
 
-/** Last assistant text, falling back to the most recent assistant message that had any. */
+/** Build the result: the last assistant message's text, or the most recent one that had any (marked partial), plus summed usage. */
 function collect(session: AgentSession): RunResult {
     const assistants = session.state.messages.filter((m): m is Extract<AgentMessage, { role: "assistant" }> => m.role === "assistant");
     const textOf = (m: Extract<AgentMessage, { role: "assistant" }>) =>

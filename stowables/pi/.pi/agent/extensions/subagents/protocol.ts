@@ -1,10 +1,7 @@
 import type { ThinkingLevel } from "@earendil-works/pi-agent-core";
 
-/** Everything a runner needs to execute one job. Built from a profile plus the spawn call. */
-export interface JobConfig {
-    profile: string;
-    task: string;
-    cwd: string;
+/** The execution settings a profile declares. */
+export interface ProfileConfig {
     tools: readonly string[];
     model: string;
     thinkingLevel: ThinkingLevel;
@@ -12,6 +9,13 @@ export interface JobConfig {
     promptMode: "replace" | "append";
     inactivityMs: number;
     hardMs: number;
+}
+
+/** Everything a runner needs to execute one job: the profile's settings plus the spawn call. */
+export interface JobConfig extends ProfileConfig {
+    profile: string;
+    task: string;
+    cwd: string;
 }
 
 export interface JobUsage {

@@ -3,7 +3,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
-import { Manager } from "./manager.ts";
+import { Manager, seconds } from "./manager.ts";
 import { profiles } from "./profiles/index.ts";
 import type { JobResult } from "./protocol.ts";
 import { createRunner } from "./subagent.ts";
@@ -17,24 +17,24 @@ function clamp(n: number, lo: number, hi: number): number {
     return Math.min(hi, Math.max(lo, n));
 }
 
-function seconds(ms: number): string {
-    return `${Math.round(ms / 1000)}s`;
-}
-
 /** "provider/model-id" as written in a profile. */
 function splitModel(spec: string): [string, string] {
     const slash = spec.indexOf("/");
     return [spec.slice(0, slash), spec.slice(slash + 1)];
 }
 
-/** Write the full result to disk and return the follow-up message text. */
+/** Write the full result to disk and return the follow-up message text. A failed write is reported in the header, never thrown. */
 function render(result: JobResult, dir: string): string {
     const { job } = result;
-    const file = path.join(dir, `${job.id}.md`);
-    fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(file, result.text || (result.error ?? ""), "utf8");
+    let location = path.join(dir, `${job.id}.md`);
+    try {
+        fs.mkdirSync(dir, { recursive: true });
+        fs.writeFileSync(location, result.text || (result.error ?? ""), "utf8");
+    } catch (error) {
+        location = `not written (${error instanceof Error ? error.message : String(error)})`;
+    }
     const tokens = result.usage ? `, ${Math.round(result.usage.totalTokens / 1000)}k tokens` : "";
-    const header = `[${job.id}] ${result.status} in ${seconds(result.runtimeMs)}${tokens}${result.partial ? ", partial output" : ""}\nTask: ${job.task}\nFull output: ${file}`;
+    const header = `[${job.id}] ${result.status} in ${seconds(result.runtimeMs)}${tokens}${result.partial ? ", partial output" : ""}\nTask: ${job.task}\nFull output: ${location}`;
     const body = result.error ? `Error: ${result.error}\n\n${result.text}` : result.text;
     const cut = body.length > INLINE_LIMIT ? `${body.slice(0, INLINE_LIMIT)}\n\n[truncated; read the full output file]` : body;
     return `${header}\n\n${cut}`.trimEnd();
@@ -44,7 +44,7 @@ export default function subagents(pi: ExtensionAPI) {
     let manager: Manager | undefined;
 
     /** Built on first use from the tool context; torn down on session shutdown. */
-    const active = (ctx: ExtensionContext): Manager => {
+    const getManager = (ctx: ExtensionContext): Manager => {
         if (manager) return manager;
         const dir = path.join(os.tmpdir(), "pi-subagents", ctx.sessionManager.getSessionId());
         manager = new Manager({
@@ -79,17 +79,11 @@ export default function subagents(pi: ExtensionAPI) {
                 cwd: Type.Optional(Type.String({ description: "Working directory. Defaults to the current one." })),
             }),
             async execute(_id, params, _signal, _update, ctx) {
-                const job = active(ctx).spawn({
+                const job = getManager(ctx).spawn({
+                    ...profile.config,
                     profile: profile.name,
                     task: params.task,
                     cwd: params.cwd ? path.resolve(ctx.cwd, params.cwd) : ctx.cwd,
-                    tools: profile.tools,
-                    model: profile.model,
-                    thinkingLevel: profile.thinkingLevel,
-                    systemPrompt: profile.systemPrompt,
-                    promptMode: profile.promptMode,
-                    inactivityMs: profile.inactivityMs,
-                    hardMs: profile.hardMs,
                 });
                 return { content: [{ type: "text", text: `Started ${job.id} (${job.state}). Its result will arrive as a follow-up message.` }], details: job };
             },
@@ -103,7 +97,7 @@ export default function subagents(pi: ExtensionAPI) {
         promptSnippet: "Cancel background subagent jobs",
         parameters: Type.Object({ ids: Type.Array(Type.String(), { minItems: 1, maxItems: 64 }) }),
         async execute(_id, params, _signal, _update, ctx) {
-            const jobs = await active(ctx).cancel(params.ids);
+            const jobs = await getManager(ctx).cancel(params.ids);
             return { content: [{ type: "text", text: jobs.map((job) => `[${job.id}] ${job.state}`).join("\n") }], details: { jobs } };
         },
     });
@@ -115,7 +109,7 @@ export default function subagents(pi: ExtensionAPI) {
         promptSnippet: "List active background subagent jobs",
         parameters: Type.Object({}),
         async execute(_id, _params, _signal, _update, ctx) {
-            const jobs = active(ctx).list();
+            const jobs = getManager(ctx).list();
             const now = Date.now();
             const text = jobs.length
                 ? jobs.map((job) => `[${job.id}] ${job.state} ${seconds(now - (job.startedAt ?? job.createdAt))}: ${job.task.slice(0, 80)}`).join("\n")

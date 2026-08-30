@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
-import type { ThinkingLevel } from "@earendil-works/pi-agent-core";
+import type { ProfileConfig } from "../protocol.ts";
 
 const MINUTE = 60_000;
 
@@ -11,14 +11,7 @@ export interface Profile {
     description: string;
     promptSnippet: string;
     promptGuidelines: string[];
-    tools: readonly string[];
-    model: string;
-    thinkingLevel: ThinkingLevel;
-    systemPrompt: string;
-    /** Whether the prompt replaces pi's coding prompt or is appended to it. */
-    promptMode: "replace" | "append";
-    inactivityMs: number;
-    hardMs: number;
+    config: ProfileConfig;
 }
 
 export const DEFAULT_LIMITS = { inactivityMs: 10 * MINUTE, hardMs: 60 * MINUTE };
@@ -28,6 +21,9 @@ export function promptFile(moduleUrl: string, fileName: string): string {
     return fs.readFileSync(path.join(path.dirname(fileURLToPath(moduleUrl)), fileName), "utf8");
 }
 
-export function defineProfile(profile: Omit<Profile, keyof typeof DEFAULT_LIMITS> & Partial<typeof DEFAULT_LIMITS>): Profile {
-    return { ...DEFAULT_LIMITS, ...profile };
+type ProfileInput = Omit<Profile, "config"> & Omit<ProfileConfig, keyof typeof DEFAULT_LIMITS> & Partial<typeof DEFAULT_LIMITS>;
+
+export function defineProfile(input: ProfileInput): Profile {
+    const { name, label, description, promptSnippet, promptGuidelines, ...config } = input;
+    return { name, label, description, promptSnippet, promptGuidelines, config: { ...DEFAULT_LIMITS, ...config } };
 }

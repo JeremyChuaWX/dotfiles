@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { describe, it, mock } from "node:test";
+import { describe, it } from "node:test";
 import { Manager } from "./manager.ts";
 import type { JobConfig, JobResult, RunResult, Runner } from "./protocol.ts";
 
@@ -172,5 +172,27 @@ describe("Manager", () => {
         assert.equal(manager.spawn(config({ profile: "explorer" })).id, "explorer_1");
         assert.equal(manager.spawn(config({ profile: "worker" })).id, "worker_1");
         assert.equal(manager.spawn(config({ profile: "explorer" })).id, "explorer_2");
+    });
+
+    it("cancel with an unknown id throws before touching any job", async () => {
+        const { manager, runner } = setup();
+        const job = manager.spawn(config());
+        assert.throws(() => manager.cancel([job.id, "nope_9"]), /Unknown subagent job: nope_9/);
+        assert.equal(runner.started[0].signal.aborted, false);
+    });
+
+    it("shutdown gives up waiting on a child that never settles", async (t) => {
+        t.mock.timers.enable({ apis: ["setTimeout", "Date"] });
+        const { manager, runner } = setup();
+        manager.spawn(config());
+        let done = false;
+        const pending = manager.shutdown().then(() => {
+            done = true;
+        });
+        assert.equal(runner.started[0].signal.aborted, true);
+        t.mock.timers.tick(5_000);
+        await pending;
+        assert.equal(done, true);
+        assert.throws(() => manager.spawn(config()), /shutting down/);
     });
 });
