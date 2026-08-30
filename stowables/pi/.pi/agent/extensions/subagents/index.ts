@@ -4,6 +4,7 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
 import { Manager, seconds } from "./manager.ts";
 import { profiles } from "./profiles/index.ts";
+import { SUBAGENT_JOBS_CHANNEL, type Job, type SubagentJobsEvent } from "./protocol.ts";
 import { prepareResultMessage, renderResultMessage } from "./result-message.ts";
 import { createRunner } from "./subagent.ts";
 
@@ -32,7 +33,15 @@ export default function subagents(pi: ExtensionAPI, deps: SubagentExtensionDeps 
     /** One manager per session. `session_start` also fires on reload, /new, and /fork, so tear down the previous one first. */
     pi.on("session_start", async (_event, ctx) => {
         await manager?.shutdown();
-        const dir = path.join(os.tmpdir(), "pi-subagents", ctx.sessionManager.getSessionId());
+        const sessionId = ctx.sessionManager.getSessionId();
+        const dir = path.join(os.tmpdir(), "pi-subagents", sessionId);
+        const publishJobs = (jobs: Job[]) => {
+            const event: SubagentJobsEvent = {
+                sessionId,
+                jobs: jobs.filter((job) => job.state === "queued" || job.state === "running"),
+            };
+            pi.events.emit(SUBAGENT_JOBS_CHANNEL, event);
+        };
         manager = new Manager({
             maxActive: MAX_ACTIVE,
             maxQueued: MAX_QUEUED,
@@ -41,7 +50,9 @@ export default function subagents(pi: ExtensionAPI, deps: SubagentExtensionDeps 
                 const message = prepareResultMessage(result, dir);
                 pi.sendMessage({ customType: "subagent-result", ...message, display: true }, { deliverAs: "steer", triggerTurn: true });
             },
+            onChange: publishJobs,
         });
+        publishJobs([]);
     });
 
     pi.on("session_shutdown", async () => {

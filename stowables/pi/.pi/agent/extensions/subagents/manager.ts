@@ -5,6 +5,8 @@ export interface ManagerOptions {
     deliver: Deliver;
     maxActive: number;
     maxQueued: number;
+    /** Receives job-state snapshots; observer failures never affect job lifecycle. */
+    onChange?: (jobs: Job[]) => void;
 }
 
 interface Entry {
@@ -70,6 +72,7 @@ export class Manager {
         const entry: Entry = { job, config, controller: new AbortController(), settled, settle };
         this.entries.set(job.id, entry);
         this.pump();
+        this.notify();
         return { ...job };
     }
 
@@ -86,6 +89,7 @@ export class Manager {
             } else if (entry.job.state === "running") {
                 entry.job.state = "cancelled";
                 entry.controller.abort();
+                this.notify();
             }
         }
         return Promise.all(entries.map((entry) => entry.settled));
@@ -100,6 +104,14 @@ export class Manager {
 
     list(): Job[] {
         return [...this.entries.values()].map((e) => ({ ...e.job }));
+    }
+
+    private notify(): void {
+        try {
+            this.options.onChange?.(this.list());
+        } catch {
+            // Presentation failures must not affect job lifecycle.
+        }
     }
 
     private queued(): Entry[] {
@@ -128,6 +140,7 @@ export class Manager {
             job.state = "timed_out";
             job.error = reason;
             controller.abort();
+            this.notify();
         };
         const armInactivity = () => {
             clearTimeout(entry.inactivityTimer);
@@ -157,6 +170,7 @@ export class Manager {
         this.entries.delete(job.id);
         entry.settle({ ...job });
         this.pump();
+        this.notify();
         if (status === "cancelled") return;
         this.options.deliver({
             job: { ...job },

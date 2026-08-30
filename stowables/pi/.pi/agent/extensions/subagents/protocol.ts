@@ -1,5 +1,14 @@
 import type { ThinkingLevel } from "@earendil-works/pi-agent-core";
 
+/** Event-bus channel used to publish the active jobs to other extensions. */
+export const SUBAGENT_JOBS_CHANNEL = "pi.subagents.jobs";
+
+/** Complete active-job snapshot for one parent session. */
+export interface SubagentJobsEvent {
+    sessionId: string;
+    jobs: Job[];
+}
+
 /** The execution settings a profile declares. */
 export interface ProfileConfig {
     tools: readonly string[];

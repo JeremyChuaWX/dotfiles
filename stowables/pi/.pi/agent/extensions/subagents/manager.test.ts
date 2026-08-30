@@ -69,6 +69,28 @@ describe("Manager", () => {
         assert.equal(manager.list().find((j) => j.id === c.id)?.state, "queued");
     });
 
+    it("publishes snapshots when jobs spawn, change state, and finish", async () => {
+        const snapshots: Array<Array<{ id: string; state: string }>> = [];
+        const { manager, runner } = setup({
+            maxActive: 1,
+            onChange: (jobs) => snapshots.push(jobs.map(({ id, state }) => ({ id, state }))),
+        });
+        const a = manager.spawn(config({ task: "a" }));
+        const b = manager.spawn(config({ task: "b" }));
+        assert.deepEqual(snapshots.at(-1), [
+            { id: a.id, state: "running" },
+            { id: b.id, state: "queued" },
+        ]);
+
+        runner.started[0].resolve(ok());
+        await flush();
+        assert.deepEqual(snapshots.at(-1), [{ id: b.id, state: "running" }]);
+
+        runner.started[1].resolve(ok());
+        await flush();
+        assert.deepEqual(snapshots.at(-1), []);
+    });
+
     it("rejects a spawn when the queue is full", () => {
         const { manager } = setup({ maxActive: 1, maxQueued: 1 });
         manager.spawn(config());

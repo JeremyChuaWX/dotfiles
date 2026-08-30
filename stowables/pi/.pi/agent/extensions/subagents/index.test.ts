@@ -5,7 +5,7 @@ import * as path from "node:path";
 import { describe, it } from "node:test";
 import { initTheme, type ExtensionAPI, type MessageRenderer } from "@earendil-works/pi-coding-agent";
 import subagents from "./index.ts";
-import type { RunResult, Runner } from "./protocol.ts";
+import { SUBAGENT_JOBS_CHANNEL, type RunResult, type Runner, type SubagentJobsEvent } from "./protocol.ts";
 import type { SubagentResultDetails } from "./result-message.ts";
 
 const flush = () => new Promise((resolve) => setImmediate(resolve));
@@ -22,6 +22,7 @@ function fakeExtension() {
     const tools = new Map<string, RegisteredTool>();
     const renderers = new Map<string, MessageRenderer<any>>();
     const sent: SentMessage[] = [];
+    const busEvents: Array<{ channel: string; data: unknown }> = [];
     const pi = {
         on(event: string, handler: Handler) {
             handlers.set(event, handler);
@@ -35,8 +36,16 @@ function fakeExtension() {
         sendMessage(message: SentMessage["message"], options: SentMessage["options"]) {
             sent.push({ message, options });
         },
+        events: {
+            emit(channel: string, data: unknown) {
+                busEvents.push({ channel, data });
+            },
+            on() {
+                return () => {};
+            },
+        },
     } as unknown as ExtensionAPI;
-    return { pi, handlers, tools, renderers, sent };
+    return { pi, handlers, tools, renderers, sent, busEvents };
 }
 
 describe("subagent extension", () => {
@@ -63,6 +72,10 @@ describe("subagent extension", () => {
             const spawned = await extension.tools.get("explorer")?.execute("call_1", { task: "inspect it" }, undefined, undefined, ctx);
             assert.equal(spawned.terminate, undefined);
             assert.match(spawned.content[0].text, /do not wait or poll/);
+            const runningEvent = extension.busEvents.filter(({ channel }) => channel === SUBAGENT_JOBS_CHANNEL).at(-1)
+                ?.data as SubagentJobsEvent;
+            assert.equal(runningEvent.sessionId, sessionId);
+            assert.deepEqual(runningEvent.jobs.map(({ id, state }) => ({ id, state })), [{ id: "explorer_1", state: "running" }]);
 
             const listed = await extension.tools.get("subagent_list")?.execute("call_2", {}, undefined, undefined, ctx);
             assert.equal(listed.terminate, true);
@@ -75,6 +88,9 @@ describe("subagent extension", () => {
             });
             await flush();
 
+            const completedEvent = extension.busEvents.filter(({ channel }) => channel === SUBAGENT_JOBS_CHANNEL).at(-1)
+                ?.data as SubagentJobsEvent;
+            assert.deepEqual(completedEvent.jobs, []);
             assert.equal(extension.sent.length, 1);
             const [{ message, options }] = extension.sent;
             assert.deepEqual(options, { deliverAs: "steer", triggerTurn: true });
