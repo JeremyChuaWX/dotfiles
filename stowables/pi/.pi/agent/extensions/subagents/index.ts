@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
 import { Manager } from "./manager.ts";
 import { profiles } from "./profiles/index.ts";
@@ -43,8 +43,9 @@ function render(result: JobResult, dir: string): string {
 export default function subagents(pi: ExtensionAPI) {
     let manager: Manager | undefined;
 
-    pi.on("session_start", (_event, ctx) => {
-        void manager?.shutdown();
+    /** Built on first use from the tool context; torn down on session shutdown. */
+    const active = (ctx: ExtensionContext): Manager => {
+        if (manager) return manager;
         const dir = path.join(os.tmpdir(), "pi-subagents", ctx.sessionManager.getSessionId());
         manager = new Manager({
             maxActive: MAX_ACTIVE,
@@ -57,17 +58,14 @@ export default function subagents(pi: ExtensionAPI) {
                 );
             },
         });
-    });
-
-    pi.on("session_shutdown", async () => {
-        await manager?.shutdown();
-        manager = undefined;
-    });
-
-    const active = () => {
-        if (!manager) throw new Error("Subagents are not ready yet.");
         return manager;
     };
+
+    pi.on("session_shutdown", async () => {
+        const current = manager;
+        manager = undefined;
+        await current?.shutdown();
+    });
 
     for (const profile of profiles) {
         pi.registerTool({
@@ -81,7 +79,7 @@ export default function subagents(pi: ExtensionAPI) {
                 cwd: Type.Optional(Type.String({ description: "Working directory. Defaults to the current one." })),
             }),
             async execute(_id, params, _signal, _update, ctx) {
-                const job = active().spawn({
+                const job = active(ctx).spawn({
                     profile: profile.name,
                     task: params.task,
                     cwd: params.cwd ? path.resolve(ctx.cwd, params.cwd) : ctx.cwd,
@@ -104,8 +102,8 @@ export default function subagents(pi: ExtensionAPI) {
         description: "Cancel queued or running subagent jobs and return their final state. Cancelled jobs send no follow-up.",
         promptSnippet: "Cancel background subagent jobs",
         parameters: Type.Object({ ids: Type.Array(Type.String(), { minItems: 1, maxItems: 64 }) }),
-        async execute(_id, params) {
-            const jobs = await active().cancel(params.ids);
+        async execute(_id, params, _signal, _update, ctx) {
+            const jobs = await active(ctx).cancel(params.ids);
             return { content: [{ type: "text", text: jobs.map((job) => `[${job.id}] ${job.state}`).join("\n") }], details: { jobs } };
         },
     });
@@ -116,8 +114,8 @@ export default function subagents(pi: ExtensionAPI) {
         description: "List queued and running subagent jobs.",
         promptSnippet: "List active background subagent jobs",
         parameters: Type.Object({}),
-        async execute() {
-            const jobs = active().list();
+        async execute(_id, _params, _signal, _update, ctx) {
+            const jobs = active(ctx).list();
             const now = Date.now();
             const text = jobs.length
                 ? jobs.map((job) => `[${job.id}] ${job.state} ${seconds(now - (job.startedAt ?? job.createdAt))}: ${job.task.slice(0, 80)}`).join("\n")
