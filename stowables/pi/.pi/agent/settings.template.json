@@ -1,5 +1,6 @@
 {
   "hideThinkingBlock": true,
+  "defaultTools": ["read", "bash", "edit", "write", "grep", "find"],
   "quietStartup": true,
   "theme": "dim-input",
   "tuiMode": "fullscreen"
