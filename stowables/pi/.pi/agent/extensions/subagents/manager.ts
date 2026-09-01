@@ -142,9 +142,13 @@ export class Manager {
             controller.abort();
             this.notify();
         };
-        const armInactivity = () => {
+        const armInactivity = (usage = job.usage) => {
             clearTimeout(entry.inactivityTimer);
             entry.inactivityTimer = after(config.inactivityMs, () => timeOut(`Timed out: no activity for ${seconds(config.inactivityMs)}.`));
+            if (usage && usage.totalTokens !== job.usage?.totalTokens) {
+                job.usage = usage;
+                this.notify();
+            }
         };
         armInactivity();
         entry.hardTimer = after(config.hardMs, () => timeOut(`Timed out: hard limit of ${seconds(config.hardMs)} reached.`));

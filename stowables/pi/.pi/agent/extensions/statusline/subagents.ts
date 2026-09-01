@@ -9,9 +9,15 @@ function parseJobsEvent(value: unknown): SubagentJobsEvent | undefined {
     return event as SubagentJobsEvent;
 }
 
+function formatTokens(count: number): string {
+    if (count < 1000) return count.toString();
+    if (count < 1_000_000) return `${(count / 1000).toFixed(1)}k`;
+    return `${(count / 1_000_000).toFixed(1)}M`;
+}
+
 function formatJob(job: Job, now: number): string {
     const elapsed = Math.round((now - (job.startedAt ?? job.createdAt)) / 1000);
-    return `[${job.id}] ${job.state} ${elapsed}s`;
+    return `[${job.id}] ${job.state} ${elapsed}s ${formatTokens(job.usage?.totalTokens ?? 0)}`;
 }
 
 export interface SubagentStatusline {

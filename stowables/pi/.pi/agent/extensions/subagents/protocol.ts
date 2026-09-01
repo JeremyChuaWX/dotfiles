@@ -52,6 +52,7 @@ export interface Job {
     createdAt: number;
     startedAt?: number;
     endedAt?: number;
+    usage?: JobUsage;
     result?: RunResult;
     error?: string;
 }
@@ -68,6 +69,6 @@ export interface JobResult {
 }
 
 /** Executes one job. Must resolve or reject; must stop when `signal` aborts; calls `onActivity` whenever work happens. */
-export type Runner = (config: JobConfig, signal: AbortSignal, onActivity: () => void) => Promise<RunResult>;
+export type Runner = (config: JobConfig, signal: AbortSignal, onActivity: (usage?: JobUsage) => void) => Promise<RunResult>;
 
 export type Deliver = (result: JobResult) => void;

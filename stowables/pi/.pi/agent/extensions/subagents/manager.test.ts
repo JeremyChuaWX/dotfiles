@@ -82,6 +82,9 @@ describe("Manager", () => {
             { id: b.id, state: "queued" },
         ]);
 
+        runner.started[0].onActivity({ input: 1200, output: 300, totalTokens: 1500, cost: 0 });
+        assert.equal(manager.list().find((job) => job.id === a.id)?.usage?.totalTokens, 1500);
+
         runner.started[0].resolve(ok());
         await flush();
         assert.deepEqual(snapshots.at(-1), [{ id: b.id, state: "running" }]);

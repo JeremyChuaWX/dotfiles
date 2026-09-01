@@ -62,7 +62,7 @@ export function createRunner(deps: RunnerDeps): Runner {
             throw new Error("Cancelled before start.");
         }
         const unsubscribe = session.subscribe((event) => {
-            if (ACTIVITY_EVENTS.has(event.type)) onActivity();
+            if (ACTIVITY_EVENTS.has(event.type)) onActivity(collectUsage(session));
         });
         const onAbort = () => {
             session.abort().catch(() => {});
@@ -95,15 +95,21 @@ function collect(session: AgentSession): RunResult {
         text = [...assistants].reverse().map(textOf).find(Boolean) ?? "";
         partial = true;
     }
-    const usage = assistants.reduce<JobUsage>(
-        (acc, m) => ({
-            input: acc.input + (m.usage?.input ?? 0),
-            output: acc.output + (m.usage?.output ?? 0),
-            totalTokens: acc.totalTokens + (m.usage?.totalTokens ?? 0),
-            cost: acc.cost + (m.usage?.cost?.total ?? 0),
-        }),
+    return { text, partial, usage: collectUsage(session) };
+}
+
+function collectUsage(session: AgentSession): JobUsage {
+    return session.state.messages.reduce<JobUsage>(
+        (acc, m) =>
+            m.role === "assistant"
+                ? {
+                      input: acc.input + (m.usage?.input ?? 0),
+                      output: acc.output + (m.usage?.output ?? 0),
+                      totalTokens: acc.totalTokens + (m.usage?.totalTokens ?? 0),
+                      cost: acc.cost + (m.usage?.cost?.total ?? 0),
+                  }
+                : acc,
         { input: 0, output: 0, totalTokens: 0, cost: 0 },
     );
-    return { text, partial, usage };
 }
 
