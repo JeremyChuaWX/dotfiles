@@ -14,7 +14,9 @@ while [[ -L $script ]]; do
     [[ $target == /* ]] && script=$target || script=$dir/$target
 done
 script_dir=$(cd -P "$(dirname -- "$script")" && pwd)
+dotfiles_dir=$(cd "$script_dir/../../../.." && pwd)
 
+run git -C "$dotfiles_dir" pull --ff-only
 run brew update
 run brew upgrade -y
 run npm -g update
