@@ -93,6 +93,7 @@ return {
                 Snacks.words.jump(vim.v.count1, true)
             end,
             desc = "next reference",
+            ft = "*",
         },
         {
             "[[",
@@ -100,6 +101,7 @@ return {
                 Snacks.words.jump(-vim.v.count1, true)
             end,
             desc = "prev reference",
+            ft = "*",
         },
     },
     opts = {
