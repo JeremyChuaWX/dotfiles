@@ -11,6 +11,8 @@ export interface Profile {
     description: string;
     promptSnippet: string;
     promptGuidelines: string[];
+    /** Wait for findings in the tool call, rather than deliver a background message. */
+    blocking: boolean;
     config: ProfileConfig;
 }
 
@@ -24,6 +26,6 @@ export function promptFile(moduleUrl: string, fileName: string): string {
 type ProfileInput = Omit<Profile, "config"> & Omit<ProfileConfig, keyof typeof DEFAULT_LIMITS> & Partial<typeof DEFAULT_LIMITS>;
 
 export function defineProfile(input: ProfileInput): Profile {
-    const { name, label, description, promptSnippet, promptGuidelines, ...config } = input;
-    return { name, label, description, promptSnippet, promptGuidelines, config: { ...DEFAULT_LIMITS, ...config } };
+    const { name, label, description, promptSnippet, promptGuidelines, blocking, ...config } = input;
+    return { name, label, description, promptSnippet, promptGuidelines, blocking, config: { ...DEFAULT_LIMITS, ...config } };
 }

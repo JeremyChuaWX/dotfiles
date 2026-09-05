@@ -3,6 +3,7 @@ import { defineProfile, promptFile } from "../profile.ts";
 export default defineProfile({
     name: "worker",
     label: "Worker",
+    blocking: false,
     description:
         "Start a write-capable background subagent for delegated implementation, debugging, testing, or review and return its job id immediately. " +
         "The result is injected as soon as it completes. The child can edit files and run arbitrary shell commands and is not sandboxed.",

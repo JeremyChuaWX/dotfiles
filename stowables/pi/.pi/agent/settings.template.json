@@ -1,4 +1,5 @@
 {
+  "defaultThinkingLevel": "medium",
   "hideThinkingBlock": true,
   "defaultTools": ["read", "bash", "edit", "write", "grep", "find"],
   "quietStartup": true,

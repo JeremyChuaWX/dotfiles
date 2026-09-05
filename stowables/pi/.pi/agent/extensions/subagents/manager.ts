@@ -16,6 +16,8 @@ interface Entry {
     /** Resolves once the job reaches a terminal state. */
     settled: Promise<Job>;
     settle: (job: Job) => void;
+    /** Blocking callers receive their result here instead of background delivery. */
+    onComplete?: Deliver;
     inactivityTimer?: NodeJS.Timeout;
     hardTimer?: NodeJS.Timeout;
 }
@@ -50,7 +52,7 @@ export class Manager {
         this.options = options;
     }
 
-    spawn(config: JobConfig): Job {
+    spawn(config: JobConfig, onComplete?: Deliver): Job {
         if (this.closed) throw new Error("Subagents are shutting down.");
         if (this.queued().length >= this.options.maxQueued) {
             throw new Error(`Subagent queue is full (${this.options.maxQueued} queued, ${this.options.maxActive} running).`);
@@ -69,14 +71,14 @@ export class Manager {
         const settled = new Promise<Job>((resolve) => {
             settle = resolve;
         });
-        const entry: Entry = { job, config, controller: new AbortController(), settled, settle };
+        const entry: Entry = { job, config, controller: new AbortController(), settled, settle, onComplete };
         this.entries.set(job.id, entry);
         this.pump();
         this.notify();
         return { ...job };
     }
 
-    /** Abort running jobs, drop queued ones, and resolve once each has reached a terminal state. Cancelled jobs are not delivered. */
+    /** Abort running jobs, drop queued ones, and resolve once each has reached a terminal state. */
     cancel(ids: string[]): Promise<Job[]> {
         const entries = ids.map((id) => {
             const entry = this.entries.get(id);
@@ -152,7 +154,13 @@ export class Manager {
         };
         armInactivity();
         entry.hardTimer = after(config.hardMs, () => timeOut(`Timed out: hard limit of ${seconds(config.hardMs)} reached.`));
-        this.options.run(config, controller.signal, armInactivity).then(
+        let execution: ReturnType<Runner>;
+        try {
+            execution = this.options.run(config, controller.signal, armInactivity);
+        } catch (error) {
+            execution = Promise.reject(error);
+        }
+        execution.then(
             (result) => {
                 job.result = result;
                 this.finish(entry, finalStatus(job, "completed"));
@@ -175,8 +183,7 @@ export class Manager {
         entry.settle({ ...job });
         this.pump();
         this.notify();
-        if (status === "cancelled") return;
-        this.options.deliver({
+        const result: JobResult = {
             job: { ...job },
             status,
             text: job.result?.text ?? "",
@@ -184,6 +191,9 @@ export class Manager {
             runtimeMs: job.endedAt - (job.startedAt ?? job.createdAt),
             usage: job.result?.usage,
             error: job.error,
-        });
+        };
+        // Always release blocking callers, including on cancellation/shutdown.
+        if (entry.onComplete) entry.onComplete(result);
+        else if (!this.closed && status !== "cancelled") this.options.deliver(result);
     }
 }

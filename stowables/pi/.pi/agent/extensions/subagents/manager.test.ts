@@ -21,7 +21,7 @@ const ok = (text = "done"): RunResult => ({ text, partial: false, usage: { input
 
 /** A runner whose jobs the test finishes by hand. */
 function fakeRunner() {
-    const started: Array<{ config: JobConfig; signal: AbortSignal; onActivity: () => void; resolve: (r: RunResult) => void; reject: (e: unknown) => void }> = [];
+    const started: Array<{ config: JobConfig; signal: AbortSignal; onActivity: Parameters<Runner>[2]; resolve: (r: RunResult) => void; reject: (e: unknown) => void }> = [];
     const run: Runner = (config, signal, onActivity) =>
         new Promise<RunResult>((resolve, reject) => {
             started.push({ config, signal, onActivity, resolve, reject });
@@ -101,7 +101,7 @@ describe("Manager", () => {
         assert.throws(() => manager.spawn(config()), /queue is full/);
     });
 
-    it("cancelling a running job aborts its signal, reports cancelled, and delivers nothing", async () => {
+    it("cancelling a background job aborts its signal without delivering a result", async () => {
         const { manager, runner, delivered } = setup();
         const job = manager.spawn(config());
         const pending = manager.cancel([job.id]);
@@ -123,7 +123,7 @@ describe("Manager", () => {
         runner.started[0].resolve(ok());
         await flush();
         assert.equal(runner.started.length, 1);
-        assert.equal(delivered.length, 1);
+        assert.deepEqual(delivered.map((r) => r.status), ["completed"]);
     });
 
     it("a runner error delivers a failed result with the message", async () => {
@@ -190,6 +190,47 @@ describe("Manager", () => {
         await done;
         assert.equal(delivered.length, 0);
         assert.equal(manager.list().length, 0);
+    });
+
+    it("routes queued blocking jobs to their own completion callback, not background delivery", async () => {
+        const { manager, runner, delivered } = setup({ maxActive: 1 });
+        manager.spawn(config({ profile: "worker" }));
+        const completed: JobResult[] = [];
+        const waiting = manager.spawn(config(), (result) => completed.push(result));
+        assert.equal(waiting.state, "queued");
+        assert.equal(completed.length, 0);
+        runner.started[0].resolve(ok("worker"));
+        await flush();
+        runner.started[1].resolve(ok("explorer"));
+        await flush();
+        assert.equal(delivered.length, 1);
+        assert.equal(delivered[0].text, "worker");
+        assert.equal(completed.length, 1);
+        assert.equal(completed[0].text, "explorer");
+    });
+
+    it("completes a cancelled queued blocking job without launching it", async () => {
+        const { manager, runner, delivered } = setup({ maxActive: 1 });
+        manager.spawn(config());
+        let completed!: JobResult;
+        const queued = manager.spawn(config(), (result) => { completed = result; });
+        await manager.cancel([queued.id]);
+        assert.equal(completed.status, "cancelled");
+        assert.equal(runner.started.length, 1);
+        assert.equal(delivered.length, 0);
+    });
+
+    it("returns timeouts to blocking callers without background delivery", async (t) => {
+        t.mock.timers.enable({ apis: ["setTimeout", "Date"] });
+        const { manager, runner, delivered } = setup();
+        let completed!: JobResult;
+        manager.spawn(config(), (result) => { completed = result; });
+        t.mock.timers.tick(10_000);
+        runner.started[0].reject(new Error("aborted"));
+        await flush();
+        assert.equal(completed.status, "timed_out");
+        assert.match(completed.error ?? "", /no activity/);
+        assert.equal(delivered.length, 0);
     });
 
     it("ids count per profile", () => {

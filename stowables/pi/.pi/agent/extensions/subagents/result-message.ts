@@ -8,7 +8,7 @@ import type { JobResult } from "./protocol.ts";
 /** Inline text beyond this is cut; the full text is always on disk. */
 const INLINE_LIMIT = 16 * 1024;
 
-/** Persisted with the custom message; everything the renderer needs without reparsing content. */
+/** Persisted with the tool result or background message; everything the renderer needs. */
 export interface SubagentResultDetails {
     id: string;
     profile: string;
@@ -44,7 +44,7 @@ function writeOutput(dir: string, id: string, text: string): string {
     }
 }
 
-/** Persist the complete output and prepare the bounded message injected into the parent context. */
+/** Persist the complete output and prepare bounded content for tool results or background messages. */
 export function prepareResultMessage(result: JobResult, dir: string): PreparedResultMessage {
     const { job } = result;
     const body = result.error ? `Error: ${result.error}\n\n${result.text}` : result.text;
@@ -69,7 +69,7 @@ function compactTask(task: string): string {
     return oneLine.length > 120 ? `${oneLine.slice(0, 117)}...` : oneLine;
 }
 
-/** Render like a tool result: compact by default, expanded globally with app.tools.expand. */
+/** Only background completion messages need custom rendering; tool results use Pi's built-in renderer. */
 export const renderResultMessage: MessageRenderer<SubagentResultDetails> = (message, { expanded, outputPad }, theme) => {
     const details = message.details;
     if (!details?.id) return undefined;
