@@ -28,6 +28,8 @@ fi
 echo "initializing fnm and Node.js"
 eval "$(fnm env --shell bash)"
 fnm install --latest --use
+# Pi's development dependencies link through this stable global npm prefix.
+fnm default "$(node --version)"
 
 echo "installing npm packages"
 source "$SCRIPT_DIR/npm.sh"
@@ -41,8 +43,8 @@ echo "installing zsh plugins"
 PI_AGENT_DIR="$HOME/.pi/agent"
 PI_SETTINGS="$PI_AGENT_DIR/settings.json"
 
-echo "installing Pi extension dependencies"
-(cd "$PI_AGENT_DIR" && npm ci --include=dev --ignore-scripts)
+echo "installing Pi extension development dependencies in the dotfiles checkout"
+(cd "$DOTFILES_DIR/stowables/pi/.pi/agent" && npm ci --include=dev --ignore-scripts)
 
 if [ ! -e "$PI_SETTINGS" ]; then
     echo "initializing Pi settings"

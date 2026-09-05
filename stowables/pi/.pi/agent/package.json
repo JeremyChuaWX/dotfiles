@@ -4,15 +4,15 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "sync-pi": "npm i -D @earendil-works/pi-ai@$(pi --version) @earendil-works/pi-coding-agent@$(pi --version) @earendil-works/pi-tui@$(pi --version)",
     "test": "node --test \"extensions/**/*.test.ts\""
   },
   "devDependencies": {
-    "@earendil-works/pi-ai": "0.84.3",
-    "@earendil-works/pi-coding-agent": "0.84.3",
-    "@earendil-works/pi-tui": "0.84.3",
+    "@earendil-works/pi-agent-core": "file:~/Library/Application Support/fnm/aliases/default/lib/node_modules/@earendil-works/pi-coding-agent/node_modules/@earendil-works/pi-agent-core",
+    "@earendil-works/pi-ai": "file:~/Library/Application Support/fnm/aliases/default/lib/node_modules/@earendil-works/pi-coding-agent/node_modules/@earendil-works/pi-ai",
+    "@earendil-works/pi-coding-agent": "file:~/Library/Application Support/fnm/aliases/default/lib/node_modules/@earendil-works/pi-coding-agent",
+    "@earendil-works/pi-tui": "file:~/Library/Application Support/fnm/aliases/default/lib/node_modules/@earendil-works/pi-coding-agent/node_modules/@earendil-works/pi-tui",
     "@types/node": "24.12.4",
-    "typebox": "1.1.38",
+    "typebox": "file:~/Library/Application Support/fnm/aliases/default/lib/node_modules/@earendil-works/pi-coding-agent/node_modules/typebox",
     "typescript": "5.9.3"
   }
 }
