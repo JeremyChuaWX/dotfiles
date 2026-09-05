@@ -49,7 +49,14 @@ echo "installing Pi extension development dependencies in the dotfiles checkout"
 if [ ! -e "$PI_SETTINGS" ]; then
     echo "initializing Pi settings"
     mkdir -p "$PI_AGENT_DIR"
-    (umask 077 && cp "$PI_AGENT_DIR/settings.template.json" "$PI_SETTINGS")
+    node --input-type=module - "$PI_AGENT_DIR" <<'NODE'
+import { readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+const agentDir = process.argv[2];
+const settings = JSON.parse(readFileSync(join(agentDir, "settings.template.json"), "utf8"));
+settings.externalEditor = join(agentDir, "bin", "pi-prompt-editor-wrapper.mjs");
+writeFileSync(join(agentDir, "settings.json"), JSON.stringify(settings, null, 2) + "\n", { mode: 0o600 });
+NODE
 else
     echo "preserving existing Pi settings"
 fi

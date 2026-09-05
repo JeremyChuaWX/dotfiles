@@ -27,3 +27,15 @@ development setup, not a reproducible SDK snapshot.
 npm run typecheck
 npm test
 ```
+
+## Prompt editor
+
+Ctrl+G uses Pi's `externalEditor` setting to invoke
+`~/.pi/agent/bin/pi-prompt-editor-wrapper.mjs`, which launches `nvim` directly and
+includes the last assistant reply as reference. Setup writes the absolute wrapper
+path when creating `settings.json` (Pi does not expand `~` in editor commands).
+Existing settings are preserved; set `externalEditor` to the absolute wrapper path
+manually when migrating an existing installation.
+
+The extension only exports `PI_PROMPT_EDITOR_LAST_ASSISTANT_FILE`; it never changes
+`EDITOR` or `VISUAL`. Restart Pi after migrating the editor configuration.

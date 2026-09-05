@@ -5,12 +5,6 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 const MARKER = "# ------------------------ >8 ------------------------";
 const INSTRUCTION = "# Everything above is reference only and will be ignored.";
 
-function splitCommand(command) {
-  // Mirrors pi's built-in external editor splitting behavior well enough for
-  // common values like "nvim", "vim", or "code --wait".
-  return command.split(" ").filter(Boolean);
-}
-
 function stripReferenceBlock(text) {
   const normalized = text.replace(/\r\n/g, "\n");
   const lines = normalized.split("\n");
@@ -35,12 +29,6 @@ function readStateText(path) {
 function buildEditorBuffer(reference, draft) {
   if (!reference.trim()) return draft;
   return `${reference.trimEnd()}\n\n${MARKER}\n${INSTRUCTION}\n\n${draft}`;
-}
-
-const realEditor = process.env.PI_PROMPT_EDITOR_REAL_EDITOR;
-if (!realEditor) {
-  console.error("pi prompt editor wrapper: PI_PROMPT_EDITOR_REAL_EDITOR is not set");
-  process.exit(1);
 }
 
 const args = process.argv.slice(2);
@@ -68,8 +56,7 @@ try {
   process.exit(1);
 }
 
-const [editor, ...editorArgs] = splitCommand(realEditor);
-const result = spawnSync(editor, [...editorArgs, ...args], {
+const result = spawnSync("nvim", args, {
   stdio: "inherit",
   shell: process.platform === "win32",
 });

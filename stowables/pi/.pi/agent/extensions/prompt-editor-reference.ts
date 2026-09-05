@@ -1,13 +1,11 @@
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { getAgentDir, type ExtensionAPI, type ExtensionContext } from "@earendil-works/pi-coding-agent";
-
-const WRAPPER_PATH = path.join(getAgentDir(), "bin", "pi-prompt-editor-wrapper.mjs");
+import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 const STATE_DIR = path.join(os.tmpdir(), "pi-prompt-editor-reference");
 const STATE_FILE = path.join(STATE_DIR, `last-assistant-${process.pid}.md`);
 
-let editorEnvironment: Record<string, string | undefined> | undefined;
+let previousStateFile: string | undefined;
 
 function textFromContent(content: unknown): string {
   if (typeof content === "string") return content;
@@ -46,45 +44,13 @@ function writeLastAssistantText(ctx: ExtensionContext): void {
   writeAssistantText(getLastAssistantText(ctx));
 }
 
-function installEditorWrapper(): boolean {
-  if (editorEnvironment) return true;
-
-  const realEditor = process.env.PI_PROMPT_EDITOR_REAL_EDITOR || process.env.VISUAL || process.env.EDITOR;
-  if (!realEditor) return false;
-
-  editorEnvironment = {
-    PI_PROMPT_EDITOR_REAL_EDITOR: process.env.PI_PROMPT_EDITOR_REAL_EDITOR,
-    PI_PROMPT_EDITOR_LAST_ASSISTANT_FILE: process.env.PI_PROMPT_EDITOR_LAST_ASSISTANT_FILE,
-    VISUAL: process.env.VISUAL,
-    EDITOR: process.env.EDITOR,
-  };
-  process.env.PI_PROMPT_EDITOR_REAL_EDITOR = realEditor;
-  process.env.PI_PROMPT_EDITOR_LAST_ASSISTANT_FILE = STATE_FILE;
-
-  // Pi prefers VISUAL over EDITOR. Set both so the built-in external editor
-  // always invokes the wrapper, while the wrapper invokes the original editor.
-  process.env.VISUAL = WRAPPER_PATH;
-  process.env.EDITOR = WRAPPER_PATH;
-  return true;
-}
-
-function restoreEditorEnvironment(): void {
-  if (!editorEnvironment) return;
-
-  for (const [name, value] of Object.entries(editorEnvironment)) {
-    if (value === undefined) delete process.env[name];
-    else process.env[name] = value;
-  }
-  editorEnvironment = undefined;
-}
-
 export default function promptEditorReference(pi: ExtensionAPI) {
   pi.on("session_start", (_event, ctx) => {
-    const installed = installEditorWrapper();
+    // Pi's externalEditor setting selects the wrapper. Only pass its reference
+    // file here; leave EDITOR and VISUAL untouched for Git and other children.
+    previousStateFile = process.env.PI_PROMPT_EDITOR_LAST_ASSISTANT_FILE;
+    process.env.PI_PROMPT_EDITOR_LAST_ASSISTANT_FILE = STATE_FILE;
     writeLastAssistantText(ctx);
-    if (!installed) {
-      ctx.ui.notify("No $VISUAL or $EDITOR configured for prompt editor reference wrapper.", "warning");
-    }
   });
 
   pi.on("message_end", (event, _ctx) => {
@@ -101,7 +67,8 @@ export default function promptEditorReference(pi: ExtensionAPI) {
   });
 
   pi.on("session_shutdown", () => {
-    restoreEditorEnvironment();
+    if (previousStateFile === undefined) delete process.env.PI_PROMPT_EDITOR_LAST_ASSISTANT_FILE;
+    else process.env.PI_PROMPT_EDITOR_LAST_ASSISTANT_FILE = previousStateFile;
     fs.rmSync(STATE_FILE, { force: true });
   });
 }
