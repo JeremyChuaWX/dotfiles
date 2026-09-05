@@ -27,6 +27,6 @@
   "schemastore.nvim": { "branch": "main", "commit": "4a0e1b74096937d366031bc1e2b244546af39f8e" },
   "snacks.nvim": { "branch": "main", "commit": "882c996cf28183f4d63640de0b4c02ec886d01f2" },
   "todo-comments.nvim": { "branch": "main", "commit": "31e3c38ce9b29781e4422fc0322eb0a21f4e8668" },
-  "tree-sitter-manager.nvim": { "branch": "main", "commit": "023590c8f068788a0513a4409bf37ff7f9d1deff" },
+  "tree-sitter-manager.nvim": { "branch": "main", "commit": "1425eacb78bfee34face0fe06a8384ac3c4d9c8e" },
   "ts-error-translator.nvim": { "branch": "main", "commit": "558abff11b9e8f4cefc0de09df780c56841c7a4b" }
 }
