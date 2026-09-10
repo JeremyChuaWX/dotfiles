@@ -16,7 +16,7 @@ else
 fi
 
 echo "installing brew bundle"
-brew bundle --file="$SCRIPT_DIR/Brewfile"
+brew bundle --file="$SCRIPT_DIR/brewfile"
 
 if ! gh auth status >/dev/null 2>&1; then
     echo "logging in to github CLI"
