@@ -16,7 +16,7 @@ done
 script_dir=$(cd -P "$(dirname -- "$script")" && pwd)
 dotfiles_dir=$(cd "$script_dir/../../../.." && pwd)
 
-run git -C "$dotfiles_dir" pull --ff-only --auto-stash
+run git -C "$dotfiles_dir" pull --ff-only --autostash
 run brew update
 run brew upgrade -y
 run npm -g update
