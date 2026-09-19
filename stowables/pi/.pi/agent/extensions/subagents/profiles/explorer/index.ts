@@ -15,7 +15,7 @@ export default defineProfile({
     ],
     tools: ["read", "grep", "find", "ls"],
     model: "openrouter/z-ai/glm-5.3-flash",
-    thinkingLevel: "low",
+    thinkingLevel: "high",
     systemPrompt: promptFile(import.meta.url, "prompt.md"),
     promptMode: "replace",
 });
