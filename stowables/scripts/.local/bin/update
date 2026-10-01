@@ -18,7 +18,7 @@ dotfiles_dir=$(cd "$script_dir/../../../.." && pwd)
 
 run git -C "$dotfiles_dir" pull --ff-only --autostash
 run brew update
-run brew upgrade -y
+run brew upgrade --cask --greedy -y
 run npm -g update
 run bob update nightly
 run "$script_dir/../../../nvim/.config/nvim/update"
