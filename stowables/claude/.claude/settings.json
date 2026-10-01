@@ -45,7 +45,7 @@
     ],
     "defaultMode": "bypassPermissions"
   },
-  "model": "fable",
+  "model": "opus",
   "disableClaudeAiConnectors": true,
   "disableRemoteControl": true,
   "enabledPlugins": {
@@ -65,5 +65,10 @@
   "disableAutoMode": "disable",
   "theme": "dark",
   "disableDeepLinkRegistration": "disable",
-  "disableMobileSimulatorTools": true
+  "disableMobileSimulatorTools": true,
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "high"
+    }
+  }
 }
