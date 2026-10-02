@@ -2,7 +2,6 @@ import * as os from "node:os";
 import * as path from "node:path";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { truncateToWidth } from "@earendil-works/pi-tui";
-import { createSubagentStatusline } from "./subagents.ts";
 
 function compactPath(cwd: string): string {
     const home = process.env.HOME || os.homedir();
@@ -23,13 +22,9 @@ export default function statusline(pi: ExtensionAPI) {
         ctx.ui.setFooter((tui, theme, footerData) => {
             const requestRender = () => tui.requestRender();
             const unsubscribeBranch = footerData.onBranchChange(requestRender);
-            const subagents = createSubagentStatusline(pi.events, ctx.sessionManager.getSessionId(), requestRender);
 
             return {
-                dispose: () => {
-                    unsubscribeBranch();
-                    subagents.dispose();
-                },
+                dispose: () => unsubscribeBranch(),
                 invalidate() {},
                 render(width: number): string[] {
                     const cwd = compactPath(ctx.sessionManager.getCwd());
@@ -42,7 +37,7 @@ export default function statusline(pi: ExtensionAPI) {
                     const ellipsis = theme.fg("dim", "...");
                     const original = truncateToWidth(theme.fg("dim", parts.join(" | ")), width, ellipsis);
 
-                    return [original, ...subagents.render(width, theme)];
+                    return [original];
                 },
             };
         });

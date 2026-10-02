@@ -8,6 +8,7 @@ import { profiles } from "./profiles/index.ts";
 import { SUBAGENT_JOBS_CHANNEL, type Job, type JobConfig, type JobResult, type SubagentJobsEvent } from "./protocol.ts";
 import { prepareResultMessage, renderResultMessage } from "./result-message.ts";
 import { createRunner } from "./subagent.ts";
+import { registerSubagentUI } from "./ui.ts";
 
 const MAX_ACTIVE = clamp(Number(process.env.PI_SUBAGENT_MAX_ACTIVE) || 4, 1, 64);
 const MAX_QUEUED = 16;
@@ -55,6 +56,7 @@ export default function subagents(pi: ExtensionAPI, deps: SubagentExtensionDeps 
     /** One manager per session/branch; retire the old manager before replacing it. */
     const start = async (_event: unknown, ctx: ExtensionContext) => {
         await manager?.shutdown();
+        registerSubagentUI(pi, ctx);
         const sessionId = ctx.sessionManager.getSessionId();
         const dir = path.join(os.tmpdir(), "pi-subagents", sessionId, randomUUID());
         resultDir = dir;

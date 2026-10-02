@@ -1,6 +1,18 @@
-import type { EventBus, Theme } from "@earendil-works/pi-coding-agent";
+import type { EventBus, ExtensionAPI, ExtensionContext, Theme } from "@earendil-works/pi-coding-agent";
 import { truncateToWidth } from "@earendil-works/pi-tui";
-import { SUBAGENT_JOBS_CHANNEL, type Job, type SubagentJobsEvent } from "../subagents/protocol.ts";
+import { SUBAGENT_JOBS_CHANNEL, type Job, type SubagentJobsEvent } from "./protocol.ts";
+
+export function registerSubagentUI(pi: ExtensionAPI, ctx: ExtensionContext): void {
+    if (ctx.mode !== "tui") return;
+    ctx.ui.setWidget("subagents", (tui, theme) => {
+        const subagents = createSubagentStatusline(pi.events, ctx.sessionManager.getSessionId(), () => tui.requestRender());
+        return {
+            dispose: () => subagents.dispose(),
+            invalidate() {},
+            render: (width: number) => subagents.render(width, theme),
+        };
+    }, { placement: "aboveEditor" });
+}
 
 function parseJobsEvent(value: unknown): SubagentJobsEvent | undefined {
     if (!value || typeof value !== "object") return undefined;
@@ -25,7 +37,7 @@ export interface SubagentStatusline {
     render(width: number, theme: Theme): string[];
 }
 
-/** Subscribes one footer to active-job snapshots for its parent session. */
+/** Subscribes one widget to active-job snapshots for its parent session. */
 export function createSubagentStatusline(
     events: EventBus,
     sessionId: string,
