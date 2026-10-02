@@ -1,7 +1,3 @@
-import { readFileSync } from "node:fs";
-import { homedir } from "node:os";
-import { join } from "node:path";
-import type { Api, Model } from "@earendil-works/pi-ai";
 import {
     DEFAULT_MAX_BYTES,
     DEFAULT_MAX_LINES,
@@ -17,13 +13,10 @@ const SEARCH_PARAMS = Type.Object({
 });
 
 type SearchParams = Static<typeof SEARCH_PARAMS>;
-type CodexModel = Model<"openai-codex-responses">;
 
 type CodexAuth = {
     accessToken: string;
     accountId?: string;
-    /** Endpoint derived from the credential source; registry models use their configured base URL. */
-    endpoint: string;
     headers?: Record<string, string>;
 };
 
@@ -59,13 +52,6 @@ const SEARCH_PAYLOAD_MODEL = "gpt-4o";
 const CODEX_USER_AGENT = "codex-cli/0.147.0-alpha.6.5";
 const MAX_RESULTS = 10;
 
-function resolveCodexSearchUrl(baseUrl: string): string {
-    const normalized = baseUrl.replace(/\/+$/, "");
-    if (normalized.endsWith("/codex/alpha/search")) return normalized;
-    if (normalized.endsWith("/codex")) return `${normalized}/alpha/search`;
-    return `${normalized}/codex/alpha/search`;
-}
-
 function extractChatGptAccountId(token: string): string | undefined {
     try {
         const payload = token.split(".")[1];
@@ -78,89 +64,20 @@ function extractChatGptAccountId(token: string): string | undefined {
     }
 }
 
-function isCodexModel(model: Model<Api>): model is CodexModel {
-    return model.provider === "openai-codex" && model.api === "openai-codex-responses";
-}
-
-function resolveCodexModel(
-    ctx: ExtensionContext,
-    environment: Record<string, string | undefined>,
-): CodexModel | undefined {
-    const configured = environment.WEB_SEARCH_MODEL?.trim();
-    if (configured) {
-        const slash = configured.indexOf("/");
-        if (slash < 1 || slash === configured.length - 1) {
-            throw new Error("WEB_SEARCH_MODEL must use provider/model format.");
-        }
-        const model = ctx.modelRegistry.find(configured.slice(0, slash), configured.slice(slash + 1));
-        if (!model) throw new Error(`WEB_SEARCH_MODEL ${configured} is not registered in pi.`);
-        if (!isCodexModel(model)) {
-            throw new Error(
-                `${model.provider}/${model.id} cannot authenticate Codex web search. Set WEB_SEARCH_MODEL to a ChatGPT/Codex model.`,
-            );
-        }
-        return model;
+/** Use Pi's Codex legacy login on every call, letting Pi handle OAuth refresh. */
+async function resolveCodexAuth(ctx: ExtensionContext): Promise<CodexAuth> {
+    const result = await ctx.modelRegistry.getProviderAuth("openai-codex");
+    const accessToken = nonEmptyString(result?.auth.apiKey);
+    if (!accessToken) {
+        throw new Error("No Pi Codex legacy credentials found for web_search. Use /login in Pi to sign in to Codex legacy.");
     }
-    return ctx.model && isCodexModel(ctx.model) ? ctx.model : undefined;
-}
-
-function authFromFile(path: string): CodexAuth | undefined {
-    try {
-        const parsed = JSON.parse(readFileSync(path, "utf8"));
-        const accessToken = nonEmptyString(parsed?.tokens?.access_token);
-        if (!accessToken) return undefined;
-        return {
-            accessToken,
-            accountId: nonEmptyString(parsed?.tokens?.account_id) ?? extractChatGptAccountId(accessToken),
-            endpoint: DEFAULT_ENDPOINT,
-        };
-    } catch {
-        return undefined;
-    }
-}
-
-/**
- * Resolves ChatGPT/Codex credentials for the standalone search endpoint.
- *
- * Order: explicit `CODEX_ACCESS_TOKEN` environment override, then a pi-registered ChatGPT/Codex
- * model (the active model, or `WEB_SEARCH_MODEL`), then the Codex CLI login at `~/.codex/auth.json`.
- */
-async function resolveCodexAuth(
-    ctx: ExtensionContext,
-    environment: Record<string, string | undefined>,
-    codexAuthPath: string | undefined,
-): Promise<CodexAuth> {
-    const envToken = nonEmptyString(environment.CODEX_ACCESS_TOKEN);
-    if (envToken) {
-        return {
-            accessToken: envToken,
-            accountId: nonEmptyString(environment.CODEX_ACCOUNT_ID) ?? extractChatGptAccountId(envToken),
-            endpoint: DEFAULT_ENDPOINT,
-        };
-    }
-
-    const model = resolveCodexModel(ctx, environment);
-    if (model) {
-        const auth = await ctx.modelRegistry.getApiKeyAndHeaders(model);
-        if (!auth.ok) throw new Error(auth.error);
-        if (!auth.apiKey) throw new Error(`No API key is available for ${model.provider}/${model.id}.`);
-        return {
-            accessToken: auth.apiKey,
-            accountId: extractChatGptAccountId(auth.apiKey),
-            endpoint: resolveCodexSearchUrl(model.baseUrl),
-            headers: {
-                ...model.headers,
-                ...Object.fromEntries(Object.entries(auth.headers ?? {}).filter((e): e is [string, string] => e[1] != null)),
-            },
-        };
-    }
-
-    const fileAuth = authFromFile(codexAuthPath ?? join(homedir(), ".codex", "auth.json"));
-    if (fileAuth) return fileAuth;
-
-    throw new Error(
-        "No ChatGPT/Codex credentials found for web_search. Sign in to a ChatGPT/Codex model in pi, set CODEX_ACCESS_TOKEN, or run `codex login`.",
-    );
+    return {
+        accessToken,
+        accountId: extractChatGptAccountId(accessToken),
+        headers: Object.fromEntries(
+            Object.entries(result?.auth.headers ?? {}).filter((e): e is [string, string] => e[1] != null),
+        ),
+    };
 }
 
 function normalizeResults(raw: unknown): SearchResultItem[] {
@@ -228,8 +145,7 @@ async function runSearch(
     dependencies: WebToolDependencies,
     sessionId: string,
 ): Promise<SearchResult> {
-    const environment = dependencies.environment ?? process.env;
-    const auth = await resolveCodexAuth(ctx, environment, dependencies.codexAuthPath);
+    const auth = await resolveCodexAuth(ctx);
 
     const headers: Record<string, string> = {
         ...auth.headers,
@@ -245,7 +161,7 @@ async function runSearch(
         commands: { search_query: [{ q: params.query }] },
     };
 
-    const response = await (dependencies.fetch ?? globalThis.fetch)(auth.endpoint, {
+    const response = await (dependencies.fetch ?? globalThis.fetch)(DEFAULT_ENDPOINT, {
         method: "POST",
         headers,
         body: JSON.stringify(body),
@@ -254,7 +170,7 @@ async function runSearch(
     const text = await response.text();
     if (response.status === 401 || response.status === 403) {
         throw new Error(
-            "Codex web search authentication was rejected. Re-authenticate the ChatGPT/Codex model in pi, refresh CODEX_ACCESS_TOKEN, or run `codex login`.",
+            "Codex web search authentication was rejected. Use /login in Pi to re-authenticate Codex legacy.",
         );
     }
     if (response.status === 429) throw new Error("Codex web search is rate limited; retry later.");
@@ -311,7 +227,7 @@ export default function webSearchExtension(
             "Use web_search when an answer depends on current, external, or recently changed information.",
             "Use web_search for discovery; use web_crawl when a specific URL must be extracted.",
             "When using web_search, cite the returned source URLs in the final answer.",
-            "web_search authenticates with ChatGPT/Codex credentials: the active Codex model, WEB_SEARCH_MODEL, CODEX_ACCESS_TOKEN, or `codex login`.",
+            "web_search uses Pi's Codex legacy login, regardless of the active model. If authentication fails, use /login in Pi to sign in to Codex legacy.",
         ],
         parameters: SEARCH_PARAMS,
         execute(_toolCallId, params, signal, onUpdate, ctx) {

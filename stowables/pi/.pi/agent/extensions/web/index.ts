@@ -11,15 +11,12 @@ export type WebExtensionDependencies = WebToolDependencies & {
     outputRetentionOwner?: WebOutputRetention;
 };
 
-/** Production fetch, environment, Codex auth path, and session retention owner. */
+/** Production fetch and session retention owner. */
 export function createDefaultWebDependencies(
     overrides: WebExtensionDependencies = {},
-): Required<Pick<WebExtensionDependencies, "fetch" | "environment" | "outputRetentionOwner">> &
-    Pick<WebExtensionDependencies, "codexAuthPath"> {
+): Required<Pick<WebExtensionDependencies, "fetch" | "outputRetentionOwner">> {
     return {
         fetch: overrides.fetch ?? globalThis.fetch,
-        environment: overrides.environment ?? process.env,
-        codexAuthPath: overrides.codexAuthPath,
         outputRetentionOwner: overrides.outputRetentionOwner ?? new WebOutputRetention(overrides.outputRetention),
     };
 }

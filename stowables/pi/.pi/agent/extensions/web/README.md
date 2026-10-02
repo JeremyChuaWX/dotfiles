@@ -4,12 +4,12 @@ Ported from [pui](https://github.com/JeremyChuaWX/pui) (`src/modules/web`) into 
 Registers `web_search`.
 
 `web_search` calls the ChatGPT Codex standalone search endpoint, which runs searches server-side
-without model inference, so searches consume no model tokens. Credentials resolve in order:
+without model inference, so searches consume no model tokens.
 
-1. `CODEX_ACCESS_TOKEN` (with optional `CODEX_ACCOUNT_ID`)
-2. a pi-authenticated ChatGPT/Codex model — the active model, or `WEB_SEARCH_MODEL=provider/model`
-   to select another registered one
-3. the Codex CLI login at `~/.codex/auth.json`
+Authentication always uses Pi's **Codex legacy** login (`openai-codex`), regardless of the active
+model. Sign in with `/login` in Pi. Credentials are resolved through Pi's model registry on every
+search, including OAuth refresh; the extension does not read credential files directly.
+There are no `CODEX_ACCESS_TOKEN` / `WEB_SEARCH_MODEL` overrides or Codex CLI credential fallback.
 
 Output is limited to 50 KB and pi's default line limit, with at most 10 sources. When a complete
 formatted result exceeds that, the extension may retain it in a private temporary `result.md` and

@@ -6,9 +6,6 @@ const errorMessage = (error: unknown): string => (error instanceof Error ? error
 /** Provider dependencies shared by the web search and crawl tools. */
 export type WebToolDependencies = {
     fetch?: (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
-    environment?: Record<string, string | undefined>;
-    /** web_search only: overrides the Codex CLI credential file, default `~/.codex/auth.json`. */
-    codexAuthPath?: string;
 };
 
 /** Returns the trimmed string when `value` is a non-empty string. */
