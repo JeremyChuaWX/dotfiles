@@ -15,7 +15,7 @@ export default defineProfile({
         "After worker starts, do not wait or poll subagent_list. Continue only independent useful work; otherwise end your turn while it runs in the background.",
     ],
     tools: ["read", "bash", "edit", "write", "grep", "find", "ls"],
-    model: "openai-codex/gpt-6-sol",
+    model: "openai/gpt-6.1-sol",
     thinkingLevel: "medium",
     systemPrompt: promptFile(import.meta.url, "prompt.md"),
     promptMode: "append",

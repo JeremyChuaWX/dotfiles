@@ -14,7 +14,7 @@ export default defineProfile({
         "Explorer returns its findings directly; no separate wait or polling tool is needed.",
     ],
     tools: ["read", "grep", "find", "ls"],
-    model: "openai-codex/gpt-6-luna",
+    model: "openai/gpt-6-luna",
     thinkingLevel: "high",
     systemPrompt: promptFile(import.meta.url, "prompt.md"),
     promptMode: "replace",
