@@ -3,11 +3,10 @@ return {
     config = function()
         require("lint").linters_by_ft = {
             go = { "golangcilint" },
-            solidity = { "solhint" },
-            javascript = { "eslint", "biomejs" },
-            javascriptreact = { "eslint", "biomejs" },
-            typescript = { "eslint", "biomejs" },
-            typescriptreact = { "eslint", "biomejs" },
+            javascript = { "oxlint" },
+            javascriptreact = { "oxlint" },
+            typescript = { "oxlint" },
+            typescriptreact = { "oxlint" },
         }
         vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter" }, {
             callback = function()

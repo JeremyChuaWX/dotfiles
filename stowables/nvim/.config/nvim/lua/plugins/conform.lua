@@ -1,17 +1,3 @@
-local function biome_config_available(ctx)
-    local res = vim.fs.find({
-        "biome.config.js",
-        "biome.config.ts",
-        "biome.toml",
-        ".biomerc.json",
-        "biome.json",
-        "biome.jsonc",
-        ".biome.json",
-        ".biome.jsonc",
-    }, { path = ctx.dirname, upward = true })
-    return #res > 0
-end
-
 return {
     "stevearc/conform.nvim",
     keys = {
@@ -28,22 +14,6 @@ return {
             lsp_format = "fallback",
         },
         formatters = {
-            forge_fmt = {
-                command = "forge",
-                args = { "fmt", "--raw", "-" },
-                stdin = true,
-            },
-            prettier = {
-                prepend_args = {
-                    "--tab-width",
-                    "4",
-                    "--config-precedence",
-                    "prefer-file",
-                },
-                condition = function(_, ctx)
-                    return not biome_config_available(ctx)
-                end,
-            },
             stylua = {
                 prepend_args = {
                     "--indent-type",
@@ -60,32 +30,20 @@ return {
                     "--no-reformat-tags",
                 },
             },
-            mdslw = {
-                prepend_args = {
-                    "--end-markers",
-                    "",
-                },
-            },
-            ["biome-check"] = {
-                condition = function(_, ctx)
-                    return biome_config_available(ctx)
-                end,
-            },
         },
         formatters_by_ft = {
-            astro = { "prettier", "rustywind" },
+            astro = { "oxfmt" },
             go = { "golines" },
-            html = { "prettier", "rustywind" },
-            javascript = { "biome-check", "prettier", "rustywind" },
-            javascriptreact = { "biome-check", "prettier", "rustywind" },
-            json = { "biome-check", "prettier" },
-            jsonc = { "biome-check", "prettier" },
+            html = { "oxfmt" },
+            javascript = { "oxfmt" },
+            javascriptreact = { "oxfmt" },
+            json = { "oxfmt" },
+            jsonc = { "oxfmt" },
             lua = { "stylua" },
-            markdown = { "markdownlint", "mdslw" },
+            markdown = { "oxfmt" },
             rust = { "rustfmt" },
-            solidity = { "forge_fmt" },
-            typescript = { "biome-check", "prettier", "rustywind" },
-            typescriptreact = { "biome-check", "prettier", "rustywind" },
+            typescript = { "oxfmt" },
+            typescriptreact = { "oxfmt" },
         },
     },
 }
