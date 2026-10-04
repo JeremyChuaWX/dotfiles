@@ -13,7 +13,7 @@ local mason_tools = {
             "lua_ls",
             "ruff",
             "tailwindcss",
-            "ts_ls",
+            "tsc",
             "ty",
 
             -- tools
