@@ -1,0 +1,3 @@
+--ignore=\.stow-package
+--ignore=node_modules
+--target=~
