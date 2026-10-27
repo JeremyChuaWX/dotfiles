@@ -152,6 +152,11 @@ defaults write -g com.apple.trackpad.scaling -float 1.5
 defaults -currentHost write com.apple.coreservices.useractivityd ActivityAdvertisingAllowed -bool true
 defaults -currentHost write com.apple.coreservices.useractivityd ActivityReceivingAllowed -bool true
 
+# Rex terminal font, matching ghostty (keybinds live in ~/.config/rex/init.lua)
+defaults write com.superlogical.rex Workspace.terminalFontName -string "JetBrainsMonoNL Nerd Font Mono"
+defaults write com.superlogical.rex Workspace.terminalFontPointSize -float 18
+defaults write com.superlogical.rex Workspace.terminalAllowsLigatures -bool false
+
 # Restart affected apps
 for app in "cfprefsd" "Dock" "Finder" "Mail" "SystemUIServer" "useractivityd"; do
     echo "Restarting ${app}..."

@@ -68,6 +68,16 @@ curl -fsSL https://invisible-island.net/datafiles/current/terminfo.src.gz -o "$T
 gunzip -f "$TMPDIR/terminfo.src.gz"
 /usr/bin/tic -xe tmux-256color "$TMPDIR/terminfo.src"
 
+echo "install rex terminfo"
+# rex isn't on PATH outside rex terminals; its cli ships with the server the app installs on first launch
+REX_BIN="$HOME/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex"
+if [ -x "$REX_BIN" ]; then
+    # installs xterm-rex into ~/.terminfo and adds an ssh guard Include to ~/.ssh/config
+    "$REX_BIN" terminfo setup
+else
+    echo "skipping rex terminfo: launch Rex once, then run 'rex terminfo setup'"
+fi
+
 echo "link .env from icloud to home"
 ICLOUD_ENV_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
 ICLOUD_ENV_FILE="$ICLOUD_ENV_DIR/.env"

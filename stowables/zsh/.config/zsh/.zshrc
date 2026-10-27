@@ -50,3 +50,8 @@ if [[ -f "$ZSH_ADHOC_ENV_FILE" ]]; then
     source "$ZSH_ADHOC_ENV_FILE"
     set +a
 fi
+
+# rex: keep the server's own rex cli first on PATH (keep this last)
+if [[ -n "$REX_BIN_DIR" ]]; then
+    export PATH="$REX_BIN_DIR:$PATH"
+fi
