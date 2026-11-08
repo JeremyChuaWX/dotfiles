@@ -1,3 +1,4 @@
 # runtime files rex writes into its config dir (e.g. ssh_config from `rex terminfo setup`)
 .config/rex/*
 !.config/rex/init.lua
+!.config/rex/apply-settings

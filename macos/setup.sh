@@ -37,6 +37,9 @@ source "$SCRIPT_DIR/npm.sh"
 echo "stowing configs"
 "$DOTFILES_DIR/stowables/setup.sh"
 
+echo "applying rex settings"
+"$HOME/.config/rex/apply-settings"
+
 echo "installing zsh plugins"
 "$HOME/.config/zsh/install-plugins"
 

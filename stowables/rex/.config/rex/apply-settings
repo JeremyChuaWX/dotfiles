@@ -1,0 +1,38 @@
+#!/bin/sh
+# rex app settings, stored in macos defaults (keybinds live in init.lua next to this file)
+# dark theme: run "Import Ghostty Theme" from the command palette; it creates a custom
+# theme with a per-import ID, so Workspace.customThemes/darkThemeID aren't set here
+set -eu
+
+domain=com.superlogical.rex
+
+# terminal: font matching ghostty
+defaults write "$domain" Workspace.terminalFontName -string "JetBrainsMonoNL Nerd Font Mono"
+defaults write "$domain" Workspace.terminalFontPointSize -float 18
+defaults write "$domain" Workspace.terminalAllowsLigatures -bool false
+defaults write "$domain" Workspace.terminalFontSmoothing -bool true
+defaults write "$domain" Workspace.terminalSmoothScrolling -bool true
+defaults write "$domain" Workspace.terminalCursorBlinkUsesCustomInterval -bool false
+defaults write "$domain" Workspace.terminalCursorBlinkIntervalMilliseconds -int 0
+
+# appearance
+defaults write "$domain" Workspace.appIcon -string "dark"
+defaults write "$domain" Workspace.interfaceStyle -string "useTheme"
+defaults write "$domain" Workspace.lightThemeID -string "merino-light"
+defaults write "$domain" Workspace.paneDensity -string "compact"
+defaults write "$domain" Workspace.inactivePaneFadeMode -string "both"
+defaults write "$domain" Workspace.usesStandardInactiveWindowPaneStyles -bool true
+
+# tabs and sidebar
+defaults write "$domain" Workspace.tabStyle -string "vertical"
+defaults write "$domain" Workspace.tabIconCount -int 0
+defaults write "$domain" Workspace.tabIconTintMode -string "off"
+defaults write "$domain" Workspace.sidebarPosition -string "left"
+defaults write "$domain" Workspace.sidebarShowsActivity -bool false
+
+# server and agents
+defaults write "$domain" rex.agents.names-sessions -bool true
+defaults write "$domain" rex.developer-mode-enabled -bool true
+defaults write "$domain" rex.server.automatic-restart-enabled -bool true
+defaults write "$domain" rex.server.block-plugin-reload-enabled -bool false
+defaults write "$domain" rex.server.tailnet-enabled -bool true
