@@ -35,4 +35,5 @@ defaults write "$domain" rex.agents.names-sessions -bool true
 defaults write "$domain" rex.developer-mode-enabled -bool true
 defaults write "$domain" rex.server.automatic-restart-enabled -bool true
 defaults write "$domain" rex.server.block-plugin-reload-enabled -bool false
-defaults write "$domain" rex.server.tailnet-enabled -bool true
+# off: on Rex 0.1.0 (1853)+ this is built-in Tailscale, which adds a separate rex device to the tailnet
+defaults write "$domain" rex.server.tailnet-enabled -bool false
