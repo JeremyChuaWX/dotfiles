@@ -81,19 +81,6 @@ else
     echo "skipping rex terminfo: launch Rex once, then run 'rex terminfo setup'"
 fi
 
-echo "link .env from icloud to home"
-ICLOUD_ENV_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
-ICLOUD_ENV_FILE="$ICLOUD_ENV_DIR/.env"
-HOME_ENV_FILE="$HOME/.env"
-
-if [ -d "$ICLOUD_ENV_DIR" ]; then
-    touch "$ICLOUD_ENV_FILE"
-    if [ -e "$HOME_ENV_FILE" ] && [ ! -L "$HOME_ENV_FILE" ]; then
-        echo "skipping ~/.env symlink: file already exists and is not a symlink"
-    else
-        ln -sfn "$ICLOUD_ENV_FILE" "$HOME_ENV_FILE"
-        echo "linked ~/.env -> $ICLOUD_ENV_FILE"
-    fi
-else
-    echo "skipping ~/.env symlink: iCloud Drive directory not found"
-fi
+echo "pull .env from icloud"
+# a local copy, not a symlink: shells reading iCloud at startup can hang
+"$HOME/.local/bin/env-pull" || echo "skipping ~/.env: env-pull failed"

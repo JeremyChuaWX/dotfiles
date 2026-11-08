@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# copy ~/.env down from iCloud Drive, so shells read a local file instead of iCloud at startup.
+# iCloud stays the source of truth: edit it there, then run env-pull on each machine.
+set -euo pipefail
+
+src="$HOME/Library/Mobile Documents/com~apple~CloudDocs/.env"
+dest="$HOME/.env"
+timeout=${ENV_PULL_TIMEOUT:-30}
+
+fail() {
+    echo "env-pull: $*" >&2
+    exit 1
+}
+
+[[ -d ${src%/*} ]] || fail "iCloud Drive not found"
+[[ -e $src ]] || fail "$src not found"
+
+tmp=$(mktemp "$dest.XXXXXX") # next to ~/.env so the final mv is atomic; mktemp makes it 0600
+trap 'rm -f "$tmp"' EXIT
+
+# reading blocks while iCloud downloads an evicted file, so give up after $timeout seconds
+cat -- "$src" >"$tmp" &
+reader=$!
+(sleep "$timeout" && kill -9 "$reader" 2>/dev/null) &
+watchdog=$!
+disown "$watchdog" # no "Terminated" notice when it's stopped below
+if ! wait "$reader" 2>/dev/null; then
+    fail "couldn't read $src within ${timeout}s"
+fi
+kill "$watchdog" 2>/dev/null || true
+
+if [[ -L $dest ]]; then
+    echo "env-pull: replacing ~/.env symlink with a local copy"
+elif [[ -f $dest ]] && ! cmp -s "$tmp" "$dest"; then
+    cp -p "$dest" "$dest.bak"
+    chmod 600 "$dest.bak"
+    echo "env-pull: saved the previous ~/.env to ~/.env.bak"
+elif [[ -f $dest ]]; then
+    echo "env-pull: ~/.env is up to date"
+    exit 0
+fi
+
+chmod 600 "$tmp"
+mv -f "$tmp" "$dest"
+echo "env-pull: updated ~/.env"
