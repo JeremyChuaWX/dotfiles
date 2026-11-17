@@ -1,7 +1,6 @@
 {
   "$schema": "https://www.schemastore.org/claude-code-settings.json",
   "env": {
-    "CLAUDE_CODE_DISABLE_1M_CONTEXT": "1",
     "CLAUDE_CODE_SIMPLE_SYSTEM_PROMPT": "1",
     "CLAUDE_CODE_DISABLE_ADVISOR_TOOL": "1",
     "DISABLE_DOCTOR_COMMAND": "1",
@@ -66,13 +65,61 @@
   "modelSettings": {
     "claude-opus-5-5": {
       "effortLevel": "high"
+    },
+    "claude-fable-5-2": {
+      "effortLevel": "high"
     }
   },
   "awaySummaryEnabled": false,
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
-  "disableAutoMode": "disable",
   "theme": "dark",
+  "editorMode": "normal",
+  "showTurnDuration": false,
   "disableDeepLinkRegistration": "disable",
-  "disableMobileSimulatorTools": true
+  "disableMobileSimulatorTools": true,
+  "autoCompactWindow": 170000,
+  "hooks": {
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/compact-guard.sh busy"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/compact-guard.sh idle"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/compact-guard.sh idle"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "auto",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "COMPACT_GUARD_CEILING=300000 ~/.claude/hooks/compact-guard.sh check"
+          }
+        ]
+      }
+    ]
+  }
 }
